@@ -87,6 +87,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+# go
+export PATH=$PATH:/usr/local/go/bin
+
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
@@ -123,6 +126,9 @@ export PATH="$DENO_INSTALL/bin:$PATH"
 
 #nimble (nim-lang)
 export PATH="/home/takemori/.nimble/bin:$PATH"
+
+# dprint
+export PATH="/home/takemori/.dprint/bin:$PATH"
 
 # omb-related start
 

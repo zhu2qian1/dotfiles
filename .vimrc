@@ -1,54 +1,84 @@
-" use system clipbaord
-set clipboard=unnamed
+" skip defaults.vim
+let skip_defaults_vim = 1
 
-set nocompatible
-set imdisable
+filetype plugin indent on
+syntax on
 
-set number
-set relativenumber
+set backspace=indent,eol,start
+set cursorline
 
-let mapleader=" "
+set encoding=utf-8
 
-" search related
-set incsearch
-set smartcase
+" listchars
+set list
+set listchars=
+" set listchars+=tab:« »
+" set listchars+=tab:»\
+set listchars+=tab:^\
+set listchars+=trail:~
+
+" allow Japanese input
+set noimdisable
+if v:progname =~? "gvim" || v:progname =~? "vim"
+	inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
+endif
+
+" tab settings
+set expandtab
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+
+" indent settings
 set smartindent
-set hlsearch
+set autoindent
+set smarttab
 
-" disable highlight when hit escape key twice
-nnoremap <ESC><ESC> :nohlsearch<CR>
+" number settings
+set number
+set norelativenumber
 
-" L for the last char, H for the first char
+" search settings
+set incsearch
 
-nnoremap L $
-nnoremap H ^
+set smartcase
 
-vnoremap L $
-vnoremap H ^
+set ambiwidth=double
 
-" zz is for centering cursor in the terminal so that
-" following cursor will be easier
+" directory setting
+set backupdir=~/vim/tmpfiles//
+set directory=~/vim/tmpfiles//
+set undodir  =~/vim/tmpfiles//
 
-nnoremap <c-d> <c-d>zz
-nnoremap <c-u> <c-u>zz
-nnoremap { {zz
-nnoremap } }zz
-nnoremap n nzz
-nnoremap N nzz
+set wrap
 
-vnoremap <c-d> <c-d>zz
-vnoremap <c-u> <c-u>zz
-vnoremap { {zz
-vnoremap } }zz
-vnoremap n nzz
-vnoremap N nzz
-vnoremap p "_dp
+" load my autocmd
+let autoCmdFile = expand('~/vim/_myautocmd.vim')
+if filereadable(autoCmdFile)
+  exec "source " . autoCmdFile
+endif
 
-" <c-j> for joining lines
-nnoremap <c-j> :join<CR>
+" load my keymap
+let keyMapFile = expand('~/vim/_mykeymap.vim')
+if filereadable(keyMapFile)
+  exec "source " . keyMapFile
+endif
 
-" custom v-mode keymaps
+"---------------------------------------------------------------------------
+"   my own commands
+command! F2h :%s/　/  /gc
+command! T2S :%s/\t/    /gc
+command! HtmlFlatten :%s/>\s*/>\r/gc
+if has('win32') && &shell =~? "C:\\Windows\\system32\\cmd.exe"
+  command! Today :r! echo \%date:/=-\%
+  command! Now :r! echo \%time\%
+endif
 
-vnoremap , <ESC>ggVG
-vnoremap v <ESC><c-v>
+runtime! autoload/pathogen.vim
+if exists("*pathogen#infect")
+    call pathogen#infect()
+    call pathogen#helptags()
+    nnoremap <leader>el :NERDTree<CR>
+    nnoremap <leader>ee :NERDTreeExplore<CR>
+endif
 

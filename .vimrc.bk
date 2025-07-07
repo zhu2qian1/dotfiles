@@ -1,0 +1,137 @@
+" skip loading the default vimrc
+let skip_defaults_vim = 1
+
+filetype plugin indent on
+syntax on
+set backspace=indent,eol,start
+
+set encoding=utf-8
+let mapleader="\<space>"
+
+" listchars
+set list
+set listchars=
+" set listchars+=tab:« »
+" set listchars+=tab:»\
+set listchars+=tab:^\
+set listchars+=trail:~
+
+"
+" allow Japanese input
+set noimdisable
+inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
+
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set noexpandtab
+
+set number
+set relativenumber
+
+" set cursorline
+
+set smartindent
+set autoindent
+
+set incsearch
+set smartcase
+
+" no backup file
+set nobackup
+set nowritebackup
+" just in case
+set backupdir=~/.vim/backup//
+set directory=~/.vim/swap//
+set undodir=~/.vim/undo//
+
+nnoremap H ^
+nnoremap L $
+
+" dd and D write into d register
+nnoremap dd "ddd
+nnoremap D  "dD
+
+" c does not overwrite registers
+nnoremap c "_c
+vnoremap c "_c
+
+" x does not cut into registers
+nnoremap x "_x
+vnoremap x "_x
+
+set scrolloff=8
+
+" move cursor intuitively
+nnoremap j gj
+nnoremap k gk
+vnoremap j gj
+vnoremap k gk
+
+"zz to centre cursor
+nnoremap n nzz
+nnoremap N Nzz
+
+vnoremap H ^
+vnoremap L $
+
+vnoremap v <C-v>
+vnoremap , <ESC>ggVG
+
+if v:progname =~? "gvim"
+  "set gui font
+  set guifont=HackGen_Console:h12:cDEFAULT
+  " set guifontwide=HackGen_Console_NF:h12:cDEFAULT
+  " set guifont=Consolas:h12:cDEFAULT
+endif
+
+" leader keymappings
+" tab movning
+nnoremap <leader>p gT
+nnoremap <leader>n gt
+
+" toggle commands
+nnoremap <leader>th :set hlsearch!<CR>:set hls?<CR>
+nnoremap <leader>tw :set wrap!<CR>:se wrap?<CR>
+
+" pane moving
+nnoremap <leader>h <C-w>h
+nnoremap <leader>l <C-w>l
+nnoremap <leader>j <C-w>j
+nnoremap <leader>k <C-w>k
+
+" pane splitting
+nnoremap <leader>sv :vsp<CR>
+nnoremap <leader>sh :sp<CR>
+
+" easy copy, cut, and paste
+vnoremap <leader>c "+y:echo "copied to clipboard."<CR>
+vnoremap <leader>x "+d:echo "cut to clipboard."<CR>
+vnoremap <leader>v "+p:echo "pasted from clipboard."<CR>
+nnoremap <leader>v "+p:echo "pasted from clipboard."<CR>
+
+" settings
+if v:progname =~? "gvim"
+	nnoremap <leader>,f :set guifont=*<CR>
+endif
+nnoremap <leader>,r :tab e ~/.vimrc<CR>
+
+" Left explorer
+nnoremap <leader>el :Lexplore<CR>
+nnoremap <leader>ee :Explore<CR>
+nnoremap <leader>ew :w<CR>:Explore<CR>
+nnoremap <leader>ww <C-w>120<bar>
+
+" custom extension match
+autocmd BufNewFile,BufRead *.bat_ set filetype=dosbatch
+
+" =====================
+"   my own commands
+" =====================
+" replace full-width space with two half-width space
+:command F2h :%s/　/  /gc
+
+" =====================
+"   pathogen settings
+" =====================
+execute pathogen#infect()

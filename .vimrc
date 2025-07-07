@@ -83,4 +83,3 @@ if exists("*pathogen#infect")
     nnoremap <leader>el :NERDTree<CR>
     nnoremap <leader>ee :NERDTreeExplore<CR>
 endif
-

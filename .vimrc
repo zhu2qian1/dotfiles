@@ -17,6 +17,8 @@ set listchars=
 set listchars+=tab:^\
 set listchars+=trail:~
 
+set scrolloff=8
+
 " allow Japanese input
 set noimdisable
 if v:progname =~? "gvim" || v:progname =~? "vim"

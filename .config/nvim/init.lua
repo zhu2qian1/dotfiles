@@ -1,7 +1,18 @@
--- needs to be updated
-
 -- Skip default settings
 vim.g.vim_skip_defaults = 1
+
+-- Plugins
+vim.pack.add({
+    { src="https://github.com/stevearc/oil.nvim" }
+})
+require "Oil".setup({
+    columns = { "icon" }
+})
+if (require "Oil") then
+    vim.keymap.set('n', '<leader>ee', ':Oil<CR>')
+else
+    vim.keymap.set('n', '<leader>ee', ':Explore<CR>')
+end
 
 -- Keymaps
 vim.keymap.set('i', '<Esc>', '<Esc>:set iminsert=0<CR>', { silent = true })
@@ -30,9 +41,9 @@ vim.opt.cursorline = true
 vim.opt.matchpairs:append({ '「:」', '【:】', '『:』', '《:》', '≪:≫', '〔:〕', '［:］', '（:）' })
 
 -- Windows specific
---if vim.fn.has('win32') == 1 then
---  vim.opt.shell = 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'
---end
+if vim.fn.has('win32') == 1 then
+  vim.opt.shell = 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'
+end
 
 -- Tab settings
 vim.opt.expandtab = true
@@ -132,47 +143,45 @@ vim.keymap.set('n', '<leader>;:', ':norm i<C-R>=strftime("%H:%M:%S")<CR><CR>')
 vim.keymap.set('n', '<leader>;dt', ':norm i<C-R>=strftime("%Y-%m-%d")." ".strftime("%H:%M:%S")<CR><CR>')
 
 -- Clipboard shortcuts
-vim.keymap.set('v', '<C-c>', '"+y:echo "copied to clipboard."<CR>', { silent = true })
-vim.keymap.set('v', '<C-x>', '"+d:echo "cut to clipboard."<CR>', { silent = true })
-vim.keymap.set('v', '<C-v>', '"+p:echo "pasted from clipboard."<CR>', { silent = true })
-vim.keymap.set('n', '<C-v>', '"+p:echo "pasted from clipboard."<CR>', { silent = true })
+vim.keymap.set('v', '<C-c>', '"+y:echo "copied to clipboard."<CR>', { silent = true, noremap = true })
+vim.keymap.set('v', '<C-x>', '"+d:echo "cut to clipboard."<CR>', { silent = true, noremap = true  })
+vim.keymap.set('v', '<C-v>', '"+p:echo "pasted from clipboard."<CR>', { silent = true, noremap = true  })
+vim.keymap.set('n', '<C-v>', '"+p:echo "pasted from clipboard."<CR>', { silent = true, noremap = true  })
 
 -- File edit shortcuts
-vim.keymap.set('n', '<leader>,v', ':e $HOME/AppData/Local/nvim/init.lua<CR>')
+vim.keymap.set('n', '<leader>,v', ':e $HOME/AppData/Local/nvim/init.lua<CR>', { noremap = true })
 -- vim.keymap.set('n', '<leader>,g', ':e $HOME/.gvimrc<CR>')
 
 -- Insert expression
-vim.keymap.set('n', '<leader>ir', 'i<C-R>=')
+vim.keymap.set('n', '<leader>ir', 'i<C-R>=', { noremap = true })
 
 -- Movement
-vim.keymap.set({ 'n', 'v' }, 'H', '^')
-vim.keymap.set({ 'n', 'v' }, 'L', '$')
+vim.keymap.set({ 'n', 'v' }, 'H', '^', { noremap = true })
+vim.keymap.set({ 'n', 'v' }, 'L', '$', { noremap = true })
 
 -- Selection
-vim.keymap.set('v','v','<esc><c-v>')
-vim.keymap.set('v',',','<esc>GVgg')
+vim.keymap.set('v','v','<esc><c-v>', { noremap = true })
+vim.keymap.set('v',',','<esc>GVgg', { noremap = true })
 
 -- Prevent register overwrite
-vim.keymap.set({ 'n', 'v' }, 'c', '"_c')
-vim.keymap.set(  'n'       , 'C', '"_C')
-vim.keymap.set({ 'n', 'v' }, 'x', '"_x')
-vim.keymap.set({ 'n', 'v' }, 'X', '"_dd')
+vim.keymap.set({ 'n', 'v' }, 'c', '"_c', { noremap = true })
+vim.keymap.set(  'n'       , 'C', '"_C', { noremap = true })
+vim.keymap.set({ 'n', 'v' }, 'x', '"_x', { noremap = true })
+vim.keymap.set({ 'n', 'v' }, 'X', '"_dd', { noremap = true })
 
 -- Search behavior
-vim.keymap.set('n', 'n', 'nzz')
-vim.keymap.set('n', 'N', 'Nzz')
-vim.keymap.set('n', '<F3>', 'n')
-vim.keymap.set('n', '<S-F3>', 'N')
+vim.keymap.set('n', '<F3>', 'n', { noremap = true })
+vim.keymap.set('n', '<S-F3>', 'N', { noremap = true })
 
-vim.keymap.set('v', '*', 'y/<C-r>"<CR>:set hls<CR>')
-vim.keymap.set('n', '*', ':setlocal hls<CR>*')
-vim.keymap.set('n', '/', ':setlocal hls<CR>/')
+vim.keymap.set('v', '*', 'y/<C-r>"<CR>:set hls<CR>', { noremap = true })
+vim.keymap.set('n', '*', ':setlocal hls<CR>*', { noremap = true })
+vim.keymap.set('n', '/', ':setlocal hls<CR>/', { noremap = true })
 
 -- Redo = U
-vim.keymap.set('n', 'U', '<C-r>')
+vim.keymap.set('n', 'U', '<C-r>', { noremap = true })
 
 -- Toggle hlsearch
-vim.keymap.set('n', '<Esc><Esc>', ':setlocal hls!<CR>', { silent = true })
+vim.keymap.set('n', '<Esc><Esc>', ':setlocal hls!<CR>', { silent = true, noremap=true })
 
 -- Indent staying in visual mode
 vim.keymap.set('v', '<', '<gv')
@@ -185,14 +194,14 @@ vim.keymap.set('n', '<leader>]', 'gt<CR>')
 
 -- Toggles
 local toggles = {
-  tcl = 'cul',
-  th = 'hls',
-  tw = 'wrap',
-  tnr = 'rnu',
-  tnn = 'nu',
+  cl = 'cul',
+  h = 'hls',
+  w = 'wrap',
+  nr = 'rnu',
+  nn = 'nu',
 }
-for k, v in pairs(toggles) do
-  vim.keymap.set('n', '<leader>' .. k, ':setlocal ' .. v .. '! ' .. v .. '?<CR>')
+for k, o in pairs(toggles) do
+  vim.keymap.set('n', '<leader>t' .. k, ':setlocal ' .. o .. '! ' .. o .. '?<CR>')
 end
 
 -- Indent width presets
@@ -200,7 +209,10 @@ for i, n in ipairs({ 2, 4, 8, 16, 32 }) do
   vim.keymap.set('n', string.format('<leader>tt%d', i), string.format(':setlocal sts=%d ts=%d sw=%d<CR>', n, n, n))
 end
 
-vim.keymap.set('n', '<leader>so', ':source %<CR>:echo "sourced the current file."<CR>')
+-- utils
+vim.keymap.set('n', '<leader>so', ':update<CR> :source<CR>:echo "sourced the current file."<CR>')
+vim.keymap.set('n', '<leader>wr', ':write<CR>')
+vim.keymap.set('n', '<leader>qu', ':quit<CR>')
 
 -- Window navigation
 vim.keymap.set('n', '<leader>h', '<C-w>h')
@@ -219,13 +231,6 @@ vim.keymap.set('n', '<leader>v', '"+p:echo "pasted from clipboard."<CR>')
 vim.keymap.set('n', '<leader>V', '"+P:echo "pasted from clipboard."<CR>')
 vim.keymap.set('v', '<leader>v', '"+p:echo "pasted from clipboard."<CR>')
 vim.keymap.set('v', '<leader>V', '"+P:echo "pasted from clipboard."<CR>')
-
--- Explorer shortcuts
-vim.keymap.set('n', '<leader>el', ':Lexplore<CR>')
-vim.keymap.set('n', '<leader>ee', ':Explore<CR>')
-vim.keymap.set('n', '<leader>eh', ':Hexplore<CR>')
-vim.keymap.set('n', '<leader>es', ':Sexplore<CR>')
-vim.keymap.set('n', '<leader>ew', ':w<CR>:Explore<CR>')
 
 -- Misc set shortcuts
 vim.keymap.set('n', '<leader>::', ':set ')

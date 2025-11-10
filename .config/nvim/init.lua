@@ -3,7 +3,10 @@ vim.g.vim_skip_defaults = 1
 
 -- Plugins
 vim.pack.add({
-    { src="https://github.com/stevearc/oil.nvim" }
+	{ src = "https://github.com/vague2k/vague.nvim" },
+	{ src = "https://github.com/stevearc/oil.nvim" },
+	{ src = "https://github.com/echasnovski/mini.pick" },
+	{ src = "https://github.com/neovim/nvim-lspconfig" },
 })
 require "Oil".setup({
     columns = { "icon" }
@@ -14,14 +17,14 @@ else
     vim.keymap.set('n', '<leader>ee', ':Explore<CR>')
 end
 
--- Keymaps
-vim.keymap.set('i', '<Esc>', '<Esc>:set iminsert=0<CR>', { silent = true })
-
 -- General settings
 vim.cmd.colorscheme('evening')
-vim.opt.clipboard = 'unnamed'
+vim.opt.clipboard = 'unnamedplus'
 vim.cmd('filetype plugin indent on')
 vim.cmd('syntax on')
+
+-- Keymaps
+vim.keymap.set('i', '<Esc>', '<Esc>:set iminsert=0<CR>', { silent = true })
 
 vim.opt.autochdir = true
 vim.opt.encoding = 'utf-8'
@@ -237,12 +240,6 @@ vim.keymap.set('n', '<leader>::', ':set ')
 vim.keymap.set('n', '<leader>:f', ':set filetype=')
 vim.keymap.set('n', '<leader>:e', ':set encoding=')
 
--- -- gVim-specific (font)
--- vim.keymap.set('n', '<leader>,,', ':set gfn=*<CR>')
-
--- ============================================
--- Startup behavior
--- ============================================
 if vim.fn.argc() == 0 then
   vim.cmd('cd ~')
 end

@@ -2,7 +2,9 @@
 let g:vim_skip_defaults=1
 
 inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
-set clipboard=unnamed
+if has('mouse')
+    set clipboard=unnamed
+endif
 
 filetype plugin indent on
 syntax on
@@ -35,7 +37,7 @@ set noimdisable
 set matchpairs+=「:」,【:】,『:』,《:》,≪:≫,〔:〕,［:］,（:）
 
 " tab settings
-set expandtab
+set noexpandtab
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4

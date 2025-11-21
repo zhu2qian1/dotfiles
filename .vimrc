@@ -43,9 +43,9 @@ set softtabstop=4
 set shiftwidth=4
 
 " indent settings
-" set smartindent
-" set autoindent
-" set smarttab
+set smartindent
+set autoindent
+set smarttab
 
 " editor appearance
 set ambiwidth=double
@@ -59,20 +59,14 @@ set scrolloff=8
 " search settings
 set hlsearch
 set incsearch
-set ignorecase
-set smartcase
+set ignorecase smartcase
 
 augroup  custom_extension_match
     autocmd!
-    autocmd BufNewFile,BufRead *.bat_     set filetype=dosbatch
-    autocmd BufNewFile,BufRead *.bat.txt  set filetype=dosbatch
-    autocmd BufNewFile,BufRead *.batx     set filetype=dosbatch
-    autocmd BufNewFile,BufRead *.sql_     set filetype=sql
-    autocmd BufNewFile,BufRead *.md.txt   set filetype=markdown
-    autocmd BufNewFile,BufRead *.gij      set filetype=markdown
-    autocmd BufNewFile,BufRead *.gij.md   set filetype=markdown
-    autocmd BufNewFile,BufRead *.gij.txt  set filetype=markdown
-    autocmd BufNewFile,BufRead *.vbs_     set filetype=vb
+    autocmd BufNewFile,BufRead *.bat_,*.bat.txt set filetype=dosbatch
+    autocmd BufNewFile,BufRead *.sql_           set filetype=sql
+    autocmd BufNewFile,BufRead *.md.txt         set filetype=markdown
+    autocmd BufNewFile,BufRead *.vbs_           set filetype=vb
 augroup end
 
 augroup  markdown_custom_settings
@@ -163,15 +157,17 @@ nnoremap U <C-r>
 nnoremap <silent> <ESC><ESC> :setlocal hls!<CR>
 
 " change indentation
-vnoremap < <gv
 vnoremap > >gv
+vnoremap <Tab>   >gv
+vnoremap < <gv
+vnoremap <S-Tab> <gv
 
 " new tab
 nnoremap <leader>N :tabe<CR>
 
 " tab movning
-nnoremap <leader>[ gT<CR>
-nnoremap <leader>] gt<CR>
+nnoremap ,t gT<CR>
+nnoremap ,T gt<CR>
 
 " toggle commands
 nnoremap <leader>tcl :setlocal cul!   cul?<CR>
@@ -187,7 +183,10 @@ nnoremap <leader>tt4 :setlocal sts=16 ts=16 sw=16<CR>
 nnoremap <leader>tt5 :setlocal sts=32 ts=32 sw=32<CR>
 
 " source
-nnoremap <leader>so :source %<CR>:echo "sourced the current file."<CR>
+nnoremap <leader>so :update<CR>:source %<CR>:echo "sourced the current file."<CR>
+
+nnoremap <leader>wi :write<CR>
+nnoremap <leader>qu :quit<CR>
 
 " pane moving
 nnoremap <leader>h <C-w>h
@@ -208,15 +207,8 @@ vnoremap <leader>v "+p:echo "pasted from clipboard."<CR>
 vnoremap <leader>V "+P:echo "pasted from clipboard."<CR>
 
 " Left explorer
-nnoremap <leader>el :Lexplore<CR>
 nnoremap <leader>ee :Explore<CR>
-nnoremap <leader>eh :Hexplore<CR>
-nnoremap <leader>es :Sexplore<CR>
-nnoremap <leader>ew :w<CR>:Explore<CR>
-
-nnoremap <leader>:: :set 
-nnoremap <leader>:f :set filetype=
-nnoremap <leader>:e :set encoding=
+nnoremap <leader>el :Lexplore<CR>
 
 " gVim-specific settings {{{
 " font setting shortcut

@@ -1,29 +1,34 @@
 " skip the default settings
 let g:vim_skip_defaults=1
+"
+" ---- plugs ---- {{{
+" using [Pathogen](https://github.com/tpope/vim-pathogen)
+" refer to ~/vimfiles/bundle
+execute pathogen#infect()
 
-inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
-if has('mouse')
-    set clipboard=unnamed
-endif
+let g:vim_markdown_folding_disabled = 1
+let g:netrw_browsex_viewer = "msedge"
+" }}}
 
 filetype plugin indent on
 syntax on
+
+" ---- options ---- {{{
+set clipboard=unnamed
+
 set autochdir
 
-set encoding=utf-8
-set fileencodings=ucs-bom,utf-8,default,cp932
+set fileencodings=ucs-bom,utf-8,default,cp932 encoding=utf-8
 
 set shortmess=aoOTIF
-set laststatus=2
-set statusline=%02n\ %r%w%y\ %m%t\%<%=[%B]\ [%{&fenc}]\ %l/%L
+set laststatus=2 statusline=%02n\ %r%w%y\ %m%t\%<%=[%B]\ [%{&fenc}]\ %l/%L
 
 set virtualedit=block
 set whichwrap=b,s,[,],<,>
-set shellslash
-set noswf
+set noswf nobackup
 
 if has('win32')
-    set shell=C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+	set shell=C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
 endif
 
 set belloff=all
@@ -38,83 +43,63 @@ set matchpairs+=「:」,【:】,『:』,《:》,≪:≫,〔:〕,［:］,（:）
 
 " tab settings
 set noexpandtab
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+set tabstop=4 softtabstop=4 shiftwidth=4
 
 " indent settings
-set smartindent
-set autoindent
-set smarttab
+set smartindent autoindent smarttab
 
 " editor appearance
 set ambiwidth=double
 set list
 set listchars=tab:^\ ,trail:~
-set norelativenumber
-set number
+set norelativenumber number
 set nowrap
 set scrolloff=8
 
 " search settings
-set hlsearch
-set incsearch
+set hlsearch incsearch
 set ignorecase smartcase
+" }}}
 
+" ---- autocmds ---- {{{
 augroup  custom_extension_match
-    autocmd!
-    autocmd BufNewFile,BufRead *.bat_,*.bat.txt set filetype=dosbatch
-    autocmd BufNewFile,BufRead *.sql_           set filetype=sql
-    autocmd BufNewFile,BufRead *.md.txt         set filetype=markdown
-    autocmd BufNewFile,BufRead *.vbs_           set filetype=vb
+	autocmd!
+	autocmd BufNewFile,BufRead *.bat_,*bat.txt setfiletype dosbatch
+	autocmd BufNewFile,BufRead *.sql_          setfiletype sql
+	autocmd BufNewFile,BufRead *.md.txt        setfiletype markdown
+	autocmd BufNewFile,BufRead *.vbs_          setfiletype vb
 augroup end
 
 augroup  markdown_custom_settings
-    autocmd!
-    autocmd FileType markdown setlocal conceallevel=2 et shiftwidth=2 softtabstop=2 tabstop=2
-    autocmd FileType markdown nnoremap <buffer> <Tab> >>
-    autocmd FileType markdown nnoremap <buffer> <s-Tab> <<
-    autocmd FileType markdown nnoremap <buffer> o A<CR>
+	autocmd!
+	autocmd FileType markdown setlocal conceallevel=2 et sw=2 sts=2 ts=2
+	autocmd FileType markdown nnoremap <buffer> o A<CR>
 augroup end
 
 " custom autocmd
 autocmd QuickfixCmdPost vimgrep copen
+" }}}
 
-"---------------------------------------------------------------------------
-"   my own commands
+" ---- commands ---- {{{
 command! F2h         :%s/　/  /gc
 command! C2t         :%s/,/\t/gc
 command! History     :browse oldfiles
 command! HtmlFlatten :%s/>\s*/>\r/gc
 command! Here        :cd %\/..
-command! HereExplore :Explore %\/..
 command! HereEdit    :e %\/..
-command! HereExplore :e %\/..
 command! Easy        :source $VIMRUNTIME/evim.vim
+command! NoEasy      :source $HOME/.vimrc
 command! Conf        :e $HOME/.vimrc
 command! NvimConf    :e $HOME/AppData/Local/nvim/init.lua
 command! Hwscr       :exec "se so=" . (&lines/2)
+" }}}
 
+" ---- keymaps ---- {{{
 let mapleader="\<space>"
 
+inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
 inoremap <F5> <C-R>=strftime("%Y-%m-%d")<CR>
 inoremap <F6> <C-R>=strftime("%H:%M:%S")<CR>
-nnoremap <leader>;; :norm i<C-R>=strftime("%Y-%m-%d")<CR><CR>
-nnoremap <leader>;: :norm i<C-R>=strftime("%H:%M:%S")<CR><CR>
-nnoremap <leader>;dt :norm i<C-R>=strftime("%Y-%m-%d")." ".strftime("%H:%M:%S")<CR><CR>
-
-vnoremap <C-C> "+y:echo "copied to clipboard."<CR>
-vnoremap <C-X> "+d:echo "cut to clipboard"<CR>
-vnoremap <C-V> "+p:echo "pasted from clipboard."<CR>
-nnoremap <C-V> "+p:echo "pasted from clipboard."<CR>
-
-" jump edit .vimrc and .gvimrc
-" nnoremap <leader>,v :e $HOME/AppData/Local/nvim/init.lua<CR>
-nnoremap <leader>,v :e $HOME/.vimrc<CR>
-nnoremap <leader>,g :e $HOME/.gvimrc<CR>
-
-" insert ex command result
-nnoremap <leader>ir i<C-R>=
 
 " H and L to Head, taiL
 nnoremap H ^
@@ -133,14 +118,13 @@ vnoremap x "_x
 nnoremap X "_dd
 vnoremap X "_dd
 
-" F3 for next search results without centering
 nnoremap   <F3> nzz
 nnoremap <S-F3> Nzz
 
-" v_vv to enter v-block mode
+" v_v (n_vv) to enter v-block mode
 vnoremap v <C-v>
 
-" v_v, to select all
+" v_, (n_v,) to select all
 vnoremap , <ESC>ggVG
 
 " search selection
@@ -158,35 +142,28 @@ nnoremap <silent> <ESC><ESC> :setlocal hls!<CR>
 
 " change indentation
 vnoremap > >gv
-vnoremap <Tab>   >gv
 vnoremap < <gv
+vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
+nnoremap <Tab> >>
+nnoremap <S-Tab> <<
 
-" new tab
-nnoremap <leader>N :tabe<CR>
-
+" keymaps with leader key {{{
 " tab movning
-nnoremap ,t gT<CR>
-nnoremap ,T gt<CR>
+nnoremap <leader>n gt<CR>
+nnoremap <leader>N gT<CR>
 
-" toggle commands
-nnoremap <leader>tcl :setlocal cul!   cul?<CR>
-nnoremap <leader>th  :setlocal hls!   hls?<CR>
-nnoremap <leader>tw  :setlocal wrap!  wrap?<CR>
-nnoremap <leader>tnr :setlocal rnu!   rnu?<CR>
-nnoremap <leader>tnn :setlocal nu!    nu?<CR>
-nnoremap <leader>tte :setlocal et!    et?<CR>
-nnoremap <leader>tt1 :setlocal sts=2  ts=2  sw=2 <CR>
-nnoremap <leader>tt2 :setlocal sts=4  ts=4  sw=4 <CR>
-nnoremap <leader>tt3 :setlocal sts=8  ts=8  sw=8 <CR>
-nnoremap <leader>tt4 :setlocal sts=16 ts=16 sw=16<CR>
-nnoremap <leader>tt5 :setlocal sts=32 ts=32 sw=32<CR>
+" datetime
+nnoremap <leader>;; :norm i<C-R>=strftime("%Y-%m-%d")<CR><CR>
+nnoremap <leader>;: :norm i<C-R>=strftime("%H:%M:%S")<CR><CR>
+nnoremap <leader>;dt :norm i<C-R>=strftime("%Y-%m-%d")." ".strftime("%H:%M:%S")<CR><CR>
 
-" source
-nnoremap <leader>so :update<CR>:source %<CR>:echo "sourced the current file."<CR>
+" insert ex command result
+nnoremap <leader>ir i<C-R>=
 
-nnoremap <leader>wi :write<CR>
-nnoremap <leader>qu :quit<CR>
+" file manipulation
+nnoremap <silent> <leader>ww :write<CR>
+nnoremap <silent> <leader>so :update<CR>:source %<CR>:echo "sourced the current file."<CR>
 
 " pane moving
 nnoremap <leader>h <C-w>h
@@ -194,39 +171,23 @@ nnoremap <leader>l <C-w>l
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
 
-" pane sizing
-nnoremap <leader>ww <C-w>150<bar>
-nnoremap <leader>w= <C-w>=<CR>
-
-" easy copy and paste
-vnoremap <leader>c "+y:echo "copied to clipboard."<CR>
-vnoremap <leader>x "+d:echo "cut to clipboard."<CR>
-nnoremap <leader>v "+p:echo "pasted from clipboard."<CR>
-nnoremap <leader>V "+P:echo "pasted from clipboard."<CR>
-vnoremap <leader>v "+p:echo "pasted from clipboard."<CR>
-vnoremap <leader>V "+P:echo "pasted from clipboard."<CR>
-
 " Left explorer
-nnoremap <leader>ee :Explore<CR>
 nnoremap <leader>el :Lexplore<CR>
+nnoremap <leader>ee :Explore<CR>
 
-" gVim-specific settings {{{
 " font setting shortcut
 nnoremap <leader>,, :set gfn=*<CR>
+" }}}
 " }}}
 
 " cd to ~/ when no arguments are given
 if argc() == 0
-  execute 'cd ~/'
+	execute 'cd ~/'
 endif
 
 " load local settings if exists
 if filereadable(expand('~/.vimrc_local'))
-  source ~/.vimrc_local
+	source ~/.vimrc_local
 endif
 
-" extensions
-let g:vim_markdown_folding_disabled = 1
-let g:netrw_browsex_viewer = "msedge"
-
-" vim: set fdm=syntax:
+" vim: set fdm=marker:

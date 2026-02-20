@@ -1,10 +1,10 @@
 "set guifont=ＭＳ_ゴシック:h12
 
-set cursorline
-
-colorscheme evening
 hi! CursorIM guibg=Red guifg=NONE
-set   guifont=UDEV_GOTHIC_NFLG:h12
-set printfont=UDEV_GOTHIC_NFLG:h12
+if has('linux')
+	set   guifont=UDEV\ Gothic\ NFLG\ 13
+elseif has('win32')
+	set   guifont=UDEV_Gothic_NFLG:h12
+endif
 set guiligatures=!\"#$%&()*+^,./:>=<?@[]^_{}\|~'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
 set renderoptions=type:directx

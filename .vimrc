@@ -4,10 +4,14 @@ let g:vim_skip_defaults=1
 " ---- plugs ---- {{{
 " using [Pathogen](https://github.com/tpope/vim-pathogen)
 " refer to ~/vimfiles/bundle
-execute pathogen#infect()
+if exists('#pathogen#infect')
+	execute pathogen#infect()
+endif
 
 let g:vim_markdown_folding_disabled = 1
-let g:netrw_browsex_viewer = "msedge"
+if has('win32')
+	let g:netrw_browsex_viewer = "msedge"
+endif
 " }}}
 
 filetype plugin indent on

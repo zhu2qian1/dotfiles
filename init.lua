@@ -8,7 +8,7 @@ vim.g.mapleader = " "
 vim.keymap.set('i', '<Esc>', '<Esc>:set iminsert=0<CR>', { silent = true })
 
 -- General settings
-vim.cmd.colorscheme('evening')
+vim.cmd.colorscheme('unokai')
 
 vim.opt.signcolumn = "yes"
 vim.opt.winborder = "rounded"

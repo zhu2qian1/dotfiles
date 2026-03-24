@@ -148,21 +148,21 @@ vim.keymap.set({ 'n', 'v' }, 'L', '$', { noremap = true })
 
 -- Selection
 vim.keymap.set('v', 'v', '<esc><c-v>', { noremap = true })
-vim.keymap.set('v', ',', '<esc>GVgg', { noremap = true })
+vim.keymap.set('v', ',', '<esc>GVgg',  { noremap = true })
 
 -- Prevent register overwrite
-vim.keymap.set({ 'n', 'v' }, 'c', '"_c', { noremap = true })
-vim.keymap.set('n', 'C', '"_C', { noremap = true })
-vim.keymap.set({ 'n', 'v' }, 'x', '"_x', { noremap = true })
+vim.keymap.set({ 'n', 'v' }, 'c', '"_c',  { noremap = true })
+vim.keymap.set(  'n'       , 'C', '"_C',  { noremap = true })
+vim.keymap.set({ 'n', 'v' }, 'x', '"_x',  { noremap = true })
 vim.keymap.set({ 'n', 'v' }, 'X', '"_dd', { noremap = true })
 
 -- Search behavior
-vim.keymap.set('n', '<F3>', 'n', { noremap = true })
+vim.keymap.set('n', '<F3>', 'n',   { noremap = true })
 vim.keymap.set('n', '<S-F3>', 'N', { noremap = true })
 
 vim.keymap.set('v', '*', 'y/<C-r>"<CR>:set hls<CR>', { noremap = true })
-vim.keymap.set('n', '*', ':setlocal hls<CR>*', { noremap = true })
-vim.keymap.set('n', '/', ':setlocal hls<CR>/', { noremap = true })
+vim.keymap.set('n', '*', ':setlocal hls<CR>*',       { noremap = true })
+vim.keymap.set('n', '/', ':setlocal hls<CR>/',       { noremap = true })
 
 -- Redo = U
 vim.keymap.set('n', 'U', '<C-r>', { noremap = true })

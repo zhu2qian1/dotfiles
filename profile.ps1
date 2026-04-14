@@ -1,11 +1,7 @@
-﻿Import-Module PSFzf
-Enable-PsFzfAliases
-Import-Module ZLocation
-
-$Env:Editor='gvim'
+﻿$Env:Editor='gvim'
 
 function Prompt() {
-    Write-Host ""
+    Write-Output ""
     Write-Host -NoNewLine -ForegroundColor Blue "$env:username@$env:computername"
     Write-Host " $(Convert-Path $PWD)"
     return "PS> "

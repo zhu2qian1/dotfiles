@@ -193,9 +193,6 @@ nnoremap <leader>k <C-w>k
 " Left explorer
 nnoremap <leader>el :Lexplore<CR>
 nnoremap <leader>ee :Explore<CR>
-
-" font setting shortcut
-nnoremap <leader>,, :set gfn=*<CR>
 " }}}
 " }}}
 

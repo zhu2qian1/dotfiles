@@ -1,5 +1,12 @@
+vim.opt.encoding = 'utf-8'
+vim.opt.fileencodings = { 'ucs-bom', 'utf-8', 'default', 'cp932' }
+
 -- Skip default settings
 vim.g.vim_skip_defaults = 1
+
+if vim.g.vscode then
+    vim.opt.cmdheight = 0
+end
 
 -- Plugins
 vim.pack.add({
@@ -12,7 +19,7 @@ require "Oil".setup({
     columns = { "icon" }
 })
 if (require "Oil") then
-    vim.keymap.set('n', '<leader>ee', ':Oil<CR>')
+    vim.keymap.set('n', '<leadeource>ee', ':Oil<CR>')
 else
     vim.keymap.set('n', '<leader>ee', ':Explore<CR>')
 end
@@ -26,12 +33,8 @@ vim.cmd('syntax on')
 -- Keymaps
 vim.keymap.set('i', '<Esc>', '<Esc>:set iminsert=0<CR>', { silent = true })
 
-vim.opt.autochdir = true
-vim.opt.encoding = 'utf-8'
-vim.opt.fileencodings = { 'ucs-bom', 'utf-8', 'default', 'cp932' }
-
-vim.opt.shortmess = 'aoOT'
-vim.opt.laststatus = 2
+vim.opt.shortmess:append('otTI')
+vim.opt.laststatus = 3
 vim.opt.statusline = '%02n %r%w%y %m%t%<%=[%B] [%{&fenc}] %l/%L'
 
 vim.opt.virtualedit = 'block'
@@ -128,9 +131,7 @@ vim.api.nvim_create_user_command('T2S', '%s/\\t/    /gc', {})
 vim.api.nvim_create_user_command('History', 'browse oldfiles', {})
 vim.api.nvim_create_user_command('HtmlFlatten', '%s/>\\s*/>\\r/gc', {})
 vim.api.nvim_create_user_command('Here', 'cd %:p:h', {})
-vim.api.nvim_create_user_command('HereExplore', 'Explore %:p:h', {})
-vim.api.nvim_create_user_command('HereEdit', 'e %:p:h', {})
-vim.api.nvim_create_user_command('Easy', 'source $VIMRUNTIME/evim.vim', {})
+vim.api.nvim_create_user_command('HereE', 'e %:p:h', {})
 
 -- Leader key
 vim.g.mapleader = ' '
@@ -151,16 +152,12 @@ vim.keymap.set('v', '<C-x>', '"+d:echo "cut to clipboard."<CR>', { silent = true
 vim.keymap.set('v', '<C-v>', '"+p:echo "pasted from clipboard."<CR>', { silent = true, noremap = true  })
 vim.keymap.set('n', '<C-v>', '"+p:echo "pasted from clipboard."<CR>', { silent = true, noremap = true  })
 
--- File edit shortcuts
-vim.keymap.set('n', '<leader>,v', ':e $HOME/AppData/Local/nvim/init.lua<CR>', { noremap = true })
--- vim.keymap.set('n', '<leader>,g', ':e $HOME/.gvimrc<CR>')
-
 -- Insert expression
 vim.keymap.set('n', '<leader>ir', 'i<C-R>=', { noremap = true })
 
 -- Movement
 vim.keymap.set({ 'n', 'v' }, 'H', '^', { noremap = true })
-vim.keymap.set({ 'n', 'v' }, 'L', '$', { noremap = true })
+vim.keymap.set({ 'n', 'v' }, 'L', 'g_', { noremap = true })
 
 -- Selection
 vim.keymap.set('v','v','<esc><c-v>', { noremap = true })
@@ -192,8 +189,8 @@ vim.keymap.set('v', '>', '>gv')
 
 -- Tabs
 vim.keymap.set('n', '<leader>N', ':tabe<CR>')
-vim.keymap.set('n', '<leader>[', 'gT<CR>')
-vim.keymap.set('n', '<leader>]', 'gt<CR>')
+vim.keymap.set('n', '<leader>j', 'gt<CR>')
+vim.keymap.set('n', '<leader>k', 'gT<CR>')
 
 -- Toggles
 local toggles = {
@@ -217,12 +214,6 @@ vim.keymap.set('n', '<leader>so', ':update<CR> :source<CR>:echo "sourced the cur
 vim.keymap.set('n', '<leader>wr', ':write<CR>')
 vim.keymap.set('n', '<leader>qu', ':quit<CR>')
 
--- Window navigation
-vim.keymap.set('n', '<leader>h', '<C-w>h')
-vim.keymap.set('n', '<leader>l', '<C-w>l')
-vim.keymap.set('n', '<leader>j', '<C-w>j')
-vim.keymap.set('n', '<leader>k', '<C-w>k')
-
 -- Window sizing
 vim.keymap.set('n', '<leader>ww', '<C-w>150|')
 vim.keymap.set('n', '<leader>w=', '<C-w>=<CR>')
@@ -239,10 +230,6 @@ vim.keymap.set('v', '<leader>V', '"+P:echo "pasted from clipboard."<CR>')
 vim.keymap.set('n', '<leader>::', ':set ')
 vim.keymap.set('n', '<leader>:f', ':set filetype=')
 vim.keymap.set('n', '<leader>:e', ':set encoding=')
-
-if vim.fn.argc() == 0 then
-  vim.cmd('cd ~')
-end
 
 -- Local config
 if vim.fn.filereadable(vim.fn.expand('~/.vimrc_local')) == 1 then

@@ -112,7 +112,6 @@ command! History     :browse oldfiles
 command! HtmlFlatten :%s/>\s*/>\r/g
 command! Here        :lcd %:p:h
 command! HereE       :e %:p:h
-command! Dozo        :source $VIMRUNTIME/evim.vim
 " }}}
 
 " ---- keymaps ---- {{{
@@ -169,8 +168,8 @@ nnoremap <S-Tab> <<
 
 " keymaps with leader key {{{
 " tab movning
-nnoremap <leader>n gt<CR>
-nnoremap <leader>N gT<CR>
+nnoremap <leader>j gt<CR>
+nnoremap <leader>k gT<CR>
 
 " datetime
 nnoremap <leader>;; :norm i<C-R>=strftime("%Y-%m-%d")<CR><CR>

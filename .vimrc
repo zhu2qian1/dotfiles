@@ -71,7 +71,7 @@ set autoindent smarttab
 " editor appearance
 set list
 set listchars=tab:^\ ,trail:~,extends:>,precedes:<,nbsp:%
-set norelativenumber number
+set relativenumber number
 set nowrap
 set scrolloff=8
 

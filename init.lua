@@ -1,6 +1,12 @@
 -- Skip default settings
 vim.g.vim_skip_defaults = 1
 
+if vim.g.vscode then
+    vim.opt.shortmess:append("a")
+    vim.opt.report = 999999
+    vim.opt.cmdheight = 1
+end
+
 -- Leader key
 vim.g.mapleader = " "
 

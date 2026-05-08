@@ -95,6 +95,7 @@ augroup  markdown_custom_settings
 	autocmd!
 	autocmd FileType markdown setlocal conceallevel=2 et sw=2 sts=2 ts=2
 	autocmd FileType markdown setlocal formatoptions+=r
+	autocmd FileType markdown setlocal ambiwidth=double
 augroup end
 
 " custom autocmd

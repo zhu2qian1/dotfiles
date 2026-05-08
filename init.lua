@@ -229,19 +229,3 @@ vim.keymap.set('v', '<leader>V', '"+P:echo "pasted from clipboard."<CR>')
 vim.keymap.set('n', '<leader>::', ':set ')
 vim.keymap.set('n', '<leader>:f', ':set filetype=')
 vim.keymap.set('n', '<leader>:e', ':set encoding=')
-
--- -- gVim-specific (font)
--- vim.keymap.set('n', '<leader>,,', ':set gfn=*<CR>')
-
--- ============================================
--- Startup behavior
--- ============================================
-if vim.fn.argc() == 0 then
-    vim.cmd('cd ~')
-end
-
--- Local config
-if vim.fn.filereadable(vim.fn.expand('~/.vimrc_local')) == 1 then
-    vim.cmd('source ~/.vimrc_local')
-end
-

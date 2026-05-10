@@ -46,3 +46,10 @@ if (Get-Command "fzf" -ErrorAction SilentlyContinue) {
     Set-Alias ff fzf
 }
 
+function Edit-SshConfig () {
+    if (Test-Path "$HOME\.ssh\config" -Type Leaf) {
+        & $Env:editor "$HOME\.ssh\config"
+    }
+}
+Set-Alias edssh Edit-SshConfig
+

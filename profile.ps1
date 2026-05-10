@@ -7,9 +7,9 @@ if (Get-Command Enable-PsFzfAliases -ErrorAction SilentlyContinue) { Enable-PsFz
 
 function Add-TodayPrefix ($Str, [switch] $NoSep) {
     if ($NoSep) {
-        return "$(Get-Date -Format 'yyyyMMdd')$str"
+        return "$(Get-Date -Format 'yyyyMMdd')$Str"
     } else {
-        return "$(Get-Date -Format 'yyyyMMdd')-$str"
+        return "$(Get-Date -Format 'yyyyMMdd')-$Str"
     }
 }
 Set-Alias atp Add-TodayPrefix

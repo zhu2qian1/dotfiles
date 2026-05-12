@@ -226,6 +226,14 @@ vim.keymap.set('n', '<leader>:e', ':set encoding=')
 
 if vim.g.vscode then
     vim.opt.shortmess:append("a")
+    vim.opt.shortmess:append("A")
+    vim.opt.shortmess:append("s")
+    vim.opt.shortmess:append("m")
     vim.opt.report = 999999
-    vim.opt.cmdheight = 1
+     -- Undo/Redo 時のメッセージを抑制するためのハック
+    vim.api.nvim_create_autocmd({ "TextYankPost", "BufWritePost" }, {
+        callback = function()
+            vim.opt.report = 999999
+        end,
+    })   vim.opt.cmdheight = 0
 end

@@ -12,6 +12,10 @@ if command -v eza 1>/dev/null 2>&1; then
     alias  la='eza -a  --icons          --time-style long-iso'
 fi
 
+if command -v lazygit 1>/dev/null 2>&1; then
+    alias lg='lazygit'
+fi
+
 function pyenv {
     if [ -f ./venv/bin/activate ]; then
         source ./venv/bin/activate

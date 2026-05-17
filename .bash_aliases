@@ -12,7 +12,11 @@ if command -v eza >/dev/null 2>&1; then
     alias  la='eza -a  --icons          --time-style long-iso'
 fi
 
-if command -v lazygit >/dev/null 2>&1; then
+if command -v git 1>/dev/null 2>&1; then
+    alias g='git'
+fi
+
+if command -v lazygit 1>/dev/null 2>&1; then
     alias lg='lazygit'
 fi
 

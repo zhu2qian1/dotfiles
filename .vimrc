@@ -7,6 +7,7 @@ set nocompatible
 " skip the default settings
 let g:vim_skip_defaults=1
 "
+colo evening
 " ---- plugs ---- {{{
 " using [Pathogen](https://github.com/tpope/vim-pathogen)
 " refer to ~/vimfiles/bundle

@@ -8,10 +8,10 @@ vim.g.mapleader = " "
 vim.keymap.set('i', '<Esc>', '<Esc>:set iminsert=0<CR>', { silent = true })
 
 -- General settings
-vim.cmd.colorscheme('unokai')
+vim.cmd.colorscheme('evening')
 
 vim.opt.signcolumn = "yes"
-vim.opt.winborder = "rounded"
+-- vim.opt.winborder = "rounded"
 vim.opt.clipboard = 'unnamed'
 
 vim.opt.autochdir = true

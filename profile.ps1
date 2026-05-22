@@ -1,4 +1,4 @@
-﻿# vi:se et:
+# vi:se et:
 
 $Env:Editor='gvim'
 
@@ -52,4 +52,12 @@ function Edit-SshConfig () {
     }
 }
 Set-Alias edssh Edit-SshConfig
+
+if (Get-Command "lazygit" -ErrorAction SilentlyContinue) {
+    Set-Alias lg lazygit
+}
+
+if (Get-Command "oh-my-posh" -ErrorAction SilentlyContinue) {
+    oh-my-posh init pwsh | Invoke-Expression
+}
 

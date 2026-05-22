@@ -2,6 +2,8 @@
 
 colo evening
 
+nnoremap <leader>,, :set gfn=*<CR>
+
 hi! CursorIM guibg=Red guifg=NONE
 
 if has('linux')

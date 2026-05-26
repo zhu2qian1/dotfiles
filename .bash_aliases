@@ -1,10 +1,12 @@
 alias sb='source ~/.bashrc'
 
 if command -v eza >/dev/null 2>&1; then
-    alias  ll='eza -l  --icons --header --time-style long-iso'
-    alias lla='eza -la --icons --header --time-style long-iso'
-    alias  la='eza -a  --icons          --time-style long-iso'
-    alias   l='eza'
+    alias  ll='eza -l  --git-ignore --icons --header --time-style long-iso'
+    alias lla='eza -la --git-ignore --icons --header --time-style long-iso'
+    alias  la='eza -a  --git-ignore --icons          --time-style long-iso'
+    alias   l='eza --git-ignore'
+    alias   t='eza --git-ignore --tree'
+    alias  tl='eza --git-ignore -L '
 else
     alias  ll='ls -Flh'
     alias lla='ls -Flha'

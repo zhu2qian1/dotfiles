@@ -6,10 +6,10 @@ if command -v eza >/dev/null 2>&1; then
     alias  la='eza -a  --icons          --time-style long-iso'
     alias   l='eza'
 else
-    alias ll='ls -Flh'
+    alias  ll='ls -Flh'
     alias lla='ls -Flha'
-    alias la='ls -Ah'
-    alias l='ls -CF'
+    alias  la='ls -Ah'
+    alias   l='ls -CF'
 fi
 
 if command -v git 1>/dev/null 2>&1; then

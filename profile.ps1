@@ -3,6 +3,9 @@
 $Env:Editor='gvim'
 
 function Set-YaziFileOne () {
+    if (-not $IsWindows) {
+        return; # abort when OS is not Windows
+    }
     if (-not (Get-Command 'git' -ErrorAction SilentlyContinue)) {
         return; # if git is not found, abort
     }

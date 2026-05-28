@@ -8,7 +8,7 @@ end
 
 config.font = wezterm.font('UDEV Gothic NFLG')
 --config.color_scheme = 'DimmedMonokai'
-config.color_scheme = 'AdventureTime'
+--config.color_scheme = 'AdventureTime'
 config.font_size = 11
 config.default_prog = { 'pwsh.exe' }
 

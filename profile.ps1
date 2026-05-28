@@ -2,6 +2,22 @@
 
 $Env:Editor='gvim'
 
+function Set-YaziFileOne () {
+    if (-not (Get-Command 'git' -ErrorAction SilentlyContinue)) {
+        return; # if git is not found, abort
+    }
+
+    $GitPath = Get-Command 'git' | Resolve-Path;
+    $GitBase = $GitPath | Split-Path | Split-Path;
+    $FileExe = Join-Path $GitBase 'usr/bin/file.exe';
+    if (-not (Test-Path $FileExe)) {
+        return; # file.exe not found
+    }
+
+    $Env:YAZI_FILE_ONE = $FileExe
+}
+Set-YaziFileOne
+
 if (Get-Command Enable-PsFzfAliases -ErrorAction SilentlyContinue) { Enable-PsFzfAliases }
 # if (-not (Get-Module ZLocation)) { Install-Module -Name PSFzf -Scope CurrentUser }
 

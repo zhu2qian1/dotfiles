@@ -2,24 +2,42 @@
 
 $Env:Editor='gvim'
 
-function Set-YaziFileOne () {
-    if (-not $IsWindows) {
-        return; # abort when OS is not Windows
-    }
-    if (-not (Get-Command 'git' -ErrorAction SilentlyContinue)) {
-        return; # if git is not found, abort
-    }
+# Yazi-related
+function Invoke-YaziRelatedConfig() {
+    function Set-InternalYaziFileOneSetting() {
+        # file.exe specify
+        if (-not $IsWindows) {
+            return; # abort when OS is not Windows
+        }
+        if (-not (Get-Command 'git' -ErrorAction SilentlyContinue)) {
+            return; # if git is not found, abort
+        }
 
-    $GitPath = Get-Command 'git' | Resolve-Path;
-    $GitBase = $GitPath | Split-Path | Split-Path;
-    $FileExe = Join-Path $GitBase 'usr/bin/file.exe';
-    if (-not (Test-Path $FileExe)) {
-        return; # file.exe not found
-    }
+        $GitPath = Get-Command 'git' | Resolve-Path;
+        $GitBase = $GitPath | Split-Path | Split-Path;
+        $FileExe = Join-Path $GitBase 'usr/bin/file.exe';
+        if (-not (Test-Path $FileExe)) {
+            return; # file.exe not found
+        }
 
-    $Env:YAZI_FILE_ONE = $FileExe
+        $Env:YAZI_FILE_ONE = $FileExe
+    }
+    Set-InternalYaziFileOneSetting
+
+    function y {
+        $tmp = (New-TemporaryFile).FullName
+        yazi.exe @args --cwd-file="$tmp"
+        $cwd = Get-Content -Path $tmp -Encoding UTF8
+        if ($cwd -and $cwd -ne $PWD.Path -and (Test-Path -LiteralPath $cwd -PathType Container)) {
+            Set-Location -LiteralPath (Resolve-Path -LiteralPath $cwd).Path
+        }
+        Remove-Item -Path $tmp
+    }
 }
-Set-YaziFileOne
+
+if (-not (Get-Command 'yazi' -ErrorAction SilentlyContinue)) {
+    Invoke-YaziRelatedConfig
+}
 
 if (Get-Command Enable-PsFzfAliases -ErrorAction SilentlyContinue) { Enable-PsFzfAliases }
 # if (-not (Get-Module ZLocation)) { Install-Module -Name PSFzf -Scope CurrentUser }

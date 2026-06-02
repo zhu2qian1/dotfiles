@@ -25,7 +25,7 @@ function Invoke-YaziRelatedConfig() {
     Set-InternalYaziFileOneSetting
 }
 
-if (-not (Get-Command 'yazi' -ErrorAction SilentlyContinue)) {
+if (Get-Command 'yazi' -ErrorAction SilentlyContinue) {
     Invoke-YaziRelatedConfig
 
     function y {

@@ -23,6 +23,10 @@ function Invoke-YaziRelatedConfig() {
         $Env:YAZI_FILE_ONE = $FileExe
     }
     Set-InternalYaziFileOneSetting
+}
+
+if (-not (Get-Command 'yazi' -ErrorAction SilentlyContinue)) {
+    Invoke-YaziRelatedConfig
 
     function y {
         $tmp = (New-TemporaryFile).FullName
@@ -33,10 +37,6 @@ function Invoke-YaziRelatedConfig() {
         }
         Remove-Item -Path $tmp
     }
-}
-
-if (-not (Get-Command 'yazi' -ErrorAction SilentlyContinue)) {
-    Invoke-YaziRelatedConfig
 }
 
 if (Get-Command Enable-PsFzfAliases -ErrorAction SilentlyContinue) { Enable-PsFzfAliases }

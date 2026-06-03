@@ -1,0 +1,20 @@
+[opener]
+editor = [
+    { run="%EDITOR% %s", for="windows", desc="Edit", orphan=true },
+    { run="$editor %s",  for="unix",    desc="Edit", orphan=true },
+]
+code = [
+    { run="code %s", orphan=true, desc="Code" },
+]
+vim = [
+    { run="vim %s", orphan=true, desc="Vim" },
+]
+
+[open]
+prepend_rules = [
+    { url="*", use=[ "editor", "code" ] },
+]
+append_rules = [
+    { url="*", use=[ "editor", "code", "vim" ] },
+]
+# vi:se et sw=4 ts=4 sts=4:

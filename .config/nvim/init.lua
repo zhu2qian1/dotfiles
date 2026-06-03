@@ -123,6 +123,14 @@ autocmd('QuickfixCmdPost', {
   command = 'copen',
 })
 
+-- Disable IME on leaving Insert mode (Windows / WSL)
+if vim.fn.has('win32') == 1 or vim.fn.has('wsl') == 1 then
+  autocmd('InsertLeave', {
+    pattern = '*',
+    callback = function() vim.fn.jobstart('zenhan.exe 0') end,
+  })
+end
+
 -- ============================================
 -- Commands
 -- ============================================

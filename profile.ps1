@@ -3,30 +3,30 @@
 $Env:Editor='gvim'
 
 # Yazi-related
-function Invoke-YaziRelatedConfig() {
-    function Set-InternalYaziFileOneSetting() {
-        # file.exe specify
-        if (-not $IsWindows) {
-            return; # abort when OS is not Windows
-        }
-        if (-not (Get-Command 'git' -ErrorAction SilentlyContinue)) {
-            return; # if git is not found, abort
-        }
-
-        $GitPath = Get-Command 'git' | Resolve-Path;
-        $GitBase = $GitPath | Split-Path | Split-Path;
-        $FileExe = Join-Path $GitBase 'usr/bin/file.exe';
-        if (-not (Test-Path $FileExe)) {
-            return; # file.exe not found
-        }
-
-        $Env:YAZI_FILE_ONE = $FileExe
+function Set-YaziFileOneSetting() {
+    # file.exe specify
+    if (-not $IsWindows) {
+        Write-Debug "Set-YaziFileOneSetting: OS is not Windwos. Skipping.";
+        return; # abort when OS is not Windows
     }
-    Set-InternalYaziFileOneSetting
+    if (-not (Get-Command 'git' -ErrorAction SilentlyContinue)) {
+        Write-Debug "Set-YaziFileOneSetting: git is not found. Skipping.";
+        return; # if git is not found, abort
+    }
+
+    $GitPath = Get-Command 'git' | Resolve-Path;
+    $GitBase = $GitPath | Split-Path | Split-Path;
+    $FileExe = Join-Path $GitBase 'usr/bin/file.exe';
+    if (-not (Test-Path $FileExe)) {
+        Write-Debug "Set-YaziFileOneSetting: file.exe is not found. Skipping.";
+        return; # file.exe not found
+    }
+
+    $Env:YAZI_FILE_ONE = $FileExe
 }
 
 if (Get-Command 'yazi' -ErrorAction SilentlyContinue) {
-    Invoke-YaziRelatedConfig
+    Set-YaziFileOneSetting
 
     function y {
         $tmp = (New-TemporaryFile).FullName

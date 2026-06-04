@@ -52,7 +52,7 @@ vim.opt.smarttab = true
 vim.opt.ambiwidth = 'double'
 vim.opt.hlsearch = true
 vim.opt.list = true
-vim.opt.listchars = { tab = '^\\ ', trail = '~' }
+vim.opt.listchars = { tab = '^ ', trail = '~' }
 vim.opt.relativenumber = false
 vim.opt.wrap = false
 vim.opt.number = true

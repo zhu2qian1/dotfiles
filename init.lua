@@ -15,7 +15,7 @@ vim.cmd.colorscheme('evening')
 
 vim.opt.signcolumn = "yes"
 -- vim.opt.winborder = "rounded"
-vim.opt.clipboard = 'unnamed'
+vim.opt.clipboard = 'unnamedplus'
 
 vim.opt.autochdir = true
 

@@ -226,10 +226,10 @@ vim.keymap.set('n', '<leader>:e', ':set encoding=')
 
 -- Disable IME on leaving Insert mode (Windows / WSL)
 if vim.fn.has('win32') == 1 or vim.fn.has('wsl') == 1 then
-  autocmd('InsertLeave', {
-    pattern = '*',
-    callback = function() vim.fn.jobstart('zenhan.exe 0') end,
-  })
+    autocmd('InsertLeave', {
+        pattern = '*',
+        callback = function() vim.fn.jobstart('zenhan.exe 0') end,
+    })
 end
 
 if vim.g.vscode then
@@ -238,7 +238,7 @@ if vim.g.vscode then
     vim.opt.shortmess:append("s")
     vim.opt.shortmess:append("m")
     vim.opt.report = 999999
-     -- Undo/Redo 時のメッセージを抑制するためのハック
+    -- Undo/Redo 時のメッセージを抑制するためのハック
     vim.api.nvim_create_autocmd({ "TextYankPost", "BufWritePost" }, {
         callback = function()
             vim.opt.report = 999999

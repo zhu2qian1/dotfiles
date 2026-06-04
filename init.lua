@@ -1,3 +1,6 @@
+vim.opt.encoding = 'utf-8'
+vim.opt.fileencodings = { 'ucs-bom', 'utf-8', 'default', 'cp932' }
+
 -- Skip default settings
 vim.g.vim_skip_defaults = 1
 
@@ -15,8 +18,6 @@ vim.opt.signcolumn = "yes"
 vim.opt.clipboard = 'unnamed'
 
 vim.opt.autochdir = true
-vim.opt.encoding = 'utf-8'
-vim.opt.fileencodings = { 'ucs-bom', 'utf-8', 'default', 'cp932' }
 
 vim.opt.shortmess = 'aoOTIF'
 vim.opt.laststatus = 2

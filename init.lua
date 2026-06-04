@@ -32,11 +32,6 @@ vim.opt.backspace = { 'indent', 'eol', 'start' }
 vim.opt.cursorline = true
 vim.opt.matchpairs:append({ '「:」', '【:】', '『:』', '《:》', '≪:≫', '〔:〕', '［:］', '（:）' })
 
--- Windows specific
-if vim.fn.has('win32') == 1 then
-    vim.opt.shell = 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'
-end
-
 -- Tab settings
 vim.opt.expandtab = true
 vim.opt.tabstop = 4
@@ -224,6 +219,11 @@ vim.keymap.set('v', '<leader>V', '"+P:echo "pasted from clipboard."<CR>')
 vim.keymap.set('n', '<leader>::', ':set ')
 vim.keymap.set('n', '<leader>:f', ':set filetype=')
 vim.keymap.set('n', '<leader>:e', ':set encoding=')
+
+-- Windows specific
+if vim.fn.has('win32') == 1 then
+    vim.opt.shell = 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'
+end
 
 -- Disable IME on leaving Insert mode (Windows / WSL)
 if vim.fn.has('win32') == 1 or vim.fn.has('wsl') == 1 then

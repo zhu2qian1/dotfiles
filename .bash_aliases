@@ -28,6 +28,11 @@ function pyenv {
     fi
 }
 
+# WSL explorer.exe
+if command -v explorer.exe 1>/dev/null 2>&1; then
+    alias el='explorer.exe'
+fi
+
 alias uportcheck='netstat -tulpn | grep LISTEN'
 alias portcheck='sudo netstat -tulpn | grep LISTEN'
 

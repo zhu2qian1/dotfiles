@@ -222,7 +222,12 @@ vim.keymap.set('n', '<leader>:e', ':set encoding=')
 
 -- Windows specific
 if vim.fn.has('win32') == 1 then
-    vim.opt.shell = 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'
+    vim.opt.shell = 'powershell.exe'
+    vim.opt.shellxquote = ''
+    vim.opt.shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command '
+    vim.opt.shellquote = ''
+    vim.opt.shellpipe = '| Out-File -Encoding UTF8 %s'
+    vim.opt.shellredir = '| Out-File -Encoding UTF8 %s'
 end
 
 -- Disable IME on leaving Insert mode (Windows / WSL)

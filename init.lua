@@ -236,6 +236,12 @@ if vim.fn.has('win32') == 1 or vim.fn.has('wsl') == 1 then
         pattern = '*',
         callback = function() vim.fn.jobstart('zenhan.exe 0') end,
     })
+-- Linuxの場合
+elseif vim.fn.has('linux') == 1 then
+    autocmd('InsertLeave', {
+        pattern = '*',
+        callback = function() vim.fn.jobstart('fcitx5-remote -o') end,
+    })
 end
 
 if vim.g.vscode then

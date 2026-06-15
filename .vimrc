@@ -105,6 +105,62 @@ augroup vimgrep_copen
 	autocmd QuickfixCmdPost vimgrep copen
 augroup END
 
+" TODO.md {{{
+augroup todo_md
+	autocmd!
+	autocmd BufRead,BufNewFile *.md
+				\ if tolower(fnamemodify(expand('<afile>'), ':t')) ==# 'todo.md' |
+				\   call s:SetupTodoMd() |
+				\ endif
+augroup END
+
+function! s:GetTaskPrefix()
+	let l:match = matchlist(getline('.'), '^\(\s*\)- \[[ x-]\] ')
+	return empty(l:match) ? '' : l:match[1] . '- [ ] '
+endfunction
+
+function! s:InsertTaskBelow(fallback)
+	let l:prefix = s:GetTaskPrefix()
+	if empty(l:prefix)
+		call feedkeys(a:fallback, 'n')
+		return
+	endif
+	let l:lnum = line('.')
+	call append(l:lnum, l:prefix)
+	call cursor(l:lnum + 1, len(l:prefix) + 1)
+	startinsert!
+endfunction
+
+function! s:InsertTaskAbove()
+	let l:prefix = s:GetTaskPrefix()
+	if empty(l:prefix)
+		call feedkeys('O', 'n')
+		return
+	endif
+	let l:lnum = line('.')
+	call append(l:lnum - 1, l:prefix)
+	call cursor(l:lnum, len(l:prefix) + 1)
+	startinsert!
+endfunction
+
+function! s:ToggleTask()
+  let l:line = getline('.')
+  if l:line =~ '^\s*- \[ \]'
+    call setline('.', substitute(l:line, '\[ \]', '[x]', ''))
+  elseif l:line =~ '^\s*- \[x\]'
+    call setline('.', substitute(l:line, '\[x\]', '[ ]', ''))
+  else
+    call feedkeys("\r", 'n')
+  endif
+endfunction
+
+function! s:SetupTodoMd()
+  nnoremap <buffer> <CR> :call <SID>ToggleTask()<CR>
+  nnoremap <buffer> o    :call <SID>InsertTaskBelow('o')<CR>
+  nnoremap <buffer> O    :call <SID>InsertTaskAbove()<CR>
+endfunction
+" }}}
+
 " }}}
 
 " ---- commands ---- {{{

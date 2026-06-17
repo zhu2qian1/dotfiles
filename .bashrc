@@ -143,6 +143,8 @@ OSH_THEME="random"
 
 # If you set OSH_THEME to "random", you can ignore themes you don't like.
 OMB_THEME_RANDOM_IGNORED=("hawaii50" "brunton")
+# You can also specify the list from which a theme is randomly selected:
+# OMB_THEME_RANDOM_CANDIDATES=("font" "powerline-light" "minimal")
 
 # Uncomment the following line to use case-sensitive completion.
 # OMB_CASE_SENSITIVE="true"
@@ -209,6 +211,10 @@ OMB_USE_SUDO=true
 # OMB_PROMPT_SHOW_PYTHON_VENV=true  # enable
 # OMB_PROMPT_SHOW_PYTHON_VENV=false # disable
 
+# To enable/disable Spack environment information
+# OMB_PROMPT_SHOW_SPACK_ENV=true  # enable
+# OMB_PROMPT_SHOW_SPACK_ENV=false # disable
+
 # Which completions would you like to load? (completions can be found in ~/.oh-my-bash/completions/*)
 # Custom completions may be added to ~/.oh-my-bash/custom/completions/
 # Example format: completions=(ssh git bundler gem pip pip3)
@@ -253,8 +259,23 @@ export SDKMAN_DIR="$HOME/.sdkman"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+# yazi
+function y() {
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    command yazi "$@" --cwd-file="$tmp"
+    IFS= read -r -d '' cwd < "$tmp"
+    [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+    command rm -f -- "$tmp"
+}
+
+# zoxide
 eval "$(zoxide init bash)"
 
 if [ -d "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
+fi
+
+# cargo
+if [ -d /home/asumo/.cargo/bin ]; then
+    export PATH=$PATH:/home/asumo/.cargo/bin
 fi

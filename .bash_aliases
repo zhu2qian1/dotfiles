@@ -20,6 +20,10 @@ if command -v lazygit 1>/dev/null 2>&1; then
     alias lg='lazygit'
 fi
 
+if command -v batcat 1>/dev/null 2>&1; then
+    alias bat='batcat'
+fi
+
 function pyenv {
     if [ -f ./venv/bin/activate ]; then
         source ./venv/bin/activate

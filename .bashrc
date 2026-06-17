@@ -8,8 +8,13 @@ case $- in
       *) return;;
 esac
 
-export EDITOR='nvim'
-export VISUAL='nvim'
+if command -v nvim >/dev/null 2>&1; then
+    export EDITOR='nvim'
+    export VISUAL='nvim'
+else
+    export EDITOR='vim'
+    export VISUAL='vim'
+fi
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options

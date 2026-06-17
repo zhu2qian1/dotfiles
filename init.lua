@@ -245,6 +245,10 @@ elseif vim.fn.has('linux') == 1 then
 end
 
 if vim.g.vscode then
+    vim.keymap.set("", "<Space>", "<Nop>")
+    vim.g.mapleader = " "
+    vim.g.maplocalleader = " "
+
     vim.opt.shortmess:append("a")
     vim.opt.shortmess:append("A")
     vim.opt.shortmess:append("s")
@@ -255,5 +259,6 @@ if vim.g.vscode then
         callback = function()
             vim.opt.report = 999999
         end,
-    })   vim.opt.cmdheight = 0
+    })
+    vim.opt.cmdheight = 0
 end

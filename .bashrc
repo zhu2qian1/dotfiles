@@ -8,6 +8,10 @@ case $- in
       *) return;;
 esac
 
+if [ -d /opt/nvim ]; then
+    export PATH="$PATH:/opt/nvim/"
+fi
+
 if command -v nvim >/dev/null 2>&1; then
     export EDITOR='nvim'
     export VISUAL='nvim'

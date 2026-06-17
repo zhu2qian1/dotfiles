@@ -93,7 +93,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # go
-export PATH=$PATH:/usr/local/go/bin
+# export PATH=$PATH:/usr/local/go/bin
 
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
@@ -122,19 +122,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-function weather {
-  curl wttr.in/$1;
-}
-
-export DENO_INSTALL="$DENO_INSTALL/bin:$PATH"
-export PATH="$DENO_INSTALL/bin:$PATH"
-
-#nimble (nim-lang)
-export PATH="/home/takemori/.nimble/bin:$PATH"
-
-# dprint
-export PATH="/home/takemori/.dprint/bin:$PATH"
-
 # omb-related start
 
 # Enable the subsequent settings only in interactive sessions
@@ -144,11 +131,11 @@ case $- in
 esac
 
 # Path to your oh-my-bash installation.
-export OSH='/home/takemori/.oh-my-bash'
+export OSH="$HOME/.oh-my-bash"
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-bash is loaded.
-OSH_THEME="font"
+OSH_THEME="random"
 
 # If you set OSH_THEME to "random", you can ignore themes you don't like.
 # OMB_THEME_RANDOM_IGNORED=("powerbash10k" "wanelo")
@@ -189,11 +176,6 @@ OSH_THEME="font"
 
 # omb-related end
 
-# change keyboard layout into `us` when in GUI
-if test $DISPLAY; then
-  setxkbmap us
-fi
-
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
@@ -201,4 +183,7 @@ export SDKMAN_DIR="$HOME/.sdkman"
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 eval "$(zoxide init bash)"
-. "$HOME/.cargo/env"
+
+if [ -d "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi

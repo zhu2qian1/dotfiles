@@ -99,7 +99,7 @@ if (Get-Command "lazygit" -ErrorAction SilentlyContinue) {
 
 if (Get-Command "oh-my-posh" -ErrorAction SilentlyContinue) {
     if (Test-Path "$HOME\dotfiles\onehalf.minimal.omp.json") {
-        oh-my-posh init pwsh --profile "$HOME\dotfiles\onehalf.minimal.omp.json" | Invoke-Expression
+        oh-my-posh init pwsh --config "$HOME\dotfiles\onehalf.minimal.omp.json" | Invoke-Expression
     } else {
         oh-my-posh init pwsh | Invoke-Expression
     }

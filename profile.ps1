@@ -43,13 +43,16 @@ if (Get-Command Enable-PsFzfAliases -ErrorAction SilentlyContinue) { Enable-PsFz
 # if (-not (Get-Module ZLocation)) { Install-Module -Name PSFzf -Scope CurrentUser }
 
 function Add-TodayPrefix ($Str, [switch] $NoSep) {
-    if ($NoSep) {
-        return "$(Get-Date -Format 'yyyyMMdd')$Str"
-    } else {
-        return "$(Get-Date -Format 'yyyyMMdd')-$Str"
-    }
+    if ($NoSep) { return "$(Get-Date -Format 'yyyyMMdd')$Str" }
+    else { return "$(Get-Date -Format 'yyyyMMdd')-$Str" }
 }
-Set-Alias atp Add-TodayPrefix
+Set-Alias predate Add-TodayPrefix
+
+function Add-TodayPostfix($Str, [switch] $NoSep) {
+    if ($NoSep) { return "$Str$(Get-Date -Format 'yyyyMMdd')" }
+    else { return "$Str-$(Get-Date -Format 'yyyyMMdd')" }
+}
+Set-Alias postdate Add-TodayPostfix
 
 function Import-CustomSettings() {
     $ProfilePath = Split-Path ($PROFILE) -Parent

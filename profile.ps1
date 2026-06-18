@@ -93,13 +93,18 @@ function Edit-SshConfig () {
 }
 Set-Alias edssh Edit-SshConfig
 
+if (Get-Command "git" -ErrorAction SilentlyContinue) {
+    Set-Alias g git
+}
+
 if (Get-Command "lazygit" -ErrorAction SilentlyContinue) {
     Set-Alias lg lazygit
 }
 
 if (Get-Command "oh-my-posh" -ErrorAction SilentlyContinue) {
-    if (Test-Path "$HOME\dotfiles\onehalf.minimal.omp.json") {
-        oh-my-posh init pwsh --config "$HOME\dotfiles\onehalf.minimal.omp.json" | Invoke-Expression
+    $OmpConf = "$HOME\.ompconf.json"
+    if (Test-Path $OmpConf) {
+        oh-my-posh init pwsh --config $OmpConf | Invoke-Expression
     } else {
         oh-my-posh init pwsh | Invoke-Expression
     }

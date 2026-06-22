@@ -89,14 +89,6 @@ autocmd('FileType', {
     pattern = 'markdown',
     command = 'set conceallevel=2 et shiftwidth=2 softtabstop=2 tabstop=2',
 })
-autocmd('FileType', {
-    pattern = 'markdown',
-    callback = function()
-        vim.keymap.set('n', '<Tab>', '>>', { buffer = true })
-        vim.keymap.set('n', '<S-Tab>', '<<', { buffer = true })
-        vim.keymap.set('n', 'o', 'A<CR>', { buffer = true })
-    end,
-})
 
 -- Quickfix open after vimgrep
 autocmd('QuickfixCmdPost', {

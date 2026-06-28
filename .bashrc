@@ -268,6 +268,10 @@ if [ -d "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
 fi
 
+if [ -d "$HOME/.cargo/bin" ]; then
+    export PATH="$PATH:$HOME/.cargo/bin"
+fi
+
 if [ -d /home/asumo/.cargo/bin ]; then
     export PATH=$PATH:/home/asumo/.cargo/bin
 fi

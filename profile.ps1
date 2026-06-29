@@ -46,13 +46,37 @@ function Add-TodayPrefix ($Str, [switch] $NoSep) {
     if ($NoSep) { return "$(Get-Date -Format 'yyyyMMdd')$Str" }
     else { return "$(Get-Date -Format 'yyyyMMdd')-$Str" }
 }
-Set-Alias predate Add-TodayPrefix
 
 function Add-TodayPostfix($Str, [switch] $NoSep) {
     if ($NoSep) { return "$Str$(Get-Date -Format 'yyyyMMdd')" }
     else { return "$Str-$(Get-Date -Format 'yyyyMMdd')" }
 }
-Set-Alias postdate Add-TodayPostfix
+
+function Add-DateAffix($Str, [switch] $Prefix, [switch] $NoSep) {
+    if (-not $Prefix) { return "$Str$(('-', '')[$NoSep -eq $True])$(Get-Date -Format 'yyyyMMdd')" }
+    return "$(Get-Date -Format 'yyyyMMdd')$(('-', '')[$NoSep -eq $True])$Str"
+}
+Set-Alias adax Add-DateAffix
+
+function Add-DateTimeAffix($Str, [switch] $Prefix, [switch] $NoSep) {
+    $DatetimeFormat = 'yyyyMMdd.hhmmss'
+    if (-not $Prefix) { return "$Str$(('.', '')[$NoSep -eq $True])$(Get-Date -Format $DatetimeFormat)" }
+    return "$(Get-Date -Format $DatetimeFormat)$(('.', '')[$NoSep -eq $True])$Str"
+}
+Set-Alias adtax Add-DateTimeAffix
+
+function Add-Extension([Parameter(Mandatory)] $Path, [Parameter(Mandatory)]$Ext) {
+    return "$Path.$Ext"
+}
+Set-Alias aext Add-Extension
+
+function Copy-TimestampedBackup($Path) {
+    if (-not (Test-Path $Path)) {
+        throw [System.IO.FileNotFoundException]::new("missing: $Path")
+    }
+    Copy-Item $Path ( Add-Extension ( Add-DateTimeAffix "$Path" ) "bk" )
+}
+Set-Alias ctsb Copy-TimestampedBackup
 
 function Import-CustomSettings() {
     $ProfilePath = Split-Path ($PROFILE) -Parent

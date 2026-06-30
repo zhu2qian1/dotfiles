@@ -71,11 +71,10 @@ vim.keymap.set('n', '<leader>]', 'gt<CR>')
 
 -- Toggles
 local toggles = {
-    cl = 'cul',
+    c = 'cul',
     h = 'hls',
     w = 'wrap',
-    nr = 'rnu',
-    nn = 'nu',
+    n = 'nu',
 }
 for k, opt in pairs(toggles) do
     vim.keymap.set('n', '<leader>t' .. k, ':setlocal ' .. opt .. '! ' .. opt .. '?<CR>')
@@ -91,12 +90,6 @@ vim.keymap.set('n', '<leader>so', ':update<CR> :source<CR>:echo "sourced the cur
 vim.keymap.set('n', '<leader>wr', ':write<CR>')
 vim.keymap.set('n', '<leader>qu', ':quit<CR>')
 
--- Window navigation
-vim.keymap.set('n', '<leader>h', '<C-w>h')
-vim.keymap.set('n', '<leader>l', '<C-w>l')
-vim.keymap.set('n', '<leader>j', '<C-w>j')
-vim.keymap.set('n', '<leader>k', '<C-w>k')
-
 -- Window sizing
 vim.keymap.set('n', '<leader>ww', '<C-w>150|')
 vim.keymap.set('n', '<leader>w=', '<C-w>=<CR>')
@@ -106,6 +99,10 @@ vim.keymap.set('v', '<leader>c', clip.copy)
 vim.keymap.set('v', '<leader>x', clip.cut)
 vim.keymap.set({ 'n', 'v' }, '<leader>v', clip.paste)
 vim.keymap.set({ 'n', 'v' }, '<leader>V', clip.Paste)
+
+-- Explorer
+vim.keymap.set('n', '<leader>ee', ':Explore<CR>')
+vim.keymap.set('n', '<leader>el', ':Lexplore<CR>')
 
 -- Misc set shortcuts
 vim.keymap.set('n', '<leader>::', ':set ')

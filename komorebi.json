@@ -24,11 +24,11 @@
         },
         {
           "name": " II ",
-          "layout": "BSP"
+          "layout": "UltrawideVerticalStack"
         },
         {
           "name": " III ",
-          "layout": "Scrolling"
+          "layout": "UltrawideVerticalStack"
         }
       ]
     }

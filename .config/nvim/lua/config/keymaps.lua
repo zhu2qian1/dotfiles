@@ -11,14 +11,22 @@ vim.keymap.set('n', '<leader>;;', ':norm i<C-R>=strftime("%Y-%m-%d")<CR><CR>')
 vim.keymap.set('n', '<leader>;:', ':norm i<C-R>=strftime("%H:%M:%S")<CR><CR>')
 vim.keymap.set('n', '<leader>;dt', ':norm i<C-R>=strftime("%Y-%m-%d")." ".strftime("%H:%M:%S")<CR><CR>')
 
--- Clipboard shortcuts
-vim.keymap.set('v', '<C-c>', '"+y:echo "copied to clipboard."<CR>', { silent = true, noremap = true })
-vim.keymap.set('v', '<C-x>', '"+d:echo "cut to clipboard."<CR>', { silent = true, noremap = true })
-vim.keymap.set('v', '<C-v>', '"+p:echo "pasted from clipboard."<CR>', { silent = true, noremap = true })
-vim.keymap.set('n', '<C-v>', '"+p:echo "pasted from clipboard."<CR>', { silent = true, noremap = true })
+-- Clipboard shortcuts (shared rhs for Ctrl- and <leader>- mappings)
+local clip = {
+    copy  = '"+y:echo "copied to clipboard."<CR>',
+    cut   = '"+d:echo "cut to clipboard."<CR>',
+    paste = '"+p:echo "pasted from clipboard."<CR>',
+    Paste = '"+P:echo "pasted from clipboard."<CR>',
+}
+
+local clip_opts = { silent = true, noremap = true }
+vim.keymap.set('v', '<C-c>', clip.copy,  clip_opts)
+vim.keymap.set('v', '<C-x>', clip.cut,   clip_opts)
+vim.keymap.set('v', '<C-v>', clip.paste, clip_opts)
+vim.keymap.set('n', '<C-v>', clip.paste, clip_opts)
 
 -- File edit shortcuts
-vim.keymap.set('n', '<leader>,v', ':e $HOME/AppData/Local/nvim/init.lua<CR>', { noremap = true })
+vim.keymap.set('n', '<leader>,v', ':e ' .. vim.fn.stdpath('config') .. '/init.lua<CR>', { noremap = true })
 -- vim.keymap.set('n', '<leader>,g', ':e $HOME/.gvimrc<CR>')
 
 -- Insert expression
@@ -94,12 +102,10 @@ vim.keymap.set('n', '<leader>ww', '<C-w>150|')
 vim.keymap.set('n', '<leader>w=', '<C-w>=<CR>')
 
 -- Easy copy/paste
-vim.keymap.set('v', '<leader>c', '"+y:echo "copied to clipboard."<CR>')
-vim.keymap.set('v', '<leader>x', '"+d:echo "cut to clipboard."<CR>')
-vim.keymap.set('n', '<leader>v', '"+p:echo "pasted from clipboard."<CR>')
-vim.keymap.set('v', '<leader>v', '"+p:echo "pasted from clipboard."<CR>')
-vim.keymap.set('n', '<leader>V', '"+P:echo "pasted from clipboard."<CR>')
-vim.keymap.set('v', '<leader>V', '"+P:echo "pasted from clipboard."<CR>')
+vim.keymap.set('v', '<leader>c', clip.copy)
+vim.keymap.set('v', '<leader>x', clip.cut)
+vim.keymap.set({ 'n', 'v' }, '<leader>v', clip.paste)
+vim.keymap.set({ 'n', 'v' }, '<leader>V', clip.Paste)
 
 -- Misc set shortcuts
 vim.keymap.set('n', '<leader>::', ':set ')

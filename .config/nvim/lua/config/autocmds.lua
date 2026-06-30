@@ -20,12 +20,7 @@ autocmd({ 'BufNewFile', 'BufRead' }, {
     command = 'set filetype=vb',
 })
 
--- Markdown-specific
-augroup('markdown_custom_settings', { clear = true })
-autocmd('FileType', {
-    pattern = 'markdown',
-    command = 'set conceallevel=2 et shiftwidth=2 softtabstop=2 tabstop=2',
-})
+-- Markdown-specific settings live in ftplugin/markdown.lua
 
 -- Quickfix open after vimgrep
 autocmd('QuickfixCmdPost', {

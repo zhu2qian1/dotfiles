@@ -1,0 +1,14 @@
+-- ============================================
+-- IDE profile 専用 設定 / keymap
+-- (lite と共通のものは lua/config/ 側に置く)
+-- ここは IDE のときだけ有効にしたい挙動を書く。雛形。
+-- ============================================
+
+-- 例) LSP 系の共通 keymap を LspAttach で張る、など:
+-- vim.api.nvim_create_autocmd('LspAttach', {
+--     callback = function(ev)
+--         local opts = { buffer = ev.buf }
+--         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+--         vim.keymap.set('n', 'K',  vim.lsp.buf.hover, opts)
+--     end,
+-- })

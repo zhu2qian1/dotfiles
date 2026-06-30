@@ -134,7 +134,7 @@ if (Get-Command "oh-my-posh" -ErrorAction SilentlyContinue) {
     }
 }
 
-if (Get-Command "komorebic" -ErrorAction SilentlyContinue && Get-Command "whkd" -ErrorAction SilentlyContinue) {
+if ((Get-Command "komorebic" -ErrorAction SilentlyContinue) -and (Get-Command "whkd" -ErrorAction SilentlyContinue)) {
     function Start-Komorebi-My {
         komorebic start --bar --whkd
     }

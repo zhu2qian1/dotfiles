@@ -88,7 +88,7 @@ return {
                     map('n', 'K', vim.lsp.buf.hover, opts('hover'))
                     map('n', '<leader>rn', vim.lsp.buf.rename, opts('rename'))
                     map('n', '<leader>ca', vim.lsp.buf.code_action, opts('code action'))
-                    map('n', '<leader>f', function() vim.lsp.buf.format({ async = true }) end, opts('format'))
+                    map('n', '<leader>cf', function() vim.lsp.buf.format({ async = true }) end, opts('format'))
                     map('n', '[d', function() vim.diagnostic.jump({ count = -1 }) end, opts('prev diag'))
                     map('n', ']d', function() vim.diagnostic.jump({ count = 1 }) end, opts('next diag'))
                 end,

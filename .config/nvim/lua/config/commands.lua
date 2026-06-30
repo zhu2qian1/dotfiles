@@ -1,0 +1,7 @@
+vim.api.nvim_create_user_command('F2h', '%s/　/  /gc', {})
+vim.api.nvim_create_user_command('T2S', '%s/\\t/    /gc', {})
+vim.api.nvim_create_user_command('History', 'browse oldfiles', {})
+vim.api.nvim_create_user_command('HtmlFlatten', '%s/>\\s*/>\\r/gc', {})
+vim.api.nvim_create_user_command('Here', 'cd %:p:h', {})
+vim.api.nvim_create_user_command('HereExplore', 'Explore %:p:h', {})
+vim.api.nvim_create_user_command('HereEdit', 'e %:p:h', {})

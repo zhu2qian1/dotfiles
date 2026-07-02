@@ -143,3 +143,15 @@ if ((Get-Command "komorebic" -ErrorAction SilentlyContinue) -and (Get-Command "w
     }
 }
 
+if (Get-Command "nvim" -ErrorAction SilentlyContinue) {
+    function Start-Nvim-Ide {
+        $env:NVIM_PROFILE="ide"; nvim $Args
+    }
+    Set-Alias vide Start-Nvim-Ide
+
+    function Start-Nvim-Lite {
+        $env:NVIM_PROFILE="lite"; nvim $Args
+    }
+    Set-Alias v Start-Nvim-Lite
+}
+

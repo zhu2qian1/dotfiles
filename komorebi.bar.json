@@ -1,6 +1,7 @@
 {
     "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/v0.1.41/schema.bar.json",
     "font_family": "UDEV Gothic 35NFLG",
+    "font_size": 13.0,
     "theme": {
         "palette": "Base16",
         "name": "Ashes",
@@ -30,6 +31,15 @@
         }
     ],
     "right_widgets": [
+        {
+            "Systray": {
+                "enable": true,
+                "info_button": "Overflow",
+                "overflow_toggle_position": "Right",
+                "refresh_button": "Overflow",
+                "shortcuts_button": null
+            }
+        },
         {
             "Update": {
                 "enable": true

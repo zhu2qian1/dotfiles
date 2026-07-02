@@ -3,31 +3,29 @@
   "app_specific_configuration_path": "$Env:USERPROFILE/applications.json",
   "window_hiding_behaviour": "Cloak",
   "cross_monitor_move_behaviour": "Insert",
-  "default_workspace_padding": 0,
-  "default_container_padding": 0,
-  "border": false,
+  "default_workspace_padding": 1,
+  "default_container_padding": 1,
+  "border": true,
   "border_width": 8,
   "border_offset": -2,
   "border_style": "Square",
-  "theme": {
-    "palette": "Base16",
-    "name": "Material",
-    "unfocused_border": "Base03",
-    "bar_accent": "Base0D"
-  },
   "monitors": [
     {
       "workspaces": [
         {
-          "name": " I ",
+          "name": " Main ",
           "layout": "UltrawideVerticalStack"
         },
         {
-          "name": " II ",
+          "name": " Dev ",
           "layout": "UltrawideVerticalStack"
         },
         {
-          "name": " III ",
+          "name": " E1 ",
+          "layout": "UltrawideVerticalStack"
+        },
+        {
+          "name": " E2 ",
           "layout": "UltrawideVerticalStack"
         }
       ]

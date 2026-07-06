@@ -10,12 +10,14 @@
     "left_widgets": [
         {
             "Komorebi": {
+                "layout": {
+                    "enable": true,
+                    "display": "Icon"
+                },
                 "workspaces": {
                     "enable": true,
-                    "hide_empty_workspaces": false
-                },
-                "layout": {
-                    "enable": true
+                    "hide_empty_workspaces": false,
+                    "display": "AllIconsAndText"
                 }
             }
         }
@@ -23,14 +25,19 @@
     "center_widgets": [
         {
             "Komorebi": {
-                "focused_window": {
+                "focused_container": {
                     "enable": true,
-                    "show_icon": true
+                    "display": "IconAndText"
                 }
             }
         }
     ],
     "right_widgets": [
+        {
+            "Keyboard": {
+                "enable": true
+            }
+        },
         {
             "Systray": {
                 "enable": true,

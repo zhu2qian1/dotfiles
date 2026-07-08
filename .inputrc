@@ -17,9 +17,8 @@ set colored-stats on
 
 set enable-bracketed-paste on
 
-set show-mode-in-prompt on
-
 $if mode=vi
+set show-mode-in-prompt on
 set keymap vi-command
 
 "H": beginning-of-line

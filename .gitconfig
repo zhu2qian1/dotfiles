@@ -1,0 +1,20 @@
+[alias]
+	b = branch
+	co = checkout
+	cob = checkout -b
+	conf = config
+	confg = config --global
+	confge = config --global --edit
+	confl = config --local
+	confle = config --local --edit
+	fe = fetch
+	graph = log --graph --oneline
+	m = merge
+	pum = pull --merge
+	st = status -s
+	sw = switch
+	swc = switch -c
+[init]
+	defaultBranch = main
+[include]
+	path = ~/.gitconfig.local

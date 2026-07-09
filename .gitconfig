@@ -10,6 +10,7 @@
 	fe = fetch
 	graph = log --graph --oneline
 	m = merge
+	pu = pull
 	pum = pull --merge
 	st = status -s
 	sw = switch

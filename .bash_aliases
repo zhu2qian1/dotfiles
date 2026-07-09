@@ -62,6 +62,5 @@ if command -v nvim &> /dev/null; then
     alias vide='NVIM_PROFILE=ide nvim'   # ide:  LSP等あり (起動遅延OK)
 fi
 
-alias uportcheck='netstat -tulpn | grep LISTEN'
-alias portcheck='sudo netstat -tulpn | grep LISTEN'
+alias portcheck='ss -tlpn'
 

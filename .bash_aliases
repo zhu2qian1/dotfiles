@@ -62,5 +62,10 @@ if command -v nvim &> /dev/null; then
     alias vide='NVIM_PROFILE=ide nvim'   # ide:  LSP等あり (起動遅延OK)
 fi
 
+# tmux
+if command -v tmux &> /dev/null; then
+    alias tm='tmux'
+fi
+
 alias portcheck='ss -tlpn'
 

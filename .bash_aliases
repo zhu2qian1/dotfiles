@@ -65,6 +65,8 @@ fi
 # tmux
 if command -v tmux &> /dev/null; then
     alias tm='tmux'
+    alias tma='tmux attach -t'
+    alias tml='tmux list-sessions'
 fi
 
 alias portcheck='ss -tlpn'

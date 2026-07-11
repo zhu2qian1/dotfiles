@@ -289,3 +289,8 @@ fi
 if [ -d "$HOME/.local/bin" ]; then
     export PATH="$PATH:$HOME/.local/bin"
 fi
+
+if [ -d "$HOME/.asdf" ]; then
+    . "$HOME/.asdf/asdf.sh"
+    . "$HOME/.asdf/completions/asdf.bash"
+fi

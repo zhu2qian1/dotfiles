@@ -17,5 +17,7 @@
 	swc = switch -c
 [init]
 	defaultBranch = main
+[push]
+	autoSetUpRemote = true
 [include]
 	path = ~/.gitconfig.local

@@ -37,5 +37,16 @@
         }
       ]
     }
-  ]
+  ],
+  "mouse_follows_focus": false,
+  "stackbar": {
+    "height": 40,
+    "mode": "Never",
+    "tabs": {
+      "width": 300,
+      "focused_text": "#9999ff",
+      "unfocused_text": "#aaaaaa",
+      "background": "#111111"
+    }
+  }
 }

@@ -40,5 +40,8 @@ return {
             { '<leader>aa', '<cmd>ClaudeCodeDiffAccept<cr>',  desc = 'Claude: accept diff' },
             { '<leader>ad', '<cmd>ClaudeCodeDiffDeny<cr>',    desc = 'Claude: deny diff' },
         },
+        opts = {
+            diff_split_width_percentage = 0.20,
+        }
     },
 }

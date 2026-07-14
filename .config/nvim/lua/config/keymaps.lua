@@ -25,10 +25,6 @@ vim.keymap.set('v', '<C-x>', clip.cut,   clip_opts)
 vim.keymap.set('v', '<C-v>', clip.paste, clip_opts)
 vim.keymap.set('n', '<C-v>', clip.paste, clip_opts)
 
--- File edit shortcuts
-vim.keymap.set('n', '<leader>,v', ':e ' .. vim.fn.stdpath('config') .. '/init.lua<CR>', { noremap = true })
--- vim.keymap.set('n', '<leader>,g', ':e $HOME/.gvimrc<CR>')
-
 -- Insert expression
 vim.keymap.set('n', '<leader>ir', 'i<C-R>=', { noremap = true })
 
@@ -47,9 +43,6 @@ vim.keymap.set({ 'n', 'v' }, 'x', '"_x',  { noremap = true })
 vim.keymap.set({ 'n', 'v' }, 'X', '"_dd', { noremap = true })
 
 -- Search behavior
-vim.keymap.set('n', '<F3>', 'n',   { noremap = true })
-vim.keymap.set('n', '<S-F3>', 'N', { noremap = true })
-
 vim.keymap.set('v', '*', 'y/<C-r>"<CR>:set hls<CR>', { noremap = true })
 vim.keymap.set('n', '*', ':setlocal hls<CR>*',       { noremap = true })
 vim.keymap.set('n', '/', ':setlocal hls<CR>/',       { noremap = true })
@@ -80,19 +73,10 @@ for k, opt in pairs(toggles) do
     vim.keymap.set('n', '<leader>t' .. k, ':setlocal ' .. opt .. '! ' .. opt .. '?<CR>')
 end
 
--- Indent width presets
-for i, n in ipairs({ 2, 4, 8, 16, 32 }) do
-    vim.keymap.set('n', string.format('<leader>tt%d', i), string.format(':setlocal sts=%d ts=%d sw=%d<CR>', n, n, n))
-end
-
 -- utils
 vim.keymap.set('n', '<leader>so', ':update<CR> :source<CR>:echo "sourced the current file."<CR>')
 vim.keymap.set('n', '<leader>wr', ':write<CR>')
 vim.keymap.set('n', '<leader>qu', ':quit<CR>')
-
--- Window sizing
-vim.keymap.set('n', '<leader>ww', '<C-w>150|')
-vim.keymap.set('n', '<leader>w=', '<C-w>=<CR>')
 
 -- Easy copy/paste
 vim.keymap.set('v', '<leader>c', clip.copy)
@@ -104,7 +88,3 @@ vim.keymap.set({ 'n', 'v' }, '<leader>V', clip.Paste)
 vim.keymap.set('n', '<leader>ee', ':Explore<CR>')
 vim.keymap.set('n', '<leader>el', ':Lexplore<CR>')
 
--- Misc set shortcuts
-vim.keymap.set('n', '<leader>::', ':set ')
-vim.keymap.set('n', '<leader>:f', ':set filetype=')
-vim.keymap.set('n', '<leader>:e', ':set encoding=')

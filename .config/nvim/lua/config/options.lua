@@ -1,5 +1,6 @@
 -- General settings
-vim.cmd.colorscheme('desert')
+-- vim.cmd.colorscheme('desert')
+vim.cmd.colorscheme('catppuccin')
 
 vim.opt.signcolumn = "yes"
 -- vim.opt.winborder = "rounded"
@@ -32,7 +33,7 @@ vim.opt.autoindent = true
 vim.opt.smarttab = true
 
 -- Appearance
-vim.opt.ambiwidth = 'double'
+-- vim.opt.ambiwidth = 'double'
 vim.opt.hlsearch = true
 vim.opt.list = true
 vim.opt.listchars = { tab = '^ ', trail = '~' }

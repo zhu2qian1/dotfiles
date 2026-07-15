@@ -296,6 +296,6 @@ if [ -d "$HOME/.asdf" ]; then
 fi
 
 # linuxbrew
-if command -v brew &>/dev/null; then
+if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi

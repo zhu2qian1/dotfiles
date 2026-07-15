@@ -1,5 +1,4 @@
 # vi:se et:
-
 $Env:Editor='gvim'
 
 # Yazi-related
@@ -135,10 +134,15 @@ if (Get-Command "oh-my-posh" -ErrorAction SilentlyContinue) {
 }
 
 if ((Get-Command "komorebic" -ErrorAction SilentlyContinue) -and (Get-Command "whkd" -ErrorAction SilentlyContinue)) {
+    $NamedPipeName = 'komorebiPwsh'
     function Start-Komorebi-My {
         komorebic start --bar --whkd
+        # Start-Process powershell -WindowStyle Hidden -ArgumentList '-NoProfile', '-File', "$HOME\dotfiles\scripts\komorebi\padding-listener.ps1"
+        # Start-Sleep -Milliseconds 500
+        komorebic subscribe-pipe $NamedPipeName
     }
     function Stop-Komorebi-My {
+        komorebic unsubscribe-pipe $NamedPipeName
         komorebic stop --bar --whkd
     }
 }

@@ -294,3 +294,8 @@ if [ -d "$HOME/.asdf" ]; then
     . "$HOME/.asdf/asdf.sh"
     . "$HOME/.asdf/completions/asdf.bash"
 fi
+
+# linuxbrew
+if command -v brew &>/dev/null; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi

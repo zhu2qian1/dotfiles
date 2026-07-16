@@ -69,5 +69,10 @@ if command -v tmux &> /dev/null; then
     alias tml='tmux list-sessions'
 fi
 
+# fzf
+if command -v fzf &> /dev/null && command -v git &> /dev/null; then
+    alias gfs='git branch --list | fzf | sed s/\*// | xargs git switch'
+fi
+
 alias portcheck='ss -tlpn'
 

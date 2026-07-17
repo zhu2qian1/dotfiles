@@ -8,9 +8,17 @@ case $- in
       *) return;;
 esac
 
-if [ -d /opt/nvim ]; then
-    export PATH="$PATH:/opt/nvim"
-fi
+# Append a directory to PATH only if it exists and isn't already present.
+# Prevents duplicate entries when ~/.bashrc is sourced more than once.
+pathadd() {
+    case ":$PATH:" in
+        *":$1:"*) ;;
+        *) [ -d "$1" ] && PATH="$PATH:$1" ;;
+    esac
+}
+
+# nvim
+pathadd /opt/nvim
 
 if command -v nvim >/dev/null 2>&1; then
     export EDITOR='nvim'
@@ -286,13 +294,9 @@ if [ -d "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
 fi
 
-if [ -d "$HOME/.cargo/bin" ]; then
-    export PATH="$PATH:$HOME/.cargo/bin"
-fi
+pathadd "$HOME/.cargo/bin"
 
-if [ -d "$HOME/.local/bin" ]; then
-    export PATH="$PATH:$HOME/.local/bin"
-fi
+pathadd "$HOME/.local/bin"
 
 if [ -d "$HOME/.asdf" ]; then
     . "$HOME/.asdf/asdf.sh"

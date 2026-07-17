@@ -32,6 +32,8 @@ IGNORE=(
     ".config" ".claude"                 # 中身を個別リンク (後段で処理)
     "init.lua"                          # repo 内シンボリックリンク (.config/nvim/init.lua)
     ".vscode"                           # ~/.vscode と衝突しうるので既定では張らない
+    "backup"                            # バックアップ用ディレクトリ
+    "scripts"                           # スクリプト格納用ディレクトリ
     # ---- Windows 側 / 手動 ----
     "komorebi.json" "komorebi.bar.json" "applications.json"
     "profile.ps1" "profile_rust.ps1" "custom_profile.ps1"

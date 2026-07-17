@@ -152,6 +152,10 @@ if [ -d $OSH ]; then
     # Uncomment the following line to disable bi-weekly auto-update checks.
     # DISABLE_AUTO_UPDATE="true"
 
+    # Update automatically without asking (avoids leftover update.lock when
+    # the [Y/n] prompt is interrupted).
+    DISABLE_UPDATE_PROMPT=true
+
     # Uncomment the following line to change how often to auto-update (in days).
     # export UPDATE_OSH_DAYS=13
 

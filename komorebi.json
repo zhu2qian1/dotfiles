@@ -1,14 +1,18 @@
 {
   "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/v0.1.41/schema.json",
+  "animation": {
+      "enabled": false
+  },
   "app_specific_configuration_path": "$Env:USERPROFILE/applications.json",
-  "window_hiding_behaviour": "Cloak",
-  "cross_monitor_move_behaviour": "Insert",
-  "default_workspace_padding": -2,
-  "default_container_padding": -2,
   "border": true,
   "border_width": 8,
   "border_offset": -2,
   "border_style": "Square",
+  "cross_monitor_move_behaviour": "Insert",
+  "default_container_padding": -2,
+  "default_workspace_padding": -2,
+  "floating_layer_placement": "CenterAndResize",
+  "floating_window_aspect_ratio": "Widescreen",
   "ignore_rules": [
     {
       "kind": "Exe",
@@ -34,16 +38,16 @@
         },
         {
           "name": " E3 ",
-          "layout": "UltrawideVerticalStack"
+          "layout": "BSP"
         },
         {
           "name": " E4 ",
-          "layout": "UltrawideVerticalStack"
+          "layout": "BSP"
         }
       ]
     }
   ],
-  "mouse_follows_focus": false,
+  "mouse_follows_focus": true,
   "stackbar": {
     "height": 30,
     "mode": "OnStack",
@@ -54,5 +58,8 @@
       "background": "#222222"
     },
     "label": "Title"
-  }
+  },
+  "transparency": true,
+  "transparency_alpha": 240,
+  "window_hiding_behaviour": "Cloak"
 }

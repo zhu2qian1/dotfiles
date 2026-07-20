@@ -60,6 +60,6 @@
     "label": "Title"
   },
   "transparency": true,
-  "transparency_alpha": 240,
+  "transparency_alpha": 220,
   "window_hiding_behaviour": "Cloak"
 }

@@ -12,7 +12,7 @@ Write-Host "クライアントが接続しました。"
 $reader = New-Object System.IO.StreamReader($pipeServer)
 
 $targetWorkspaceIndex = 0
-$logSkippingEventTypes = @("Uncloak", "Cloak", "TitleUpdate", "AddSubscriberPipe", "FocusChange", "FocusWindow", "State", "CycleStack", "MoveWindow", "MoveContainerToWorkspaceNumber", "FocusWorkspaceNumber")
+$logSkippingEventTypes = @('Uncloak', 'Cloak', 'TitleUpdate', 'AddSubscriberPipe', 'FocusChange', 'FocusWindow', 'State', 'CycleStack', 'MoveWindow', 'MoveContainerToWorkspaceNumber', 'FocusWorkspaceNumber')
 $loggingEventTypes = @('Destroy', 'Hide', 'StackWindow', 'UnstackWindow', 'MoveContainerToWorkspaceNumber')
 
 try {

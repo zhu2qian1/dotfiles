@@ -147,6 +147,7 @@ if ((Get-Command "komorebic" -ErrorAction SilentlyContinue) -and (Get-Command "w
     }
 }
 
+# nvim
 if (Get-Command "nvim" -ErrorAction SilentlyContinue) {
     function Start-Nvim-Ide {
         $env:NVIM_PROFILE="ide"; nvim $Args
@@ -157,6 +158,9 @@ if (Get-Command "nvim" -ErrorAction SilentlyContinue) {
         $env:NVIM_PROFILE="lite"; nvim $Args
     }
     Set-Alias v Start-Nvim-Lite
+
+    function Start-Nvim-Readonly { nvim -R $Args }
+    Set-Alias view Start-Nvim-Readonly
 }
 
 if ($ENV:WT_SESSION -ne "") {

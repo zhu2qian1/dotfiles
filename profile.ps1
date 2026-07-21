@@ -133,6 +133,7 @@ if (Get-Command "oh-my-posh" -ErrorAction SilentlyContinue) {
     }
 }
 
+# komorebi
 if ((Get-Command "komorebic" -ErrorAction SilentlyContinue) -and (Get-Command "whkd" -ErrorAction SilentlyContinue)) {
     $NamedPipeName = 'komorebiPwsh'
     function Start-Komorebi-My {

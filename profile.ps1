@@ -159,3 +159,7 @@ if (Get-Command "nvim" -ErrorAction SilentlyContinue) {
     Set-Alias v Start-Nvim-Lite
 }
 
+if ($ENV:WT_SESSION -ne "") {
+    # Windows Terminal Related (STUB)
+}
+

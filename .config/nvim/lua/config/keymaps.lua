@@ -11,20 +11,6 @@ vim.keymap.set('n', '<leader>;;', ':norm i<C-R>=strftime("%Y-%m-%d")<CR><CR>')
 vim.keymap.set('n', '<leader>;:', ':norm i<C-R>=strftime("%H:%M:%S")<CR><CR>')
 vim.keymap.set('n', '<leader>;dt', ':norm i<C-R>=strftime("%Y-%m-%d")." ".strftime("%H:%M:%S")<CR><CR>')
 
--- Clipboard shortcuts (shared rhs for Ctrl- and <leader>- mappings)
-local clip = {
-    copy  = '"+y:echo "copied to clipboard."<CR>',
-    cut   = '"+d:echo "cut to clipboard."<CR>',
-    paste = '"+p:echo "pasted from clipboard."<CR>',
-    Paste = '"+P:echo "pasted from clipboard."<CR>',
-}
-
-local clip_opts = { silent = true, noremap = true }
-vim.keymap.set('v', '<C-c>', clip.copy,  clip_opts)
-vim.keymap.set('v', '<C-x>', clip.cut,   clip_opts)
-vim.keymap.set('v', '<C-v>', clip.paste, clip_opts)
-vim.keymap.set('n', '<C-v>', clip.paste, clip_opts)
-
 -- Insert expression
 vim.keymap.set('n', '<leader>ir', 'i<C-R>=', { noremap = true })
 
@@ -77,12 +63,6 @@ end
 vim.keymap.set('n', '<leader>so', ':update<CR> :source<CR>:echo "sourced the current file."<CR>')
 vim.keymap.set('n', '<leader>wr', ':write<CR>')
 vim.keymap.set('n', '<leader>qu', ':quit<CR>')
-
--- Easy copy/paste
-vim.keymap.set('v', '<leader>c', clip.copy)
-vim.keymap.set('v', '<leader>x', clip.cut)
-vim.keymap.set({ 'n', 'v' }, '<leader>v', clip.paste)
-vim.keymap.set({ 'n', 'v' }, '<leader>V', clip.Paste)
 
 -- Explorer
 vim.keymap.set('n', '<leader>ee', ':Explore<CR>')

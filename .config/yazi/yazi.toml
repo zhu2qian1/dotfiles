@@ -1,3 +1,8 @@
+[mgr]
+sort_by="none"
+sort_reverse=false
+linemode="mtime"
+
 [opener]
 editor = [
     { run="%EDITOR% %s", for="windows", desc="Edit", orphan=true },

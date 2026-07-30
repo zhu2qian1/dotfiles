@@ -64,10 +64,7 @@ fi
 
 # tmux
 if command -v tmux &> /dev/null; then
-    alias tm='tmux'
-    alias tma='tmux attach -t'
-    alias tml='tmux list-sessions'
-    alias tmc='tmux choose-session'
+    alias t='tmux'
 fi
 
 # fzf

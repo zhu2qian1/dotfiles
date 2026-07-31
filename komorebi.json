@@ -29,19 +29,35 @@
     {
       "workspaces": [
         {
-          "name": " M1",
+          "name": "Main",
           "layout": "UltrawideVerticalStack"
         },
         {
-          "name": " D2",
+          "name": "Development",
           "layout": "Scrolling"
         },
         {
-          "name": " E3 ",
+          "name": "3",
           "layout": "BSP"
         },
         {
-          "name": " E4 ",
+          "name": "4",
+          "layout": "BSP"
+        },
+        {
+          "name": "5",
+          "layout": "BSP"
+        },
+        {
+          "name": "6",
+          "layout": "BSP"
+        },
+        {
+          "name": "7",
+          "layout": "BSP"
+        },
+        {
+          "name": "8",
           "layout": "BSP"
         }
       ]

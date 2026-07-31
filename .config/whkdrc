@@ -51,6 +51,10 @@ alt + shift + z         : komorebic unstack-all
 alt + vk_oem_comma      : komorebic cycle-stack previous
 alt + vk_oem_period     : komorebic cycle-stack next
 
+# workspaces
+alt + shift + u         : komorebic cycle-workspace previous
+alt + shift + i         : komorebic cycle-workspace next
+
 # Resize
 alt + oem_plus          : komorebic resize-axis horizontal increase
 alt + oem_minus         : komorebic resize-axis horizontal decrease
@@ -91,3 +95,4 @@ alt + shift + 8         : komorebic move-to-workspace 7
 
 # gui
 alt + shift + g : komorebic gui
+

@@ -48,8 +48,8 @@ alt + z                 : komorebic unstack # oem_1 is ;
 alt + shift + z         : komorebic unstack-all
 # alt + oem_4           : komorebic cycle-stack previous # oem_4 is [
 # alt + oem_6           : komorebic cycle-stack next # oem_6 is ]
-alt + vk_oem_comma      : komorebic cycle-stack previous
-alt + vk_oem_period     : komorebic cycle-stack next
+alt + u                 : komorebic cycle-stack previous
+alt + i                 : komorebic cycle-stack next
 
 # workspaces
 alt + shift + u         : komorebic cycle-workspace previous

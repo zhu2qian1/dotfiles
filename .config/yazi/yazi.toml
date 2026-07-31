@@ -1,6 +1,4 @@
 [mgr]
-sort_by="none"
-sort_reverse=false
 linemode="mtime"
 
 [opener]

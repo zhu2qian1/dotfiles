@@ -27,7 +27,7 @@
             "Komorebi": {
                 "focused_container": {
                     "enable": true,
-                    "display": "IconAndText"
+                    "display": "Icon"
                 }
             }
         }

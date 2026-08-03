@@ -307,3 +307,15 @@ fi
 if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
+
+# tmux セッションを fzf で選択して attach / switch
+ts() {
+    local session
+    session=$(tmux list-sessions -F '#{session_name}' 2>/dev/null | fzf --prompt='tmux> ' --height=40% --reverse) || return
+    [ -z "$session" ] && return
+    if [ -n "$TMUX" ]; then
+        tmux switch-client -t "$session"
+    else
+        tmux attach-session -t "$session"
+    fi
+}

@@ -1,3 +1,8 @@
+[pager]
+	diff = delta
+	log = delta
+	reflog = delta
+	show = delta
 [alias]
 	b = branch
 	co = checkout
@@ -21,3 +26,5 @@
 	autoSetUpRemote = true
 [include]
 	path = ~/.gitconfig.local
+[core]
+	quotepath = false

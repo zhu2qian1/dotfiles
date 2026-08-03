@@ -24,6 +24,21 @@
     ],
     "center_widgets": [
         {
+            "Date": {
+                "enable": true,
+                "format": "YearMonthDate",
+                "label_prefix": "None"
+            }
+        },
+        {
+            "Time": {
+                "enable": true,
+                "format": "TwelveHourWithoutSeconds",
+                "changing_icon": false,
+                "label_prefix": "None"
+            }
+        },
+        {
             "Komorebi": {
                 "focused_container": {
                     "enable": true,
@@ -34,34 +49,12 @@
     ],
     "right_widgets": [
         {
-            "Keyboard": {
-                "enable": true
-            }
-        },
-        {
             "Systray": {
                 "enable": true,
                 "info_button": "Overflow",
                 "overflow_toggle_position": "Right",
                 "refresh_button": "Overflow",
                 "shortcuts_button": null
-            }
-        },
-        {
-            "Update": {
-                "enable": true
-            }
-        },
-        {
-            "Date": {
-                "enable": true,
-                "format": "YearMonthDate"
-            }
-        },
-        {
-            "Time": {
-                "enable": true,
-                "format": "TwentyFourHourWithoutSeconds"
             }
         }
     ]

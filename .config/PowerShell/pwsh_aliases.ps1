@@ -105,4 +105,8 @@ if ((Get-Command "komorebic" -ErrorAction SilentlyContinue) -and (Get-Command "w
         komorebic unsubscribe-pipe $NamedPipeName
         komorebic stop --bar --whkd
     }
+    function Restart-Komorebi-My {
+        Stop-Komorebi-My
+        Start-Komorebi-My
+    }
 }

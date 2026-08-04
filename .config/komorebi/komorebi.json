@@ -66,7 +66,7 @@
   "mouse_follows_focus": false,
   "stackbar": {
     "height": 30,
-    "mode": "OnStack",
+    "mode": "Never",
     "tabs": {
       "width": 300,
       "focused_text": "#9999ff",

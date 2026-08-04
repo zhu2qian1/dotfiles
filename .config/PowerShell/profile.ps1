@@ -12,15 +12,6 @@ function Prompt() {
     return "PS> "
 }
 
-if (Get-Command "oh-my-posh" -ErrorAction SilentlyContinue) {
-    $OmpConf = "$HOME\.ompconf.json"
-    if (Test-Path $OmpConf) {
-        oh-my-posh init pwsh --config $OmpConf | Invoke-Expression
-    } else {
-        oh-my-posh init pwsh | Invoke-Expression
-    }
-}
-
 if ($ENV:WT_SESSION -ne "") {
     # Windows Terminal Related (STUB)
 }

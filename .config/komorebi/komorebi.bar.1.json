@@ -1,0 +1,62 @@
+{ // vi:se ft=jsonc:
+    "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/v0.1.41/schema.bar.json",
+    "font_family": "UDEV Gothic 35NFLG",
+    "font_size": 13.0,
+    "monitor": 1,
+    "theme": {
+        "palette": "Base16",
+        "name": "Ashes",
+        "accent": "Base0D"
+    },
+    "left_widgets": [
+        {
+            "Komorebi": {
+                "layout": {
+                    "enable": true,
+                    "display": "Icon"
+                },
+                "workspaces": {
+                    "enable": true,
+                    "hide_empty_workspaces": false,
+                    "display": "AllIconsAndText"
+                }
+            }
+        }
+    ],
+    "center_widgets": [
+        {
+            "Date": {
+                "enable": true,
+                "format": "YearMonthDate",
+                "label_prefix": "None"
+            }
+        },
+        {
+            "Time": {
+                "enable": true,
+                "format": "TwelveHourWithoutSeconds",
+                "changing_icon": false,
+                "label_prefix": "None"
+            }
+        },
+        {
+            "Komorebi": {
+                "focused_container": {
+                    "enable": true,
+                    "display": "Icon"
+                }
+            }
+        }
+    ],
+    "right_widgets": [
+        {
+            "Systray": {
+                "enable": true,
+                "info_button": "Overflow",
+                "overflow_toggle_position": "Right",
+                "refresh_button": "Overflow",
+                "shortcuts_button": null
+            }
+        }
+    ]
+}

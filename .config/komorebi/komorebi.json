@@ -8,6 +8,10 @@
       "enabled": false
   },
   "app_specific_configuration_path": "$KOMOREBI_CONFIG_HOME/applications.json",
+  "bar_configurations": [
+      "$KOMOREBI_CONFIG_HOME/komorebi.bar.0.json",
+      "$KOMOREBI_CONFIG_HOME/komorebi.bar.1.json"
+  ],
   "border": true,
   // "border_width": 8,
   // "border_offset": -1,

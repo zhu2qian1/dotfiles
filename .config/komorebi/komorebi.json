@@ -1,7 +1,11 @@
-{
+{ // vi:se ft=jsonc:
   "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/v0.1.41/schema.json",
+  "display_index_preferences": {
+      "0": "0", // QHX3400-5&5768f80&0&UID20739
+      "1": "1LV4023", // DEL41F3-5&5768f80&0&UID20737
+  },
   "animation": {
-      "enabled": false
+      "enabled": false,
   },
   "app_specific_configuration_path": "$Env:USERPROFILE/applications.json",
   "border": true,
@@ -23,10 +27,10 @@
       "kind": "Exe",
       "id": "i_view64.exe",
       "matching_strategy": "Equals"
-    }
+    },
   ],
   "monitors": [
-    {
+    { // QHX3400-5&5768f80&0&UID20739
       "workspaces": [
         {
           "name": " Main ",
@@ -59,9 +63,9 @@
         {
           "name": " 8 ",
           "layout": "BSP"
-        }
-      ]
-    }
+        },
+      ],
+    },
   ],
   "mouse_follows_focus": false,
   "stackbar": {
@@ -73,9 +77,9 @@
       "unfocused_text": "#aaaaaa",
       "background": "#222222"
     },
-    "label": "Title"
+    "label": "Title",
   },
   "transparency": false,
   "transparency_alpha": 220,
-  "window_hiding_behaviour": "Cloak"
+  "window_hiding_behaviour": "Cloak",
 }

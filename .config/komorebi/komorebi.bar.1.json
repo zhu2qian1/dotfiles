@@ -49,14 +49,5 @@
         }
     ],
     "right_widgets": [
-        {
-            "Systray": {
-                "enable": true,
-                "info_button": "Overflow",
-                "overflow_toggle_position": "Right",
-                "refresh_button": "Overflow",
-                "shortcuts_button": null
-            }
-        }
     ]
 }

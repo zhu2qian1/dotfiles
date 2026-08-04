@@ -1,7 +1,7 @@
 { // vi:se ft=jsonc:
   "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/v0.1.41/schema.json",
   "display_index_preferences": {
-      "0": "0", // QHX3400-5&5768f80&0&UID20739
+      "0": "0",      // QHX3400-5&5768f80&0&UID20739
       "1": "1LV4023" // DEL41F3-5&5768f80&0&UID20737
   },
   "animation": {

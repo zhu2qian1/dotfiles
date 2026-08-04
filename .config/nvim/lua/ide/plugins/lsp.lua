@@ -74,6 +74,20 @@ return {
                 automatic_enable = true,
             })
 
+            -- 診断をインライン表示 (行末に virtual text)
+            vim.diagnostic.config({
+                virtual_text = {
+                    prefix = '●',
+                    spacing = 2,
+                    source = 'if_many',
+                },
+                signs = true,
+                underline = true,
+                update_in_insert = false,
+                severity_sort = true,
+                float = { border = 'rounded', source = 'if_many' },
+            })
+
             -- LSP共通 keymap (アタッチ時に buffer-local で張る)
             vim.api.nvim_create_autocmd('LspAttach', {
                 callback = function(ev)

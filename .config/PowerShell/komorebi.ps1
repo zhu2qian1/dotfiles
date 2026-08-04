@@ -18,3 +18,11 @@ function Restart-Komorebi-My {
     Stop-Komorebi-My
     Start-Komorebi-My
 }
+function Rename-KomorebiFocusedWorkspace([String] $NewWorkspaceName) {
+    if ($NewWorkspaceName -eq "") {
+        return
+    }
+    $MonitorIndex   = komorebic.exe query focused-monitor-index
+    $WorkspaceIndex = komorebic.exe query focused-workspace-index
+    komorebic.exe workspace-name $MonitorIndex $WorkspaceIndex $NewWorkspaceName
+}

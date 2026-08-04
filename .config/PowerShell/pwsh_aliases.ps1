@@ -91,22 +91,3 @@ if (Get-Command "nvim" -ErrorAction SilentlyContinue) {
     function Start-Nvim-Readonly { nvim -R $Args }
     Set-Alias view Start-Nvim-Readonly
 }
-
-# komorebi
-if ((Get-Command "komorebic" -ErrorAction SilentlyContinue) -and (Get-Command "whkd" -ErrorAction SilentlyContinue)) {
-    $NamedPipeName = 'komorebiPwsh'
-    function Start-Komorebi-My {
-        komorebic start --bar --whkd
-        # Start-Process powershell -WindowStyle Hidden -ArgumentList '-NoProfile', '-File', "$HOME\dotfiles\scripts\komorebi\padding-listener.ps1"
-        # Start-Sleep -Milliseconds 500
-        komorebic subscribe-pipe $NamedPipeName
-    }
-    function Stop-Komorebi-My {
-        komorebic unsubscribe-pipe $NamedPipeName
-        komorebic stop --bar --whkd
-    }
-    function Restart-Komorebi-My {
-        Stop-Komorebi-My
-        Start-Komorebi-My
-    }
-}

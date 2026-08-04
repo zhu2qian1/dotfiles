@@ -3,6 +3,7 @@ $Env:Editor='gvim'
 
 . "$HOME\.config\PowerShell\pwsh_aliases.ps1"
 . "$HOME\.config\PowerShell\yazi.ps1"
+. "$HOME\.config\PowerShell\komorebi.ps1"
 
 function Prompt() {
     Write-Host ""

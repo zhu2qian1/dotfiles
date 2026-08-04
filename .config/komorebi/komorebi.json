@@ -42,7 +42,7 @@
         },
         {
           "name": " Development ",
-          "layout": "Scrolling"
+          "layout": "HorizontalStack"
         },
         {
           "name": " 3 ",

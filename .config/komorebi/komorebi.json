@@ -73,10 +73,12 @@
     { // DEL41F3-5&5768f80&0&UID20737
         "workspaces": [
             {
-                "name": " Main "
+                "name": " Main ",
+                "layout": "BSP"
             },
             {
-                "name": " Sub "
+                "name": " Sub ",
+                "layout": "BSP"
             }
         ]
     }

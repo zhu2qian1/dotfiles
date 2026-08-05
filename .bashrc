@@ -183,3 +183,7 @@ ts() {
         tmux attach-session -t "$session"
     fi
 }
+
+if [ -d "$HOME/.config/bash" ]; then
+    source "$HOME/.config/bash/starship.bash"
+fi

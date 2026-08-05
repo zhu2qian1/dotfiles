@@ -78,16 +78,20 @@ if (Get-Command "lazygit" -ErrorAction SilentlyContinue) {
 
 # nvim
 if (Get-Command "nvim" -ErrorAction SilentlyContinue) {
-    function Start-Nvim-Ide {
-        $env:NVIM_PROFILE="ide"; nvim $Args
+    $env:NVIM_PROFILE='lite';
+    Set-Alias v nvim
+
+    function Set-Nvim-Profile($Mode) {
+        if ($Mode -imatch '^i.{0,2}$') { $env:NVIM_PROFILE='ide';  Write-Host $env:NVIM_PROFILE; return; }
+        if ($Mode -imatch '^l.{0,3}$') { $env:NVIM_PROFILE='lite'; Write-Host $env:NVIM_PROFILE; return; }
+        Write-Warning "Accepted values: '^i.{0,2}$',  '^l.{0,3}$'";
+        Write-Host $env:NVIM_PROFILE;
+        return;
     }
+
+    function Start-Nvim-Ide  { $env:NVIM_PROFILE="ide"; nvim $Args }
     Set-Alias vide Start-Nvim-Ide
 
-    function Start-Nvim-Lite {
-        $env:NVIM_PROFILE="lite"; nvim $Args
-    }
-    Set-Alias v Start-Nvim-Lite
-
-    function Start-Nvim-Readonly { nvim -R $Args }
-    Set-Alias view Start-Nvim-Readonly
+    function Start-Nvim-Lite { $env:NVIM_PROFILE="lite"; nvim $Args }
+    Set-Alias vli Start-Nvim-Lite
 }

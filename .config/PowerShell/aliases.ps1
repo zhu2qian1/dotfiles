@@ -81,11 +81,19 @@ if (Get-Command "nvim" -ErrorAction SilentlyContinue) {
     $env:NVIM_PROFILE='lite';
     Set-Alias v nvim
 
-    function Set-Nvim-Profile($Mode) {
-        if ($Mode -imatch '^i.{0,2}$') { $env:NVIM_PROFILE='ide';  Write-Host $env:NVIM_PROFILE; return; }
-        if ($Mode -imatch '^l.{0,3}$') { $env:NVIM_PROFILE='lite'; Write-Host $env:NVIM_PROFILE; return; }
-        Write-Warning "Accepted values: '^i.{0,2}$',  '^l.{0,3}$'";
-        Write-Host $env:NVIM_PROFILE;
+    function Set-Nvim-Profile($Mode, [switch] $NoOutput) {
+        if ($Mode -imatch '^i.{0,2}$') {
+            $env:NVIM_PROFILE='ide';
+        } elseif ($Mode -imatch '^l.{0,3}$') {
+            $env:NVIM_PROFILE='lite';
+        } else {
+            Write-Warning "Accepted values: '^i.{0,2}$',  '^l.{0,3}$'";
+        }
+
+        if (-not $NoOutput) {
+            Write-Host "env:NVIM_PROFILE=$env:NVIM_PROFILE";
+        }
+
         return;
     }
 

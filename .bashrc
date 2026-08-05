@@ -148,11 +148,6 @@ if command -v yazi >/dev/null 2>&1; then
     }
 fi
 
-# zoxide
-if command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init bash)"
-fi
-
 # cargo
 if [ -d "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
@@ -186,4 +181,9 @@ ts() {
 
 if [ -d "$HOME/.config/bash" ]; then
     source "$HOME/.config/bash/starship.bash"
+fi
+
+# zoxide
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init bash)"
 fi

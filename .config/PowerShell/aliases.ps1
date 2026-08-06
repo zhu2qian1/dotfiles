@@ -45,16 +45,6 @@ function Edit-SshConfig () {
 }
 Set-Alias edssh Edit-SshConfig
 
-
-# fzf
-if (Get-Command Enable-PsFzfAliases -ErrorAction SilentlyContinue) { Enable-PsFzfAliases }
-
-if (Get-Command "fzf" -ErrorAction SilentlyContinue) {
-    function Invoke-MyFzf { fzf -e $args }
-    Set-Alias f  Invoke-MyFzf
-    Set-Alias ff fzf
-}
-
 # zoxide
 # if (-not (Get-Module ZLocation)) { Install-Module -Name PSFzf -Scope CurrentUser }
 

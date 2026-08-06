@@ -20,6 +20,7 @@
 	st = status -s
 	sw = switch
 	swc = switch -c
+	wt = worktree
 [init]
 	defaultBranch = main
 [push]

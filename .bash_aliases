@@ -70,6 +70,19 @@ fi
 # fzf
 if command -v fzf &> /dev/null && command -v git &> /dev/null; then
     alias gfs='git branch --list | fzf | sed s/\*// | xargs git switch'
+
+    # worktree を選んで cd (ブランチ名 + パス表示)
+    function gwt() {
+        local dir
+        dir=$(git worktree list --porcelain | awk '
+                /^worktree /  { p = substr($0, 10) }
+                /^branch /    { b = substr($0, 8); sub(/^refs\/heads\//, "", b) }
+                /^detached$/  { b = "(detached)" }
+                /^$/          { if (p != "") printf "%-24s\t%s\n", b, p; p = ""; b = "" }
+                END           { if (p != "") printf "%-24s\t%s\n", b, p }
+            ' | fzf --delimiter='\t' --nth=1 | cut -f2)
+        [ -n "$dir" ] && builtin cd -- "$dir"
+    }
 fi
 
 alias portcheck='ss -tlpn'

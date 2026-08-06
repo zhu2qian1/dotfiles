@@ -96,10 +96,11 @@ if (Get-Command "nvim" -ErrorAction SilentlyContinue) {
 
         return;
     }
+    Set-Alias snp Set-Nvim-Profile
 
-    function Start-Nvim-Ide  { $env:NVIM_PROFILE="ide"; nvim $Args }
+    function Start-Nvim-Ide  { Set-Nvim-Profile ide;  nvim $Args }
     Set-Alias vide Start-Nvim-Ide
 
-    function Start-Nvim-Lite { $env:NVIM_PROFILE="lite"; nvim $Args }
+    function Start-Nvim-Lite { Set-Nvim-Profile lite; nvim $Args }
     Set-Alias vli Start-Nvim-Lite
 }

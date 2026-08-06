@@ -1,8 +1,9 @@
 { // vi:se ft=jsonc:
   "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/v0.1.41/schema.json",
   "display_index_preferences": {
-      "0": "0",      // QHX3400-5&5768f80&0&UID20739
-      "1": "1LV4023" // DEL41F3-5&5768f80&0&UID20737
+      "0": "0",         // QHX3400-5&5768f80&0&UID20739
+      "1": "1LV4023",   // DEL41F3-5&5768f80&0&UID20737
+      "2": "CNC3010JC5" // HPN3817-4&3a406c5c&0&UID24642 (KMK-267)
   },
   "animation": {
       "enabled": false
@@ -10,7 +11,8 @@
   "app_specific_configuration_path": "$KOMOREBI_CONFIG_HOME/applications.json",
   "bar_configurations": [
       "$KOMOREBI_CONFIG_HOME/komorebi.bar.0.json",
-      "$KOMOREBI_CONFIG_HOME/komorebi.bar.1.json"
+      "$KOMOREBI_CONFIG_HOME/komorebi.bar.1.json",
+      "$KOMOREBI_CONFIG_HOME/komorebi.bar.0.json"
   ],
   "border": true,
   // "border_width": 8,
@@ -80,6 +82,12 @@
                 "name": " Sub ",
                 "layout": "BSP"
             }
+        ]
+    },
+    {
+        "workspaces": [
+            { "name": " Main " },
+            { "name": " Sub " }
         ]
     }
   ],

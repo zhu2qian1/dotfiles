@@ -84,13 +84,6 @@
     }
   ],
   "mouse_follows_focus": true,
-  "manage_rules": [
-      {
-          "kind": "Exe",
-          "id": "claude.exe",
-          "matching_strategy": "Equals"
-      }
-  ],
   "resize_delta": 100,
   "stackbar": {
     "height": 30,

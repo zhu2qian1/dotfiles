@@ -44,7 +44,7 @@ alt + shift + down      : komorebic stack down
 alt + shift + up        : komorebic stack up
 alt + shift + right     : komorebic stack right
 # alt + oem_1             : komorebic unstack # oem_1 is ;
-alt + z                 : komorebic unstack # oem_1 is ;
+alt + z                 : komorebic unstack
 alt + shift + z         : komorebic unstack-all
 # alt + oem_4           : komorebic cycle-stack previous # oem_4 is [
 # alt + oem_6           : komorebic cycle-stack next # oem_6 is ]

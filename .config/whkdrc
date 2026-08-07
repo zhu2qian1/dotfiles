@@ -93,6 +93,9 @@ alt + shift + 6         : komorebic move-to-workspace 5
 alt + shift + 7         : komorebic move-to-workspace 6
 alt + shift + 8         : komorebic move-to-workspace 7
 
+# rename workspace
+alt + u : Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.Form; $f.Text = 'Rename Workspace'; $f.TopMost = $true; $f.StartPosition = 'CenterScreen'; $f.Width = 300; $f.Height = 130; $t = New-Object System.Windows.Forms.TextBox; $t.Width = 260; $t.Left = 10; $t.Top = 20; $f.Controls.Add($t); $b = New-Object System.Windows.Forms.Button; $b.Text = 'OK'; $b.Left = 10; $b.Top = 55; $b.DialogResult = [System.Windows.Forms.DialogResult]::OK; $f.Controls.Add($b); $f.AcceptButton = $b; $f.Add_Shown({ $f.Activate(); $t.Focus() }); if ($f.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK -and $t.Text) { komorebic workspace-name (komorebic query focused-monitor-index) (komorebic query focused-workspace-index) $t.Text }
+
 # gui
 alt + shift + g : komorebic gui
 

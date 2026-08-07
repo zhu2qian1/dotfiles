@@ -38,11 +38,11 @@
       "workspaces": [
         {
           "name": " Main ",
-           "layout": "UltrawideVerticalStack"
+           "layout": "BSP"
         },
         {
           "name": " Development ",
-          "layout": "HorizontalStack"
+          "layout": "BSP"
         },
         {
           "name": " 3 ",

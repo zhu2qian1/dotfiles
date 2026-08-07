@@ -6,10 +6,12 @@ alias  la='ls -Ah'
 alias   l='ls -CF'
 
 if command -v eza &> /dev/null; then
-    alias  ll='eza -l  --git-ignore --icons --header --time-style long-iso'
+    alias ll='eza -l  --git-ignore --icons --header --time-style long-iso'
     alias lla='eza -la --git-ignore --icons --header --time-style long-iso'
-    alias  la='eza -a  --git-ignore --icons          --time-style long-iso'
-    alias   l='eza --git-ignore'
+    alias l='eza --git-ignore'
+    alias ng-ll='eza -l   --icons --header --time-style long-iso'
+    alias ng-lla='eza -la  --icons --header --time-style long-iso'
+    alias ng-la='eza -a   --icons          --time-style long-iso'
 fi
 
 if command -v git &> /dev/null; then

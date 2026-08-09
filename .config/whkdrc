@@ -52,8 +52,10 @@ alt + vk_oem_comma      : komorebic cycle-stack previous
 alt + vk_oem_period     : komorebic cycle-stack next
 
 # workspaces
-alt + shift + vk_oem_comma  : komorebic cycle-workspace previous
-alt + shift + vk_oem_period : komorebic cycle-workspace next
+alt + ctrl + shift + vk_oem_comma  : komorebic cycle-move-to-workspace previous
+alt + ctrl + shift + vk_oem_period : komorebic cycle-move-to-workspace next
+alt + ctrl + vk_oem_comma  : komorebic cycle-workspace previous
+alt + ctrl + vk_oem_period : komorebic cycle-workspace next
 
 # Resize
 alt + oem_plus          : komorebic resize-axis horizontal increase

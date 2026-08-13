@@ -1,4 +1,5 @@
 alias sb='source ~/.bashrc'
+alias cl='clear'
 
 alias  ll='ls -Flh'
 alias lla='ls -Flha'

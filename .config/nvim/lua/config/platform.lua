@@ -10,6 +10,15 @@ if vim.fn.has('win32') == 1 then
     vim.opt.shellredir = '| Out-File -Encoding UTF8 %s'
 end
 
+-- WSL: クリップボードプロバイダを win32yank に固定する。
+-- Neovim の自動検出は xsel を win32yank より先に試し、しかもその判定条件が
+-- `xsel -o -b` の実行そのもの。WSLg の X クリップボードは応答を返さないため
+-- ここでブロックし、起動が暗転したまま止まる (Ctrl-C で解除されて画面が出る)。
+-- g:clipboard を文字列で指定すると自動検出を丸ごと飛ばせる。
+if vim.fn.has('wsl') == 1 and vim.fn.executable('win32yank.exe') == 1 then
+    vim.g.clipboard = 'win32yank'
+end
+
 -- Disable IME on leaving Insert mode (Windows / WSL)
 if vim.fn.has('win32') == 1 or vim.fn.has('wsl') == 1 then
     autocmd('InsertLeave', {

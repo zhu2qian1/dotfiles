@@ -8,8 +8,6 @@ case $- in
       *) return;;
 esac
 
-command -v fastfetch &> /dev/null && fastfetch
-
 # Append a directory to PATH only if it exists and isn't already present.
 # Prevents duplicate entries when ~/.bashrc is sourced more than once.
 pathadd() {
@@ -139,17 +137,6 @@ export SDKMAN_DIR="$HOME/.sdkman"
 # fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-# yazi
-if command -v yazi >/dev/null 2>&1; then
-    function y() {
-        local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-        command yazi "$@" --cwd-file="$tmp"
-        IFS= read -r -d '' cwd < "$tmp"
-        [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
-        command rm -f -- "$tmp"
-    }
-fi
-
 # cargo
 if [ -d "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
@@ -188,4 +175,17 @@ fi
 # zoxide
 if command -v zoxide >/dev/null 2>&1; then
     eval "$(zoxide init bash)"
+fi
+
+command -v fastfetch &> /dev/null && fastfetch
+
+# yazi
+if command -v yazi >/dev/null 2>&1; then
+    function y() {
+        local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+        command yazi "$@" --cwd-file="$tmp"
+        IFS= read -r -d '' cwd < "$tmp"
+        [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+        command rm -f -- "$tmp"
+    }
 fi

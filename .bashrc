@@ -8,6 +8,8 @@ case $- in
       *) return;;
 esac
 
+command -v fastfetch &> /dev/null && fastfetch
+
 # Append a directory to PATH only if it exists and isn't already present.
 # Prevents duplicate entries when ~/.bashrc is sourced more than once.
 pathadd() {

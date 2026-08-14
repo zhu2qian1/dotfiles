@@ -169,7 +169,7 @@ ts() {
 }
 
 if [ -d "$HOME/.config/bash" ]; then
-    source "$HOME/.config/bash/starship.bash"
+    source "$HOME/.config/bash/prompt.bash"
 fi
 
 # zoxide

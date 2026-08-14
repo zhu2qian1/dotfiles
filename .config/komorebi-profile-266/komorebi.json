@@ -1,0 +1,99 @@
+{ // vi:se ft=jsonc:
+  "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/v0.1.41/schema.json",
+  "animation": {
+      "enabled": false
+  },
+  "app_specific_configuration_path": "$KOMOREBI_CONFIG_HOME/applications.json",
+  "border": true,
+  // "border_width": 8,
+  // "border_offset": -1,
+  "border_style": "Square",
+  "cross_monitor_move_behaviour": "Insert",
+  "default_container_padding": -1,
+  "default_workspace_padding": 0,
+  "floating_layer_placement": "CenterAndResize",
+  "floating_window_aspect_ratio": "Widescreen",
+  "ignore_rules": [
+    {
+      "kind": "Exe",
+      "id": "A5M2.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Exe",
+      "id": "i_view64.exe",
+      "matching_strategy": "Equals"
+    },
+    {
+      "kind": "Title",
+      "id": "Rename Workspace",
+      "matching_strategy": "Equals"
+    }
+  ],
+  "monitors": [
+    { // QHX3400-5&5768f80&0&UID20739
+      "workspaces": [
+        {
+          "name": " Main ",
+           "layout": "BSP"
+        },
+        {
+          "name": " Development ",
+          "layout": "BSP"
+        },
+        {
+          "name": " 3 ",
+          "layout": "BSP"
+        },
+        {
+          "name": " 4 ",
+          "layout": "BSP"
+        },
+        {
+          "name": " 5 ",
+          "layout": "BSP"
+        },
+        {
+          "name": " 6 ",
+          "layout": "BSP"
+        },
+        {
+          "name": " 7 ",
+          "layout": "BSP"
+        },
+        {
+          "name": " 8 ",
+          "layout": "BSP"
+        }
+      ]
+    },
+    { // DEL41F3-5&5768f80&0&UID20737
+        "workspaces": [
+            {
+                "name": " Main ",
+                "layout": "BSP"
+            },
+            {
+                "name": " Sub ",
+                "layout": "BSP"
+            }
+        ]
+    }
+  ],
+  "mouse_follows_focus": true,
+  "resize_delta": 80,
+  "stackbar": {
+    "height": 30,
+    "mode": "Never",
+    "tabs": {
+      "width": 300,
+      "focused_text": "#9999ff",
+      "unfocused_text": "#aaaaaa",
+      "background": "#222222"
+    },
+    "label": "Title"
+  },
+  "transparency": false,
+  "transparency_alpha": 220,
+  "window_hiding_behaviour": "Cloak"
+}

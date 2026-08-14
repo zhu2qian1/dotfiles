@@ -50,14 +50,10 @@ Set-Alias edssh Edit-SshConfig
 
 # eza
 if (Get-Command "eza" -ErrorAction SilentlyContinue) {
-    function Invoke-EzaLla { eza --all --icons --long --header --classify --time-style long-iso $args }
-    Set-Alias lla Invoke-EzaLla
-    function Invoke-EzaLl  { eza       --icons --long --header --classify --time-style long-iso $args }
-    Set-Alias ll Invoke-EzaLl
-    function Invoke-EzaLlai { eza --all --icons --long --header --classify --time-style long-iso --git-ignore $args }
-    Set-Alias llai Invoke-EzaLlai
-    function Invoke-EzaLli  { eza       --icons --long --header --classify --time-style long-iso --git-ignore $args }
-    Set-Alias lli Invoke-EzaLli
+    function ll   { eza --long       --icons=auto --header --classify=auto --time-style relative              $Args }
+    function lla  { eza --long --all --icons=auto --header --classify=auto --time-style relative              $Args }
+    function lli  { eza --long       --icons=auto --header --classify=auto --time-style relative --git-ignore $Args }
+    function llai { eza --long --all --icons=auto --header --classify=auto --time-style relative --git-ignore $Args }
 }
 
 # git

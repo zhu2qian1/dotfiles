@@ -29,7 +29,7 @@ model: haiku
 3. **コミットする**
 
    ```sh
-   git commit -m "<メッセージ本文>" -m "Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
+   git commit -m "<メッセージ本文>" -m "Co-Authored-By: <実行中のモデル名> <noreply@anthropic.com>"
    ```
 
    コミット後に `git log --oneline -1` で結果を提示する。
@@ -42,10 +42,11 @@ model: haiku
   **`<ファイル名>: <要約>`** 形式を使ってよい（既存履歴の慣習）。
 - 複数ファイル横断・機能単位の変更は、`<対象/観点>: <要約>` のように要約を主にする。
 - 必要に応じて本文（body）で「なぜ」を補足する。`-m` を重ねるか、ヒアドキュメントで複数行にする。
-- コミットメッセージの末尾には必ず以下の Co-Authored-By 行を入れる:
+- コミットメッセージの末尾には必ず Co-Authored-By 行を入れる。モデル名は固定せず、
+  **そのコミットを実行しているモデルの名前**を書く（例: `Claude Opus 5`、`Claude Sonnet 5`）:
 
   ```
-  Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+  Co-Authored-By: <実行中のモデル名> <noreply@anthropic.com>
   ```
 
 ## 注意

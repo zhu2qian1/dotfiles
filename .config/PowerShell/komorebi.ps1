@@ -5,7 +5,13 @@ if ((-not (Get-Command "komorebic" -ErrorAction SilentlyContinue)) -or (-not(Get
 
 $NamedPipeName = 'komorebiPwsh'
 function Start-Komorebi-My {
-    komorebic start --bar --whkd
+    Param ([Switch] $DoRefresh)
+
+    if ($DoRefresh) {
+        komorebic start --bar --whkd --clean-state
+    } else {
+        komorebic start --bar --whkd
+    }
     # Start-Process powershell -WindowStyle Hidden -ArgumentList '-NoProfile', '-File', "$HOME\dotfiles\scripts\komorebi\padding-listener.ps1"
     # Start-Sleep -Milliseconds 500
     # komorebic subscribe-pipe $NamedPipeName
@@ -15,8 +21,10 @@ function Stop-Komorebi-My {
     komorebic stop --bar --whkd
 }
 function Restart-Komorebi-My {
+    Param ([Switch] $DoRefresh)
+
     Stop-Komorebi-My
-    Start-Komorebi-My
+    Start-Komorebi-My $DoRefresh
 }
 function Rename-KomorebiFocusedWorkspace([String] $NewWorkspaceName) {
     if ($NewWorkspaceName -eq "") {

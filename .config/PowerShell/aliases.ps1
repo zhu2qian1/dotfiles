@@ -59,6 +59,18 @@ if (Get-Command "eza" -ErrorAction SilentlyContinue) {
 # git
 if (Get-Command "git" -ErrorAction SilentlyContinue) {
     Set-Alias g git
+
+    # clone 時はまだリポジトリが無く ~/.gitconfig の includeIf が効かないため、
+    # 鍵だけ明示的に指定する。clone 後の設定は includeIf が引き継ぐ。
+    function Invoke-GitCloneWork {
+        git -c core.sshCommand="ssh -i ~/.ssh/tkmrkmk-key -o IdentitiesOnly=yes" clone @Args
+    }
+    Set-Alias wclone Invoke-GitCloneWork
+
+    function Invoke-GitClonePrivate {
+        git -c core.sshCommand="ssh -i ~/.ssh/github_key_zhu2qian1 -o IdentitiesOnly=yes" clone @Args
+    }
+    Set-Alias pclone Invoke-GitClonePrivate
 }
 
 # lazygit

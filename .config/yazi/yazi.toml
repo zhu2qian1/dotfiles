@@ -12,4 +12,12 @@ code = [
 vim = [
     { run="vim %s", orphan=true, desc="Vim" },
 ]
+explorer = [
+    { run="explorer %s", orphan=true, for="windows" }
+]
+
+[open]
+rules = [
+    { url="*.lnk", for="windows", use="explorer" }
+]
 # vi:se et sw=4 ts=4 sts=4:

@@ -126,8 +126,8 @@ if ! shopt -oq posix; then
 fi
 
 # aliases
-if [ -f ~/.bash_aliases ] && source ~/.bash_aliases
-if [ -f ~/.config/bash/aliases.bash ] && source ~/.config/bash/aliases.bash
+[ -f ~/.bash_aliases ] && source ~/.bash_aliases
+[ -f ~/.config/bash/aliases.bash ] && source ~/.config/bash/aliases.bash
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"

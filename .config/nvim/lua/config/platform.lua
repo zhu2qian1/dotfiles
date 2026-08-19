@@ -15,8 +15,31 @@ end
 -- `xsel -o -b` の実行そのもの。WSLg の X クリップボードは応答を返さないため
 -- ここでブロックし、起動が暗転したまま止まる (Ctrl-C で解除されて画面が出る)。
 -- g:clipboard を文字列で指定すると自動検出を丸ごと飛ばせる。
-if vim.fn.has('wsl') == 1 and vim.fn.executable('win32yank.exe') == 1 then
-    vim.g.clipboard = 'win32yank'
+--
+-- ただし SSH 経由のセッションでは win32yank.exe が OS error 5 (Access Denied) で
+-- 失敗する。Win32 のクリップボード API は対話的な Windows デスクトップセッション
+-- (winsta0\default) にアタッチされたプロセスからしかアクセスできず、sshd 経由の
+-- プロセスはそれにアタッチされないため (clip.exe や PowerShell の
+-- Set/Get-Clipboard も同様に失敗する)。Windows クリップボードとの連携は諦め、
+-- tmux 内であれば tmux のバッファをレジスタ代わりに使い、ペイン間でのコピペだけ
+-- 成立させる。
+if vim.fn.has('wsl') == 1 then
+    if (vim.env.SSH_TTY or vim.env.SSH_CONNECTION) and vim.env.TMUX then
+        vim.g.clipboard = {
+            name = 'tmux',
+            copy = {
+                ['+'] = 'tmux load-buffer -',
+                ['*'] = 'tmux load-buffer -',
+            },
+            paste = {
+                ['+'] = 'tmux save-buffer -',
+                ['*'] = 'tmux save-buffer -',
+            },
+            cache_enabled = 0,
+        }
+    elseif not (vim.env.SSH_TTY or vim.env.SSH_CONNECTION) and vim.fn.executable('win32yank.exe') == 1 then
+        vim.g.clipboard = 'win32yank'
+    end
 end
 
 -- Disable IME on leaving Insert mode (Windows / WSL)

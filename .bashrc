@@ -177,8 +177,6 @@ if command -v zoxide >/dev/null 2>&1; then
     eval "$(zoxide init bash)"
 fi
 
-command -v fastfetch &> /dev/null && fastfetch
-
 # yazi
 if command -v yazi >/dev/null 2>&1; then
     function y() {

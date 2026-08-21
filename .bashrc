@@ -136,17 +136,6 @@ export SDKMAN_DIR="$HOME/.sdkman"
 # fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-# yazi
-if command -v yazi >/dev/null 2>&1; then
-    function y() {
-        local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-        command yazi "$@" --cwd-file="$tmp"
-        IFS= read -r -d '' cwd < "$tmp"
-        [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
-        command rm -f -- "$tmp"
-    }
-fi
-
 # cargo
 if [ -d "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
@@ -179,10 +168,21 @@ ts() {
 }
 
 if [ -d "$HOME/.config/bash" ]; then
-    source "$HOME/.config/bash/starship.bash"
+    source "$HOME/.config/bash/prompt.bash"
 fi
 
 # zoxide
 if command -v zoxide >/dev/null 2>&1; then
     eval "$(zoxide init bash)"
+fi
+
+# yazi
+if command -v yazi >/dev/null 2>&1; then
+    function y() {
+        local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+        command yazi "$@" --cwd-file="$tmp"
+        IFS= read -r -d '' cwd < "$tmp"
+        [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+        command rm -f -- "$tmp"
+    }
 fi

@@ -29,6 +29,7 @@ esac
 IGNORE=(
     ".git" ".gitignore" "README.md"
     "install.sh" "install.ps1"
+    ".editorconfig"
     ".config" ".claude"                 # 中身を個別リンク (後段で処理)
     "init.lua"                          # repo 内シンボリックリンク (.config/nvim/init.lua)
     ".vscode"                           # ~/.vscode と衝突しうるので既定では張らない

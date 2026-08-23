@@ -28,6 +28,11 @@ else
     export VISUAL='vim'
 fi
 
+# linuxbrew
+if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -148,11 +153,6 @@ pathadd "$HOME/.local/bin"
 if [ -d "$HOME/.asdf" ]; then
     . "$HOME/.asdf/asdf.sh"
     . "$HOME/.asdf/completions/asdf.bash"
-fi
-
-# linuxbrew
-if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 # tmux セッションを fzf で選択して attach / switch

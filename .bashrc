@@ -132,7 +132,6 @@ fi
 
 # aliases
 [ -f ~/.bash_aliases ] && source ~/.bash_aliases
-[ -f ~/.config/bash/aliases.bash ] && source ~/.config/bash/aliases.bash
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
@@ -167,7 +166,10 @@ ts() {
     fi
 }
 
+# config
 if [ -d "$HOME/.config/bash" ]; then
+    source "$HOME/.config/bash/aliases.bash"
+    source "$HOME/.config/bash/env.bash"
     source "$HOME/.config/bash/prompt.bash"
 fi
 

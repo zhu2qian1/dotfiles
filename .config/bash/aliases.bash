@@ -1,6 +1,18 @@
 alias sb='source ~/.bashrc'
 alias cl='clear'
 
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
 alias  ll='ls -Flh'
 alias lla='ls -Flha'
 alias  la='ls -Ah'
@@ -85,6 +97,18 @@ if command -v fzf &> /dev/null && command -v git &> /dev/null; then
         [ -n "$dir" ] && builtin cd -- "$dir"
     }
 fi
+
+# tmux セッションを fzf で選択して attach / switch
+ts() {
+    local session
+    session=$(tmux list-sessions -F '#{session_name}' 2>/dev/null | fzf --prompt='tmux> ' --height=40% --reverse) || return
+    [ -z "$session" ] && return
+    if [ -n "$TMUX" ]; then
+        tmux switch-client -t "$session"
+    else
+        tmux attach-session -t "$session"
+    fi
+}
 
 alias portcheck='ss -tlpn'
 

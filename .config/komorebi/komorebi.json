@@ -42,11 +42,11 @@
     { // QHX3400-5&5768f80&0&UID20739
       "workspaces": [
         {
-          "name": " Main ",
+          "name": " 1 ",
            "layout": "BSP"
         },
         {
-          "name": " Development ",
+          "name": " 2 ",
           "layout": "BSP"
         },
         {

@@ -88,3 +88,10 @@ vim.keymap.set({ 'n', 'v' }, '<leader>V', clip.Paste)
 vim.keymap.set('n', '<leader>ee', ':Explore<CR>')
 vim.keymap.set('n', '<leader>el', ':Lexplore<CR>')
 
+-- terminal
+vim.keymap.set('t', '<C-w><ESC>', '<C-\\><C-n>')
+vim.keymap.set('t', '<C-w>h', '<CMD>wincmd h<CR>')
+vim.keymap.set('t', '<C-w>j', '<CMD>wincmd j<CR>')
+vim.keymap.set('t', '<C-w>k', '<CMD>wincmd k<CR>')
+vim.keymap.set('t', '<C-w>l', '<CMD>wincmd l<CR>')
+

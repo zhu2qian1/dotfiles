@@ -20,6 +20,11 @@ autocmd({ 'BufNewFile', 'BufRead' }, {
     command = 'set filetype=vb',
 })
 
+autocmd('TermOpen', {
+    pattern = '*',
+    command = 'startinsert'
+})
+
 -- Markdown-specific settings live in ftplugin/markdown.lua
 
 -- Quickfix open after vimgrep

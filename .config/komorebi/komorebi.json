@@ -89,7 +89,7 @@
     }
   ],
   "mouse_follows_focus": true,
-  "resize_delta": 80,
+  "resize_delta": 100,
   "stackbar": {
     "height": 30,
     "mode": "Never",

@@ -170,6 +170,7 @@ ts() {
 if [ -d "$HOME/.config/bash" ]; then
     source "$HOME/.config/bash/aliases.bash"
     source "$HOME/.config/bash/env.bash"
+    [[ -f "$HOME/.config/bash/env_local.bash" ]] && source "$HOME/.config/bash/env_local.bash"
     source "$HOME/.config/bash/prompt.bash"
 fi
 

@@ -114,4 +114,5 @@ alias portcheck='ss -tlpn'
 
 command -v claude &> /dev/null && alias cusage='claude -p "/usage"'
 alias scratchpad='$EDITOR "$(date +%F)-scratchpad.md"'
+alias envlocal='$EDITOR ~/.config/bash/env_local.bash'
 

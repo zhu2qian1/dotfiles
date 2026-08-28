@@ -45,6 +45,38 @@ function Edit-SshConfig () {
 }
 Set-Alias edssh Edit-SshConfig
 
+# env
+function Get-EnvironmentVariable {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string] $Name,
+        [string] $Scope
+    )
+    if ($Scope) {
+        return [System.Environment]::GetEnvironmentVariable($Name, $Scope)
+    } else {
+        return [System.Environment]::GetEnvironmentVariable($Name)
+    }
+}
+
+function Set-EnvironmentVariable {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string] $Name,
+        [string] $Value,
+        [string] $Scope
+    )
+    # validation
+    if (($Scope) -and (-not ($Scope -imatch '(process|user|machine)'))) {
+        throw "value 'scope' should be one of process, user, or machine."
+    }
+    if ($Scope) {
+        [System.Environment]::SetEnvironmentVariable($Name, $Value, $Scope)
+    } else {
+        [System.Environment]::SetEnvironmentVariable($Name, $Value) # process
+    }
+}
+
 # zoxide
 # if (-not (Get-Module ZLocation)) { Install-Module -Name PSFzf -Scope CurrentUser }
 

@@ -20,16 +20,22 @@ end
 -- 失敗する。Win32 のクリップボード API は対話的な Windows デスクトップセッション
 -- (winsta0\default) にアタッチされたプロセスからしかアクセスできず、sshd 経由の
 -- プロセスはそれにアタッチされないため (clip.exe や PowerShell の
--- Set/Get-Clipboard も同様に失敗する)。Windows クリップボードとの連携は諦め、
--- tmux 内であれば tmux のバッファをレジスタ代わりに使い、ペイン間でのコピペだけ
--- 成立させる。
+-- Set/Get-Clipboard も同様に失敗する)。代わりに tmux のバッファをレジスタとして
+-- 使い、コピー時は `load-buffer -w` で OSC 52 も飛ばす。これで tmux から外側の
+-- 端末 (= ssh 接続元 PC) のクリップボードまで届く。`-w` 無しの load-buffer は
+-- tmux バッファに入れるだけで OSC 52 を送らない点に注意 (set-clipboard on が
+-- 効くのはコピーモード由来のコピーとアプリが出した OSC 52 の中継のみ)。
+-- 貼り付けは save-buffer のまま。OSC 52 の読み出しは情報漏洩を理由にほぼ全ての
+-- 端末で無効化されているため、osc52 プロバイダに丸ごと差し替えると貼り付けが
+-- 壊れる。接続元の端末側でも OSC 52 の書き込み許可が必要
+-- (WezTerm は既定で可、Windows Terminal は設定で無効化されている場合あり)。
 if vim.fn.has('wsl') == 1 then
     if (vim.env.SSH_TTY or vim.env.SSH_CONNECTION) and vim.env.TMUX then
         vim.g.clipboard = {
             name = 'tmux',
             copy = {
-                ['+'] = 'tmux load-buffer -',
-                ['*'] = 'tmux load-buffer -',
+                ['+'] = 'tmux load-buffer -w -',
+                ['*'] = 'tmux load-buffer -w -',
             },
             paste = {
                 ['+'] = 'tmux save-buffer -',

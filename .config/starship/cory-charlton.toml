@@ -1,3 +1,4 @@
+# https://github.com/CoryCharlton/starship-configuration/blob/master/starship.toml
 "$schema" = "https://starship.rs/config-schema.json"
 
 command_timeout = 2000
@@ -84,8 +85,8 @@ disabled = false
 
 [username]
 disabled = false
-format = "[$user]($style)"
-show_always = false
+format = "[ $user ]($style)"
+show_always = true
 style_root = "bg:color_bg1 fg:color_red"
 style_user = "bg:color_bg1 fg:color_white"
 

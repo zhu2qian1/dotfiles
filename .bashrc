@@ -1,159 +1,51 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+# ~/.bashrc: interactive bash.
+#
+# This file is just a loader. The actual settings live in ~/.config/bash/*.bash.
+# Environment variables and PATH belong in ~/.profile, not here, because
+# non-interactive shells need them too.
 
-# If not running interactively, don't do anything
+# --------------------------------------------- Environment (before the guard)
+# For `ssh host 'cmd'` bash reads .bashrc even when non-interactive (Debian
+# build default) but never reads .profile, so pick it up here or PATH is unset.
+# _ATTEMPTED is set before sourcing so that a foreign .profile (Ubuntu's ships
+# one that unconditionally sources .bashrc) cannot bounce us into a loop.
+DOTFILES_BASHRC_LOADED=1
+if [ -z "${DOTFILES_PROFILE_LOADED:-}" ] && [ -z "${DOTFILES_PROFILE_ATTEMPTED:-}" ] \
+   && [ -f "$HOME/.profile" ]; then
+    DOTFILES_PROFILE_ATTEMPTED=1
+    . "$HOME/.profile"
+fi
+
+# Stop here when non-interactive. Everything below is interactive-only.
 case $- in
     *i*) ;;
       *) return;;
 esac
 
-# Append a directory to PATH only if it exists and isn't already present.
-# Prevents duplicate entries when ~/.bashrc is sourced more than once.
-pathadd() {
-    case ":$PATH:" in
-        *":$1:"*) ;;
-        *) [ -d "$1" ] && PATH="$PATH:$1" ;;
-    esac
-}
+# ------------------------------------------------------------------- Loader
+# Load order:
+#   1. [0-9]*.bash        numbered (00 history -> 10 shell -> 20 aliases
+#                         -> 30 tools -> 40 prompt)
+#   2. os/<os>.bash       per-OS (linux / darwin / windows)
+#   3. host/<host>.bash   per-machine
+#   4. local.bash         machine-only secrets and overrides (not in git)
+# Later files win. Adding a file is enough to enable it; a missing one is fine.
+_bash_conf="${XDG_CONFIG_HOME:-$HOME/.config}/bash"
 
-# nvim
-pathadd /opt/nvim
-
-if command -v nvim >/dev/null 2>&1; then
-    export EDITOR='nvim'
-    export VISUAL='nvim'
-else
-    export EDITOR='vim'
-    export VISUAL='vim'
-fi
-
-# linuxbrew
-if [ -f /home/linuxbrew/.linuxbrew/bin/brew ]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
-
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
-
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
-
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
+case "$OSTYPE" in
+    linux*)         _bash_os=linux ;;
+    darwin*)        _bash_os=darwin ;;
+    msys*|cygwin*)  _bash_os=windows ;;
+    *)              _bash_os=other ;;
 esac
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
+for _bash_f in \
+    "$_bash_conf"/[0-9]*.bash \
+    "$_bash_conf/os/$_bash_os.bash" \
+    "$_bash_conf/host/${HOSTNAME%%.*}.bash" \
+    "$_bash_conf/local.bash"
+do
+    [ -r "$_bash_f" ] && . "$_bash_f"
+done
 
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-    # We have color support; assume it's compliant with Ecma-48
-    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-    # a case would tend to support setf rather than setaf.)
-    color_prompt=yes
-    else
-    color_prompt=
-    fi
-fi
-
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
-
-# fzf
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
-# cargo
-if [ -d "$HOME/.cargo/env" ]; then
-    . "$HOME/.cargo/env"
-fi
-
-pathadd "$HOME/.cargo/bin"
-
-pathadd "$HOME/.local/bin"
-
-if [ -d "$HOME/.asdf" ]; then
-    . "$HOME/.asdf/asdf.sh"
-    . "$HOME/.asdf/completions/asdf.bash"
-fi
-
-# config
-if [ -d "$HOME/.config/bash" ]; then
-    source "$HOME/.config/bash/aliases.bash"
-    source "$HOME/.config/bash/env.bash"
-    [[ -f "$HOME/.config/bash/env_local.bash" ]] && source "$HOME/.config/bash/env_local.bash"
-    source "$HOME/.config/bash/prompt.bash"
-    source "$HOME/.config/bash/tailscale.bash"
-fi
-
-# zoxide
-if command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init bash)"
-fi
-
-# yazi
-if command -v yazi >/dev/null 2>&1; then
-    function y() {
-        local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-        command yazi "$@" --cwd-file="$tmp"
-        IFS= read -r -d '' cwd < "$tmp"
-        [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
-        command rm -f -- "$tmp"
-    }
-fi
+unset _bash_conf _bash_os _bash_f

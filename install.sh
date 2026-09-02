@@ -77,10 +77,15 @@ doctor() {
     echo "== symlinks =="
     local path name dest
     shopt -s nullglob dotglob
-    for path in "$DOTFILES_DIR"/* "$DOTFILES_DIR"/.config/*; do
+    for path in "$DOTFILES_DIR"/* "$DOTFILES_DIR"/.config/* \
+                "$DOTFILES_DIR"/.claude/skills/* "$DOTFILES_DIR"/.claude/*; do
         name="$(basename "$path")"
         case "$path" in
             "$DOTFILES_DIR"/.config/*) dest="$HOME/.config/$name" ;;
+            "$DOTFILES_DIR"/.claude/skills/*) dest="$HOME/.claude/skills/$name" ;;
+            "$DOTFILES_DIR"/.claude/*)
+               [[ "$name" == skills ]] && continue      # linked per entry above
+               dest="$HOME/.claude/$name" ;;
             *) in_ignore "$name" && continue
                [[ "$name" == *.bk || "$name" == *.bk-* ]] && continue
                dest="$HOME/$name" ;;
@@ -197,10 +202,15 @@ if [[ -d "$DOTFILES_DIR/.config" ]]; then
     done
 fi
 
-# 3) link .claude/skills entries individually (coexist with other global skills)
-if [[ -d "$DOTFILES_DIR/.claude/skills" ]]; then
+# 3) link .claude entries individually: ~/.claude also holds Claude Code's own
+#    state (sessions, history, settings.json), so never link the directory itself.
+if [[ -d "$DOTFILES_DIR/.claude" ]]; then
     for path in "$DOTFILES_DIR"/.claude/skills/*; do
         link "$path" "$HOME/.claude/skills/$(basename "$path")"
+    done
+    for path in "$DOTFILES_DIR"/.claude/*; do
+        [[ "$(basename "$path")" == skills ]] && continue
+        link "$path" "$HOME/.claude/$(basename "$path")"
     done
 fi
 shopt -u nullglob dotglob

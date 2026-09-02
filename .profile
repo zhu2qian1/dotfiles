@@ -52,8 +52,13 @@ unset _brew
 
 # SDKMAN. It rewrites PATH, so it belongs here rather than in interactive
 # config -- this is what makes `ssh host 'java -version'` and cron jobs work.
+# sdkman-init.sh is bash/zsh only -- it uses arrays and [[ ]]. Under dash the
+# syntax error aborts the rest of this file, taking PATH and EDITOR with it,
+# so gate it on the shell. SDKMAN_DIR stays exported for every shell.
 export SDKMAN_DIR="$HOME/.sdkman"
-[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && . "$SDKMAN_DIR/bin/sdkman-init.sh"
+if [ -n "${BASH_VERSION:-}${ZSH_VERSION:-}" ] && [ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
+    . "$SDKMAN_DIR/bin/sdkman-init.sh"
+fi
 
 # -------------------------------------------------------------- User PATH
 # Later prepends win. User-owned directories take precedence.

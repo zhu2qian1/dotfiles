@@ -112,6 +112,33 @@ doctor() {
         printf '  WARN     nvim not on PATH in a non-interactive shell\n'
     fi
 
+    # ~/.bash_profile and ~/.bash_login shadow ~/.profile: bash reads only the
+    # first of the three it finds in a login shell. Neither is managed here, so
+    # the symlink report above cannot see them -- it only walks the repo.
+    local stray found=0
+    for stray in .bash_profile .bash_login; do
+        if [[ -e "$HOME/$stray" || -L "$HOME/$stray" ]]; then
+            printf '  CONFLICT ~/%s shadows ~/.profile in a login shell\n' "$stray"
+            found=1; rc=1
+        fi
+    done
+    (( found )) || printf '  ok       no ~/.bash_profile or ~/.bash_login shadowing ~/.profile\n'
+
+    # .profile is read by any POSIX login shell, not just bash, and it must stay
+    # silent on stdout or it breaks scp/sftp/rsync. Check both in one shot.
+    local prof_out prof_err prof_rc=0
+    prof_err="$(sh -c '. "$HOME/.profile"' 2>&1 >/dev/null)" || prof_rc=$?
+    prof_out="$(sh -c '. "$HOME/.profile"' 2>/dev/null || true)"
+    if (( prof_rc != 0 )) || [[ -n "$prof_err" ]]; then
+        printf '  FAIL     ~/.profile is not clean under sh (rc=%s)\n' "$prof_rc"; rc=1
+        [[ -n "$prof_err" ]] && printf '           %s\n' "$prof_err"
+    elif [[ -n "$prof_out" ]]; then
+        printf '  FAIL     ~/.profile writes to stdout (breaks scp/rsync)\n'; rc=1
+        printf '           %s\n' "$prof_out"
+    else
+        printf '  ok       ~/.profile sources cleanly under sh, stdout silent\n'
+    fi
+
     echo
     echo "== tools =="
     # required: things the config assumes; optional: nice to have

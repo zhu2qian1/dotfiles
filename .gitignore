@@ -1,3 +1,9 @@
 custom_profile.ps1
 .config/nvim/lua/ide/lazy-lock.json
+
+# machine-local shell config (secrets, per-machine overrides)
+.config/bash/local.bash
 .config/bash/env_local.bash
+
+# install.sh / migration backups
+*.bak

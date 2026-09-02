@@ -1,5 +1,6 @@
 alias sb='source ~/.bashrc'
 alias cl='clear'
+alias ip='ip --color=auto'
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then

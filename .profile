@@ -78,6 +78,19 @@ else
 fi
 export VISUAL="$EDITOR"
 
+# ------------------------------------------------------------- SUDO_EDITOR
+# `sudoedit file` (= sudo -e) runs the editor as *us* and copies the result
+# back as root. That keeps ~/.config/nvim and its plugins working and stops
+# ~/.local/share/nvim from filling up with root-owned files, which is what
+# plain `sudo nvim` does. Absolute path on purpose: sudo does not search PATH
+# for the editor. If sudo was built without env_editor this is ignored and the
+# sudoers `editor` default wins -- harmless either way.
+_sudo_editor="$(command -v "$EDITOR" 2>/dev/null)"
+if [ -n "$_sudo_editor" ] && [ -x "$_sudo_editor" ]; then
+    export SUDO_EDITOR="$_sudo_editor"
+fi
+unset _sudo_editor
+
 # ------------------------------------------------- Hand off to interactive
 # For an interactive bash, also read .bashrc (matches the Ubuntu default).
 # .bashrc sources us when we have not run, so both entry points are covered here.

@@ -62,8 +62,6 @@ fi
 
 # -------------------------------------------------------------- User PATH
 # Later prepends win. User-owned directories take precedence.
-path_prepend "/opt/nvim"          # nvim tarball, binary placed directly
-path_prepend "/opt/nvim/bin"      # nvim tarball, with a bin/ subdir
 path_prepend "$HOME/bin"
 path_prepend "$HOME/.local/bin"
 export PATH

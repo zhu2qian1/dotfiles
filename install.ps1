@@ -15,9 +15,9 @@
     profile.ps1 が ~\.config\PowerShell\*.ps1 を dot-source するため、
     ファイル単位で並べるより実態に合う。
 
-    profile.ps1 (本体は .config\PowerShell\profile.ps1) は PowerShell の
-    エディションやホストで配置先 ($PROFILE) が変わるため、このスクリプトでは
-    扱わない。末尾に現在の $PROFILE パスを表示するので、手動でリンクすること。
+    プロファイルは PowerShell 7+ / Windows PowerShell 5.1 の CurrentUserAllHosts に
+    dot-source 1 行の stub を追記する (symlink は張らない)。本体は
+    .config\PowerShell\profile.ps1 の 1 箇所。
 
     シンボリックリンク作成には「開発者モード」有効化、または管理者権限が必要。
 
@@ -54,6 +54,18 @@ $KomorebiHome = if ($Env:KOMOREBI_CONFIG_HOME -and -not $PSBoundParameters.Conta
 $Links = [ordered]@{
     '.config\komorebi'   = $KomorebiHome
     '.config\PowerShell' = Join-Path $TargetRoot '.config\PowerShell'
+}
+
+# プロファイルは symlink ではなく dot-source 1 行の stub を置く。$PROFILE は
+# OneDrive のリダイレクトを解決済みだが、配置先は PowerShell 7+ と Windows
+# PowerShell 5.1 で分かれる。stub なら両方に置いても中身は .config\PowerShell
+# の 1 箇所で済み、symlink の権限も要らない。
+$ProfileStub = '. $HOME\.config\PowerShell\profile.ps1'
+
+$Documents = [Environment]::GetFolderPath('MyDocuments')
+$ProfilePaths = [ordered]@{
+    'PowerShell 7+'          = Join-Path $Documents 'PowerShell\profile.ps1'
+    'Windows PowerShell 5.1' = Join-Path $Documents 'WindowsPowerShell\profile.ps1'
 }
 
 # パス比較用の正規化。ディレクトリの symlink は .Target が末尾 \ 付きで返るため、
@@ -148,6 +160,32 @@ function New-DotLink {
     }
 }
 
+# 既に stub があれば何もしない。無ければ末尾に 1 行足す。プロファイルは
+# 他のツール (starship, conda 等) も書き込む場所なので、退避せず追記する。
+function Install-ProfileStub {
+    param([string]$Path)
+
+    $content = if (Test-Path -LiteralPath $Path) { Get-Content -LiteralPath $Path -Raw } else { '' }
+    if ($null -eq $content) { $content = '' }
+
+    if ($content -like "*$ProfileStub*") {
+        Write-Host "  ok      $Path"
+        return
+    }
+
+    Write-Host "  append  $Path"
+    if ($DryRun) { return }
+    try {
+        $parent = Split-Path -Parent $Path
+        if (-not (Test-Path -LiteralPath $parent)) { New-Item -ItemType Directory -Path $parent -Force | Out-Null }
+        if ($content -ne '' -and -not $content.EndsWith([Environment]::NewLine)) { Add-Content -LiteralPath $Path -Value '' -Encoding utf8 }
+        Add-Content -LiteralPath $Path -Value $ProfileStub -Encoding utf8
+    } catch {
+        Write-Warning "  FAIL    $Path : $($_.Exception.Message)"
+        $script:Failures++
+    }
+}
+
 if (-not (Test-SymlinkAllowed)) {
     Write-Warning 'シンボリックリンクを作成できない。次のいずれかが必要:'
     Write-Warning '  - 開発者モードを有効にする (設定 > システム > 開発者向け)'
@@ -169,10 +207,16 @@ if (-not $Env:KOMOREBI_CONFIG_HOME) {
     Write-Host "  [Environment]::SetEnvironmentVariable('KOMOREBI_CONFIG_HOME', '$KomorebiHome', 'User')"
     Write-Host ''
 }
-Write-Host 'profile.ps1 は手動でリンクすること (エディション/ホストで配置先が変わるため):'
-Write-Host "  source : $(Join-Path $DotfilesDir '.config\PowerShell\profile.ps1')"
-Write-Host "  target : $PROFILE"
-Write-Host '  例: New-Item -ItemType SymbolicLink -Path $PROFILE -Target (Join-Path $DotfilesDir ''.config\PowerShell\profile.ps1'') -Force'
+# 5.1 側はディレクトリがある環境だけ (使っていない環境に空の階層を作らない)。
+foreach ($edition in $ProfilePaths.Keys) {
+    $path = $ProfilePaths[$edition]
+    if ($edition -eq 'Windows PowerShell 5.1' -and -not (Test-Path -LiteralPath (Split-Path -Parent $path))) {
+        Write-Host "  -       $edition は未使用のため skip"
+        continue
+    }
+    Install-ProfileStub -Path $path
+}
+
 Write-Host ''
 if ($Failures -gt 0) {
     Write-Warning "done with $Failures problem(s) -- 上の skip / REFUSE を確認すること。"

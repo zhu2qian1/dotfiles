@@ -9,7 +9,9 @@ bash install.sh             # install (Linux / WSL)
 bash install.sh --dry-run   # show what would happen, change nothing
 bash install.sh --doctor    # report link state, shell wiring and missing tools
 
-pwsh -File install.ps1      # Windows-only config (komorebi etc.)
+pwsh -File install.ps1              # install (Windows)
+pwsh -File install.ps1 -DryRun      # show what would happen, change nothing
+pwsh -File install.ps1 -Doctor      # report link state, profile and missing tools
 ```
 
 ## Layout
@@ -23,6 +25,16 @@ pwsh -File install.ps1      # Windows-only config (komorebi etc.)
 | `scripts/`, `backup/`, `.vscode/` | -- | not linked; see `IGNORE` in `install.sh` |
 
 `.config/bash/README.md` covers the shell config and its load order.
+
+On Windows, `install.ps1` links the entries actually used there --
+`.config/{komorebi,PowerShell,nvim,starship,yazi,whkdrc}` and the top-level
+`.vimrc`, `.gvimrc`, `.wezterm.lua`, `.psmux.conf` -- and appends a one-line stub
+to the CurrentUserAllHosts profile of both PowerShell 7+ and Windows PowerShell
+5.1, so the profile body stays in `.config/PowerShell/profile.ps1`.
+`komorebi.json` resolves its bar and application configs through
+`KOMOREBI_CONFIG_HOME`, which must point at `~/.config/komorebi`; `-Doctor` checks
+that. Creating symlinks needs developer mode or an elevated shell.
+
 `~/.profile` holds PATH and anything non-interactive shells need; `~/.bashrc` is
 only a loader.
 

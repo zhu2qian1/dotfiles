@@ -24,10 +24,14 @@
 .EXAMPLE
     pwsh -File install.ps1
     pwsh -File install.ps1 -DryRun
+    pwsh -File install.ps1 -Doctor
 #>
 [CmdletBinding()]
 param(
     [switch]$DryRun,
+
+    # 何も変更せず、リンク・プロファイル・ツールの状態だけ報告する。
+    [switch]$Doctor,
 
     # 配置先のルート。既定は $HOME で、通常は指定しない。テストのために
     # 一時ディレクトリを渡せるようにしてある ($HOME は自動変数なので
@@ -219,6 +223,81 @@ function Install-ProfileStub {
         Write-Warning "  FAIL    $Path : $($_.Exception.Message)"
         $script:Failures++
     }
+}
+
+# 読み取り専用のレポート。何も変更しない (install.sh --doctor の Windows 版)。
+function Invoke-Doctor {
+    Write-Host '== symlinks =='
+    foreach ($name in $Links.Keys) {
+        $target = $Links[$name]
+        $source = Join-Path $DotfilesDir $name
+        switch (Get-LinkState -Source $source -Target $target) {
+            'ok'       { Write-Host "  ok       $target" }
+            'missing'  { Write-Warning "  MISSING  $target"; $script:Failures++ }
+            'conflict' { Write-Warning "  CONFLICT $target (not our link)"; $script:Failures++ }
+            'refuse'   { Write-Warning "  REFUSE   $target (home directory)"; $script:Failures++ }
+            'nosource' { Write-Warning "  NOSOURCE $source"; $script:Failures++ }
+        }
+    }
+
+    Write-Host ''
+    Write-Host '== profile =='
+    foreach ($edition in $ProfilePaths.Keys) {
+        $path = $ProfilePaths[$edition]
+        $content = if (Test-Path -LiteralPath $path) { Get-Content -LiteralPath $path -Raw } else { $null }
+        if ($null -ne $content -and $content -like "*$ProfileStub*") {
+            Write-Host "  ok       $path"
+        } elseif ($edition -eq 'Windows PowerShell 5.1' -and -not (Test-Path -LiteralPath (Split-Path -Parent $path))) {
+            Write-Host "  -        $edition は未使用"
+        } else {
+            Write-Warning "  MISSING  $path に stub が無い"
+            $script:Failures++
+        }
+    }
+
+    Write-Host ''
+    Write-Host '== komorebi =='
+    if (-not $Env:KOMOREBI_CONFIG_HOME) {
+        Write-Warning '  MISSING  KOMOREBI_CONFIG_HOME が未設定'
+        $script:Failures++
+    } elseif ((Get-NormalizedPath $Env:KOMOREBI_CONFIG_HOME) -ieq (Get-NormalizedPath $KomorebiHome)) {
+        Write-Host "  ok       KOMOREBI_CONFIG_HOME = $Env:KOMOREBI_CONFIG_HOME"
+    } else {
+        Write-Warning "  WARN     KOMOREBI_CONFIG_HOME がリンク先と違う: $Env:KOMOREBI_CONFIG_HOME"
+    }
+
+    Write-Host ''
+    Write-Host '== symlink 権限 =='
+    if (Test-SymlinkAllowed) {
+        Write-Host '  ok       symlink を作成できる'
+    } else {
+        Write-Warning '  MISSING  開発者モードも管理者権限も無い'
+        $script:Failures++
+    }
+
+    Write-Host ''
+    Write-Host '== tools =='
+    $required = @('git', 'pwsh')
+    $optional = @('nvim', 'komorebic', 'whkd', 'starship', 'yazi', 'fzf', 'zoxide', 'eza', 'bat', 'rg', 'fd', 'lazygit', 'delta')
+    foreach ($tool in $required) {
+        $cmd = Get-Command $tool -ErrorAction SilentlyContinue
+        if ($cmd) { Write-Host ('  ok       {0,-10} {1}' -f $tool, $cmd.Source) }
+        else { Write-Warning ('  MISSING  {0,-10} (required)' -f $tool); $script:Failures++ }
+    }
+    foreach ($tool in $optional) {
+        $cmd = Get-Command $tool -ErrorAction SilentlyContinue
+        if ($cmd) { Write-Host ('  ok       {0,-10} {1}' -f $tool, $cmd.Source) }
+        else { Write-Host ('  -        {0,-10} (optional)' -f $tool) }
+    }
+
+    Write-Host ''
+    if ($Failures -eq 0) { Write-Host 'doctor: all good.' }
+    else { Write-Warning "doctor: $Failures 件の問題あり (上を参照)" }
+}
+
+if ($Doctor) {
+    Invoke-Doctor
+    exit ($(if ($Failures -gt 0) { 1 } else { 0 }))
 }
 
 if (-not (Test-SymlinkAllowed)) {

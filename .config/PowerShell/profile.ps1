@@ -7,7 +7,3 @@
 . "$HOME\.config\PowerShell\yazi.ps1"
 . "$HOME\.config\PowerShell\komorebi.ps1"
 
-if ($ENV:WT_SESSION -ne "") {
-    # Windows Terminal Related (STUB)
-}
-

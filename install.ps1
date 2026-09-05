@@ -52,8 +52,20 @@ $KomorebiHome = if ($Env:KOMOREBI_CONFIG_HOME -and -not $PSBoundParameters.Conta
 
 # source (リポジトリ内) -> target (配置先) の対応表。必要に応じて編集する。
 $Links = [ordered]@{
+    # ~\.config 配下 (Windows で使うものだけ。bash / zellij / lazygit は
+    # WSL 側で使うので install.sh が扱う)
     '.config\komorebi'   = $KomorebiHome
     '.config\PowerShell' = Join-Path $TargetRoot '.config\PowerShell'
+    '.config\nvim'       = Join-Path $TargetRoot '.config\nvim'
+    '.config\starship'   = Join-Path $TargetRoot '.config\starship'
+    '.config\yazi'       = Join-Path $TargetRoot '.config\yazi'
+    '.config\whkdrc'     = Join-Path $TargetRoot '.config\whkdrc'
+
+    # ~ 直下
+    '.vimrc'             = Join-Path $TargetRoot '.vimrc'
+    '.gvimrc'            = Join-Path $TargetRoot '.gvimrc'
+    '.wezterm.lua'       = Join-Path $TargetRoot '.wezterm.lua'
+    '.psmux.conf'        = Join-Path $TargetRoot '.psmux.conf'
 }
 
 # プロファイルは symlink ではなく dot-source 1 行の stub を置く。$PROFILE は
@@ -70,8 +82,14 @@ $ProfilePaths = [ordered]@{
 
 # パス比較用の正規化。ディレクトリの symlink は .Target が末尾 \ 付きで返るため、
 # そのまま比較すると常に不一致になり、既存の正しいリンクを張り直してしまう。
+# 手で張られた相対リンク (例 .\dotfiles\.vimrc) はリンク自身の位置が基準なので、
+# プロセスの作業ディレクトリで解決しないよう -BaseDirectory を渡す。
 function Get-NormalizedPath {
-    param([string]$Path)
+    param([string]$Path, [string]$BaseDirectory)
+
+    if ($BaseDirectory -and -not [IO.Path]::IsPathRooted($Path)) {
+        $Path = Join-Path $BaseDirectory $Path
+    }
     [IO.Path]::GetFullPath($Path).TrimEnd('\')
 }
 
@@ -108,28 +126,45 @@ $Forbidden = @($TargetRoot, $HOME, $Env:USERPROFILE) |
 # 消滅のような不整合が、成功扱いのまま見過ごされないようにするため。
 $Failures = 0
 
+# リンクの状態: nosource / refuse / ok / missing / conflict。install と doctor で
+# 同じ判定を使うため切り出してある。
+function Get-LinkState {
+    param([string]$Source, [string]$Target)
+
+    if (-not (Test-Path -LiteralPath $Source)) { return 'nosource' }
+    if ($Forbidden -contains (Get-NormalizedPath $Target)) { return 'refuse' }
+
+    $item = Get-Item -LiteralPath $Target -Force -ErrorAction SilentlyContinue
+    if ($null -eq $item) { return 'missing' }
+
+    # .Target は PowerShell 5.1 では文字列コレクションで返るため 1 要素目を取る。
+    $linked = Get-NormalizedPath (@($item.Target)[0]) -BaseDirectory (Split-Path -Parent $Target)
+    if ($item.LinkType -eq 'SymbolicLink' -and $linked -ieq (Get-NormalizedPath $Source)) { return 'ok' }
+
+    'conflict'
+}
+
 function New-DotLink {
     param([string]$Source, [string]$Target)
 
-    if (-not (Test-Path -LiteralPath $Source)) {
-        Write-Warning "  skip    source not found: $Source"
-        $script:Failures++
-        return
-    }
-
-    if ($Forbidden -contains (Get-NormalizedPath $Target)) {
-        Write-Warning "  REFUSE  target is a home directory, not linking: $Target"
-        $script:Failures++
-        return
+    switch (Get-LinkState -Source $Source -Target $Target) {
+        'nosource' {
+            Write-Warning "  skip    source not found: $Source"
+            $script:Failures++
+            return
+        }
+        'refuse' {
+            Write-Warning "  REFUSE  target is a home directory, not linking: $Target"
+            $script:Failures++
+            return
+        }
+        'ok' {
+            Write-Host "  ok      $Target"
+            return
+        }
     }
 
     $item = Get-Item -LiteralPath $Target -Force -ErrorAction SilentlyContinue
-    # .Target は PowerShell 5.1 では文字列コレクションで返るため 1 要素目を取る。
-    if ($null -ne $item -and $item.LinkType -eq 'SymbolicLink' -and
-        (Get-NormalizedPath (@($item.Target)[0])) -ieq (Get-NormalizedPath $Source)) {
-        Write-Host "  ok      $Target"
-        return
-    }
 
     # 退避と作成をまとめて try で囲む。途中で落ちたときに、退避だけ済んで
     # 設定が消えたように見える状態を残さないため。

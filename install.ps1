@@ -72,6 +72,19 @@ function Get-BackupPath {
     "$Target.bk-$(Get-Date -Format 'yyyyMMddHHmmss')"
 }
 
+# symlink を作れる状態か。管理者権限があるか、開発者モードが有効なら作れる。
+# 事前に確認しないと、退避だけ済んで link で権限エラー、という中途半端な
+# 状態で止まる。
+function Test-SymlinkAllowed {
+    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = [Security.Principal.WindowsPrincipal]::new($identity)
+    if ($principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { return $true }
+
+    $unlockKey = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock'
+    $unlock = Get-ItemProperty -Path $unlockKey -Name AllowDevelopmentWithoutDevLicense -ErrorAction SilentlyContinue
+    ($null -ne $unlock) -and ($unlock.AllowDevelopmentWithoutDevLicense -eq 1)
+}
+
 # ディレクトリごとリンクするので、ホーム直下のような広い場所を target に
 # 取らせない。KOMOREBI_CONFIG_HOME に旧構成の %USERPROFILE% が残っていると
 # ホームごと .bak へ退避しかねないため。
@@ -106,18 +119,41 @@ function New-DotLink {
         return
     }
 
-    if ($null -ne $item) {
-        $bak = Get-BackupPath $Target
-        Write-Host "  backup  $Target -> $bak"
-        if (-not $DryRun) { Move-Item -LiteralPath $Target -Destination $bak -Force }
-    }
+    # 退避と作成をまとめて try で囲む。途中で落ちたときに、退避だけ済んで
+    # 設定が消えたように見える状態を残さないため。
+    $bak = $null
+    try {
+        if ($null -ne $item) {
+            $bak = Get-BackupPath $Target
+            Write-Host "  backup  $Target -> $bak"
+            if (-not $DryRun) { Move-Item -LiteralPath $Target -Destination $bak -Force }
+        }
 
-    Write-Host "  link    $Target -> $Source"
-    if (-not $DryRun) {
-        $parent = Split-Path -Parent $Target
-        if (-not (Test-Path -LiteralPath $parent)) { New-Item -ItemType Directory -Path $parent -Force | Out-Null }
-        New-Item -ItemType SymbolicLink -Path $Target -Target $Source -Force | Out-Null
+        Write-Host "  link    $Target -> $Source"
+        if (-not $DryRun) {
+            $parent = Split-Path -Parent $Target
+            if (-not (Test-Path -LiteralPath $parent)) { New-Item -ItemType Directory -Path $parent -Force | Out-Null }
+            New-Item -ItemType SymbolicLink -Path $Target -Target $Source -Force | Out-Null
+        }
+    } catch {
+        Write-Warning "  FAIL    $Target : $($_.Exception.Message)"
+        # 退避が済んでいて target が空いているときだけ戻す。
+        $bakItem = if ($null -ne $bak) { Get-Item -LiteralPath $bak -Force -ErrorAction SilentlyContinue } else { $null }
+        $targetItem = Get-Item -LiteralPath $Target -Force -ErrorAction SilentlyContinue
+        if ($null -ne $bakItem -and $null -eq $targetItem) {
+            Move-Item -LiteralPath $bak -Destination $Target -Force
+            Write-Warning "  restore $bak -> $Target"
+        }
+        $script:Failures++
     }
+}
+
+if (-not (Test-SymlinkAllowed)) {
+    Write-Warning 'シンボリックリンクを作成できない。次のいずれかが必要:'
+    Write-Warning '  - 開発者モードを有効にする (設定 > システム > 開発者向け)'
+    Write-Warning '  - 管理者権限の PowerShell で実行する'
+    if (-not $DryRun) { exit 1 }
+    Write-Warning '  (-DryRun なので続行する)'
 }
 
 Write-Host "dotfiles: $DotfilesDir  (dry-run=$DryRun)"

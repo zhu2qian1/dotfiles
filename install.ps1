@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Windows 専用設定ファイルを所定の場所へ symlink する。冪等。
-    既存の実体/別リンクは <name>.bak に退避する。
+    既存の実体/別リンクは <name>.bak (既にあれば <name>.bk-<日時>) に退避する。
 
     対象 (下の $Links を編集すれば増減できる):
       - .config\komorebi   -> $KOMOREBI_CONFIG_HOME (既定 ~\.config\komorebi)
@@ -27,7 +27,12 @@
 #>
 [CmdletBinding()]
 param(
-    [switch]$DryRun
+    [switch]$DryRun,
+
+    # 配置先のルート。既定は $HOME で、通常は指定しない。テストのために
+    # 一時ディレクトリを渡せるようにしてある ($HOME は自動変数なので
+    # $env:HOME を書き換えても変わらず、環境変数では差し替えられない)。
+    [string]$TargetRoot = $HOME
 )
 
 Set-StrictMode -Version Latest
@@ -36,17 +41,19 @@ $ErrorActionPreference = 'Stop'
 $DotfilesDir = $PSScriptRoot
 
 # komorebi の設定ホーム: 環境変数 KOMOREBI_CONFIG_HOME があればそれ、
-# 無ければ ~\.config\komorebi (リポジトリの構成に合わせた既定)。
-$KomorebiHome = if ($Env:KOMOREBI_CONFIG_HOME) {
+# 無ければ <TargetRoot>\.config\komorebi (リポジトリの構成に合わせた既定)。
+# -TargetRoot を明示したときは、テストが実環境の環境変数に引きずられない
+# よう KOMOREBI_CONFIG_HOME を見ない。
+$KomorebiHome = if ($Env:KOMOREBI_CONFIG_HOME -and -not $PSBoundParameters.ContainsKey('TargetRoot')) {
     $Env:KOMOREBI_CONFIG_HOME
 } else {
-    Join-Path $HOME '.config\komorebi'
+    Join-Path $TargetRoot '.config\komorebi'
 }
 
 # source (リポジトリ内) -> target (配置先) の対応表。必要に応じて編集する。
 $Links = [ordered]@{
     '.config\komorebi'   = $KomorebiHome
-    '.config\PowerShell' = Join-Path $HOME '.config\PowerShell'
+    '.config\PowerShell' = Join-Path $TargetRoot '.config\PowerShell'
 }
 
 # パス比較用の正規化。ディレクトリの symlink は .Target が末尾 \ 付きで返るため、
@@ -56,23 +63,38 @@ function Get-NormalizedPath {
     [IO.Path]::GetFullPath($Path).TrimEnd('\')
 }
 
+# 退避先。既存の <name>.bak を上書きすると前回の退避を失うので、既にあれば
+# 日時付きの <name>.bk-yyyyMMddHHmmss に逃がす。
+function Get-BackupPath {
+    param([string]$Target)
+    $bak = "$Target.bak"
+    if ($null -eq (Get-Item -LiteralPath $bak -Force -ErrorAction SilentlyContinue)) { return $bak }
+    "$Target.bk-$(Get-Date -Format 'yyyyMMddHHmmss')"
+}
+
 # ディレクトリごとリンクするので、ホーム直下のような広い場所を target に
 # 取らせない。KOMOREBI_CONFIG_HOME に旧構成の %USERPROFILE% が残っていると
 # ホームごと .bak へ退避しかねないため。
-$Forbidden = @($HOME, $Env:USERPROFILE) |
+$Forbidden = @($TargetRoot, $HOME, $Env:USERPROFILE) |
     Where-Object { $_ } |
     ForEach-Object { Get-NormalizedPath $_ }
+
+# 処理できなかった項目数。1 件でもあれば終了コード 1 で終わる。リンク対象の
+# 消滅のような不整合が、成功扱いのまま見過ごされないようにするため。
+$Failures = 0
 
 function New-DotLink {
     param([string]$Source, [string]$Target)
 
     if (-not (Test-Path -LiteralPath $Source)) {
         Write-Warning "  skip    source not found: $Source"
+        $script:Failures++
         return
     }
 
     if ($Forbidden -contains (Get-NormalizedPath $Target)) {
         Write-Warning "  REFUSE  target is a home directory, not linking: $Target"
+        $script:Failures++
         return
     }
 
@@ -85,8 +107,9 @@ function New-DotLink {
     }
 
     if ($null -ne $item) {
-        Write-Host "  backup  $Target -> $Target.bak"
-        if (-not $DryRun) { Move-Item -LiteralPath $Target -Destination "$Target.bak" -Force }
+        $bak = Get-BackupPath $Target
+        Write-Host "  backup  $Target -> $bak"
+        if (-not $DryRun) { Move-Item -LiteralPath $Target -Destination $bak -Force }
     }
 
     Write-Host "  link    $Target -> $Source"
@@ -115,4 +138,8 @@ Write-Host "  source : $(Join-Path $DotfilesDir '.config\PowerShell\profile.ps1'
 Write-Host "  target : $PROFILE"
 Write-Host '  例: New-Item -ItemType SymbolicLink -Path $PROFILE -Target (Join-Path $DotfilesDir ''.config\PowerShell\profile.ps1'') -Force'
 Write-Host ''
+if ($Failures -gt 0) {
+    Write-Warning "done with $Failures problem(s) -- 上の skip / REFUSE を確認すること。"
+    exit 1
+}
 Write-Host 'done.'

@@ -24,8 +24,8 @@ esac
 
 # ------------------------------------------------------------------- Loader
 # Load order:
-#   1. [0-9]*.bash        numbered (00 history -> 10 shell -> 20 aliases
-#                         -> 30 tools -> 40 prompt)
+#   1. [0-9]*.bash        numbered (00 history -> 05 tmux -> 10 shell
+#                         -> 20 aliases -> 30 tools -> 40 prompt)
 #   2. os/<os>.bash       per-OS (linux / darwin / windows)
 #   3. host/<host>.bash   per-machine
 #   4. local.bash         machine-only secrets and overrides (not in git)

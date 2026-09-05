@@ -60,3 +60,12 @@ vim.opt.scrolloff = 8
 vim.opt.incsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
+
+-- ============================================
+-- man ページ (組み込み :Man / $MANPAGER)
+-- ============================================
+-- 既定では `man` に端末幅を渡してハードラップさせるが、それだとウィンドウを
+-- 分割した途端に行が変な位置で折り返る。0 にすると MANWIDTH=999 で整形させ、
+-- ftplugin/man.vim 側の wrap/breakindent/linebreak によるソフトラップになる。
+-- シェル側 ($MANPAGER 経由) でも MANWIDTH=999 を輸出して挙動を揃えている。
+vim.g.man_hardwrap = 0

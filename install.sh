@@ -68,6 +68,55 @@ link() {
     fi
 }
 
+# --------------------------------------------------------- sudo's PATH
+# sudo throws PATH away and uses secure_path, so /opt/nvim from .profile is
+# invisible there and `sudo nvim` dies with "command not found". A symlink in
+# /usr/local/bin -- on every secure_path there is -- is the fix.
+SUDO_PATH_DIRS=(/usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin)
+NVIM_SUDO_LINK="/usr/local/bin/nvim"
+
+# Would `sudo <cmd>` find something? Approximates secure_path without needing
+# sudo itself (reading /etc/sudoers requires root).
+sudo_can_see() {
+    local cmd="$1" d
+    for d in "${SUDO_PATH_DIRS[@]}"; do
+        [[ -x "$d/$cmd" ]] && return 0
+    done
+    return 1
+}
+
+# The one step here that needs root. Guarded accordingly: never prompts for a
+# password (sudo -n only), never touches an existing /usr/local/bin/nvim that
+# is not ours, and prints the command to run by hand when it cannot act.
+nvim_sudo_link() {
+    local src
+    src="$(command -v nvim 2>/dev/null)" || true
+    if [[ -z "$src" ]]; then
+        printf '  -       nvim not installed, skipping %s\n' "$NVIM_SUDO_LINK"
+        return 0
+    fi
+    if [[ -L "$NVIM_SUDO_LINK" && "$(readlink -f "$NVIM_SUDO_LINK")" == "$(readlink -f "$src")" ]]; then
+        printf '  ok      %s\n' "$NVIM_SUDO_LINK"
+        return 0
+    fi
+    if [[ -e "$NVIM_SUDO_LINK" || -L "$NVIM_SUDO_LINK" ]]; then
+        printf '  CONFLICT %s exists and is not our link -- left alone\n' "$NVIM_SUDO_LINK"
+        return 0
+    fi
+    if sudo_can_see nvim; then
+        printf '  ok      nvim already reachable from sudo PATH\n'
+        return 0
+    fi
+    printf '  link    %s -> %s (needs root)\n' "$NVIM_SUDO_LINK" "$src"
+    (( DRY_RUN )) && return 0
+    if sudo -n ln -snf "$src" "$NVIM_SUDO_LINK" 2>/dev/null; then
+        printf '  ok      %s\n' "$NVIM_SUDO_LINK"
+    else
+        printf '  SKIP    no cached sudo credentials; run:\n'
+        printf '          sudo ln -snf %s %s\n' "$src" "$NVIM_SUDO_LINK"
+    fi
+}
+
 # ------------------------------------------------------------------ doctor
 # Read-only report: what is linked, what tools are missing, whether the
 # shell startup files are wired up. Never changes anything.
@@ -77,10 +126,15 @@ doctor() {
     echo "== symlinks =="
     local path name dest
     shopt -s nullglob dotglob
-    for path in "$DOTFILES_DIR"/* "$DOTFILES_DIR"/.config/*; do
+    for path in "$DOTFILES_DIR"/* "$DOTFILES_DIR"/.config/* \
+                "$DOTFILES_DIR"/.claude/skills/* "$DOTFILES_DIR"/.claude/*; do
         name="$(basename "$path")"
         case "$path" in
             "$DOTFILES_DIR"/.config/*) dest="$HOME/.config/$name" ;;
+            "$DOTFILES_DIR"/.claude/skills/*) dest="$HOME/.claude/skills/$name" ;;
+            "$DOTFILES_DIR"/.claude/*)
+               [[ "$name" == skills ]] && continue      # linked per entry above
+               dest="$HOME/.claude/$name" ;;
             *) in_ignore "$name" && continue
                [[ "$name" == *.bk || "$name" == *.bk-* ]] && continue
                dest="$HOME/$name" ;;
@@ -110,6 +164,51 @@ doctor() {
         printf '  ok       PATH reaches non-interactive shells\n'
     else
         printf '  WARN     nvim not on PATH in a non-interactive shell\n'
+    fi
+
+    # ~/.bash_profile and ~/.bash_login shadow ~/.profile: bash reads only the
+    # first of the three it finds in a login shell. Neither is managed here, so
+    # the symlink report above cannot see them -- it only walks the repo.
+    local stray found=0
+    for stray in .bash_profile .bash_login; do
+        if [[ -e "$HOME/$stray" || -L "$HOME/$stray" ]]; then
+            printf '  CONFLICT ~/%s shadows ~/.profile in a login shell\n' "$stray"
+            found=1; rc=1
+        fi
+    done
+    (( found )) || printf '  ok       no ~/.bash_profile or ~/.bash_login shadowing ~/.profile\n'
+
+    # .profile is read by any POSIX login shell, not just bash, and it must stay
+    # silent on stdout or it breaks scp/sftp/rsync. Check both in one shot.
+    local prof_out prof_err prof_rc=0
+    prof_err="$(sh -c '. "$HOME/.profile"' 2>&1 >/dev/null)" || prof_rc=$?
+    prof_out="$(sh -c '. "$HOME/.profile"' 2>/dev/null || true)"
+    if (( prof_rc != 0 )) || [[ -n "$prof_err" ]]; then
+        printf '  FAIL     ~/.profile is not clean under sh (rc=%s)\n' "$prof_rc"; rc=1
+        [[ -n "$prof_err" ]] && printf '           %s\n' "$prof_err"
+    elif [[ -n "$prof_out" ]]; then
+        printf '  FAIL     ~/.profile writes to stdout (breaks scp/rsync)\n'; rc=1
+        printf '           %s\n' "$prof_out"
+    else
+        printf '  ok       ~/.profile sources cleanly under sh, stdout silent\n'
+    fi
+
+    echo
+    echo "== sudo =="
+    if sudo_can_see nvim; then
+        printf '  ok       nvim reachable from sudo PATH\n'
+    elif command -v nvim >/dev/null 2>&1; then
+        printf '  MISSING  nvim not on sudo PATH -- run install.sh, or:\n'
+        printf '           sudo ln -snf %s %s\n' "$(command -v nvim)" "$NVIM_SUDO_LINK"
+        rc=1
+    else
+        printf '  -        nvim not installed\n'
+    fi
+    # sudoedit is the recommended path: it edits as us and writes back as root.
+    if bash -lic '[ -n "${SUDO_EDITOR:-}" ] && [ -x "$SUDO_EDITOR" ]' 2>/dev/null; then
+        printf '  ok       SUDO_EDITOR set for sudoedit\n'
+    else
+        printf '  MISSING  SUDO_EDITOR not usable in a login shell -- see ~/.profile\n'; rc=1
     fi
 
     echo
@@ -170,13 +269,21 @@ if [[ -d "$DOTFILES_DIR/.config" ]]; then
     done
 fi
 
-# 3) link .claude/skills entries individually (coexist with other global skills)
-if [[ -d "$DOTFILES_DIR/.claude/skills" ]]; then
+# 3) link .claude entries individually: ~/.claude also holds Claude Code's own
+#    state (sessions, history, settings.json), so never link the directory itself.
+if [[ -d "$DOTFILES_DIR/.claude" ]]; then
     for path in "$DOTFILES_DIR"/.claude/skills/*; do
         link "$path" "$HOME/.claude/skills/$(basename "$path")"
     done
+    for path in "$DOTFILES_DIR"/.claude/*; do
+        [[ "$(basename "$path")" == skills ]] && continue
+        link "$path" "$HOME/.claude/$(basename "$path")"
+    done
 fi
 shopt -u nullglob dotglob
+
+# 4) make nvim visible to sudo (see nvim_sudo_link above)
+nvim_sudo_link
 
 echo "done."
 echo

@@ -52,13 +52,16 @@ unset _brew
 
 # SDKMAN. It rewrites PATH, so it belongs here rather than in interactive
 # config -- this is what makes `ssh host 'java -version'` and cron jobs work.
+# sdkman-init.sh is bash/zsh only -- it uses arrays and [[ ]]. Under dash the
+# syntax error aborts the rest of this file, taking PATH and EDITOR with it,
+# so gate it on the shell. SDKMAN_DIR stays exported for every shell.
 export SDKMAN_DIR="$HOME/.sdkman"
-[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && . "$SDKMAN_DIR/bin/sdkman-init.sh"
+if [ -n "${BASH_VERSION:-}${ZSH_VERSION:-}" ] && [ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
+    . "$SDKMAN_DIR/bin/sdkman-init.sh"
+fi
 
 # -------------------------------------------------------------- User PATH
 # Later prepends win. User-owned directories take precedence.
-path_prepend "/opt/nvim"          # nvim tarball, binary placed directly
-path_prepend "/opt/nvim/bin"      # nvim tarball, with a bin/ subdir
 path_prepend "$HOME/bin"
 path_prepend "$HOME/.local/bin"
 export PATH
@@ -72,6 +75,19 @@ else
     export EDITOR='vi'
 fi
 export VISUAL="$EDITOR"
+
+# ------------------------------------------------------------- SUDO_EDITOR
+# `sudoedit file` (= sudo -e) runs the editor as *us* and copies the result
+# back as root. That keeps ~/.config/nvim and its plugins working and stops
+# ~/.local/share/nvim from filling up with root-owned files, which is what
+# plain `sudo nvim` does. Absolute path on purpose: sudo does not search PATH
+# for the editor. If sudo was built without env_editor this is ignored and the
+# sudoers `editor` default wins -- harmless either way.
+_sudo_editor="$(command -v "$EDITOR" 2>/dev/null)"
+if [ -n "$_sudo_editor" ] && [ -x "$_sudo_editor" ]; then
+    export SUDO_EDITOR="$_sudo_editor"
+fi
+unset _sudo_editor
 
 # ------------------------------------------------- Hand off to interactive
 # For an interactive bash, also read .bashrc (matches the Ubuntu default).

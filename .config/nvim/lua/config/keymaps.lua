@@ -95,3 +95,29 @@ vim.keymap.set('t', '<C-w>j', '<CMD>wincmd j<CR>')
 vim.keymap.set('t', '<C-w>k', '<CMD>wincmd k<CR>')
 vim.keymap.set('t', '<C-w>l', '<CMD>wincmd l<CR>')
 
+
+-- ============================================
+-- man
+-- 組み込みの :Man で開く。man の出力を通常のバッファとして読むので、
+-- バッファ内で CTRL-] : カーソル下の printf(3) 等へジャンプ (tagfunc)
+--              CTRL-T : 元のページへ戻る
+--              gO     : 見出し一覧 (location list)
+--              q      : 閉じる
+-- K は既定の keywordprg=:Man でそのまま引ける。
+-- ============================================
+-- count でセクションを指定できるようにする (例: 3<leader>m で printf(3))。
+-- :vertical 3Man のように mods -> count -> Man の順で組み立てる。
+local function man_open(mods)
+    return function()
+        local count = vim.v.count > 0 and tostring(vim.v.count) or ''
+        local ok, err = pcall(vim.cmd, mods .. ' ' .. count .. 'Man')
+        if not ok then
+            vim.notify(err, vim.log.levels.WARN)
+        end
+    end
+end
+
+vim.keymap.set('n', '<leader>m',  man_open('vertical'),   { desc = 'man: カーソル下の語 (垂直分割)' })
+vim.keymap.set('n', '<leader>Ms', man_open('horizontal'), { desc = 'man: カーソル下の語 (水平分割)' })
+vim.keymap.set('n', '<leader>Mv', man_open('vertical'),   { desc = 'man: カーソル下の語 (垂直分割)' })
+vim.keymap.set('n', '<leader>Mt', man_open('tab'),        { desc = 'man: カーソル下の語 (新規タブ)' })

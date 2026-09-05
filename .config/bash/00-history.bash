@@ -16,7 +16,7 @@ HISTFILESIZE=200000
 HISTTIMEFORMAT='%F %T  '
 
 # Not worth recording
-HISTIGNORE='ls:ll:la:l:cd:cd -:pwd:exit:clear:cl:history:sb'
+HISTIGNORE='ls:ll:la:l:lla:llai:z:z -:cd:cd -:pwd:exit:clear:cl:history:sb'
 
 # Flush history to the file at every prompt. Without this, with several
 # terminals open only the last one to exit keeps its history.

@@ -56,3 +56,19 @@ if command -v lesspipe >/dev/null 2>&1; then
 elif command -v lesspipe.sh >/dev/null 2>&1; then
     export LESSOPEN='|lesspipe.sh %s'
 fi
+
+# ------------------------------------------------------------------- man
+# man を Neovim の組み込み :Man で開く。less と違い通常のバッファとして読むので、
+# CTRL-] で printf(3) のような相互参照へジャンプでき、CTRL-T で戻れる (gO で目次)。
+# `+Man!` は「標準入力で受け取った整形済みテキストを man ページとして扱う」指定。
+# MANWIDTH: man 側でハードラップさせず nvim にソフトラップさせる (最大 1000)。
+#           config/options.lua の g:man_hardwrap = 0 と対になっている。
+#
+# 注意: AppImage 版の nvim だとここは動かない。man-db 2.12 は子プロセス (整形
+#   パイプラインとページャ) を seccomp サンドボックスに入れるので、AppImage が
+#   FUSE マウントに使う mount(2) が弾かれて "fuse: mount failed" になる。
+#   nvim は Homebrew 等の通常ビルドを使うこと。
+if command -v nvim >/dev/null 2>&1; then
+    export MANPAGER='nvim +Man!'
+    export MANWIDTH=999
+fi

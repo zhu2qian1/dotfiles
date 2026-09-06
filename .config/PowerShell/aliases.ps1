@@ -1,4 +1,4 @@
-# builtin exe aliases
+﻿# builtin exe aliases
 Set-Alias el explorer.exe
 
 # my functions
@@ -108,5 +108,9 @@ if (Get-Command "git" -ErrorAction SilentlyContinue) {
 # lazygit
 if (Get-Command "lazygit" -ErrorAction SilentlyContinue) {
     Set-Alias lg lazygit
+}
+
+if (Get-Command "psmux" -ErrorAction SilentlyContinue) {
+    Set-Alias t psmux
 }
 

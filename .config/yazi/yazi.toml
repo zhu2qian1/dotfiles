@@ -1,3 +1,14 @@
 [mgr]
 linemode="mtime"
+
+# 既定の edit は unix が $EDITOR、windows が VS Code なので nvim に差し替える。
+# 同じキーを書くと配列ごと上書きになるため、OS 別の 2 つを両方ここに並べる
+# (for に該当しない行は無視されるので 1 ファイルで両環境をまたげる)。
+# %s は yazi が対象ファイルを OS ごとの引用規則で展開する。TUI なので
+# block = true が必須 — 付けないと nvim の描画が yazi の画面と競合する。
+[opener]
+edit = [
+    { run = "nvim %s", desc = "nvim", for = "unix", block = true },
+    { run = "nvim %s", desc = "nvim", for = "windows", block = true },
+]
 # vi:se et sw=4 ts=4 sts=4:

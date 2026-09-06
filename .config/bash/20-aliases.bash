@@ -101,3 +101,30 @@ if command -v fzf >/dev/null 2>&1; then
         fi
     }
 fi
+
+# --------------------------------------------------------------- ssh picker
+# Pick a Host entry from ~/.ssh/config with fzf, then ssh to it.
+# A Host line may list several names ("Host a b c"), so split on whitespace
+# and offer each one separately. Wildcards (Host *, *.example.com) are not
+# connectable targets, so drop them.
+if command -v ssh >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
+    issh() {
+        local config="${1:-$HOME/.ssh/config}" target
+
+        if [ ! -f "$config" ]; then
+            echo "issh: ssh config file '$config' is not found. Aborting." >&2
+            return 1
+        fi
+
+        # Match Host at the start of a line only, so HostName lines are not picked up.
+        target=$(awk '
+                tolower($1) == "host" {
+                    for (i = 2; i <= NF; i++)
+                        if ($i !~ /[*?!]/ && !seen[$i]++) print $i
+                }
+            ' "$config" | fzf --prompt='ssh> ' --height=40% --reverse) || return
+
+        [ -z "$target" ] && return
+        ssh "$target"
+    }
+fi

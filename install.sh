@@ -32,6 +32,8 @@ esac
 #   - Windows-side config (install.ps1, or manual)
 IGNORE=(
     ".git" ".gitignore" "README.md"
+    "CLAUDE.md"                         # このリポジトリ向けの指示。~/CLAUDE.md に
+                                        # 置くと $HOME 配下の全プロジェクトに効く
     "install.sh" "install.ps1"
     ".editorconfig"
     ".config" ".claude"                 # linked per entry further down

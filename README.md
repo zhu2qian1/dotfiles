@@ -22,7 +22,7 @@ pwsh -File install.ps1 -Doctor      # report link state, profile and missing too
 | `.config/*` | `~/.config/<name>` | per entry, never the whole `~/.config` |
 | `.claude/skills/*` | `~/.claude/skills/<name>` | per entry, coexists with other global skills |
 | `.claude/*` | `~/.claude/<name>` | per entry -- `~/.claude` also holds Claude Code's own state |
-| `scripts/`, `backup/`, `.vscode/` | -- | not linked; see `IGNORE` in `install.sh` |
+| `scripts/`, `backup/`, `.vscode/`, `CLAUDE.md` | -- | not linked; see `IGNORE` in `install.sh` |
 
 `.config/bash/README.md` covers the shell config and its load order.
 

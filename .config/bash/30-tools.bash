@@ -35,6 +35,11 @@ if command -v tailscale >/dev/null 2>&1; then
     . <(tailscale completion bash) 2>/dev/null
 fi
 
+# ----------------------------------------------------------------- herdr
+if command -v herdr >/dev/null 2>&1; then
+    . <(herdr completion bash) 2>/dev/null
+fi
+
 # ------------------------------------------------------------------ yazi
 # Wrapper that leaves the shell in the directory yazi exited from.
 if command -v yazi >/dev/null 2>&1; then

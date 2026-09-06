@@ -6,12 +6,15 @@
 # before starship/fzf/asdf initialise saves that work.
 #
 # Opt out with DOTFILES_TMUX_AUTOSTART=0 (in local.bash, host/<host>.bash, or
-# per-shell: `DOTFILES_TMUX_AUTOSTART=0 bash`).
+# per-shell: `DOTFILES_TMUX_AUTOSTART=0 bash`). tmux / screen / zellij / herdr
+# の中では自動的に見送る。
 
 _tmux_autostart() {
     [ "${DOTFILES_TMUX_AUTOSTART:-1}" = 1 ] || return
     # Already multiplexed, or inside something that does its own thing.
-    [ -z "$TMUX" ] && [ -z "$STY" ] && [ -z "$ZELLIJ" ] || return
+    # herdr は自前でペイン/タブを管理するので、その中で tmux を起動すると
+    # 多重化が二重になり herdr 側のペイン操作もエージェント検出も効かなくなる。
+    [ -z "$TMUX" ] && [ -z "$STY" ] && [ -z "$ZELLIJ" ] && [ -z "$HERDR_ENV" ] || return
     [ -z "$INSIDE_EMACS" ] || return
     # Needs a real terminal; TERM=dumb means a caller that cannot drive tmux.
     [ -t 0 ] && [ -t 1 ] && [ "$TERM" != dumb ] || return

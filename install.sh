@@ -52,6 +52,22 @@ in_ignore() {
     return 1
 }
 
+# ~/.config 配下で、ディレクトリごとではなく中身をエントリ単位でリンクするもの。
+# ~/.claude と同じ理由: 追跡したい設定ファイルと、追跡してはいけないマシン固有の
+# 実行時 state が同じディレクトリに同居している。
+#   herdr: config.toml は持ち運べるが、同じディレクトリに API ソケット
+#          (herdr.sock / herdr-client.sock)、ログ、session.json が置かれる。
+#          ディレクトリごとリンクするとそれらが全部リポジトリに流れ込む。
+CONFIG_PER_ENTRY=(
+    "herdr"
+)
+
+in_config_per_entry() {
+    local x="$1" i
+    for i in "${CONFIG_PER_ENTRY[@]}"; do [[ "$x" == "$i" ]] && return 0; done
+    return 1
+}
+
 # link <src-abs> <dest-abs>
 link() {
     local src="$1" dest="$2"
@@ -128,10 +144,20 @@ doctor() {
     echo "== symlinks =="
     local path name dest
     shopt -s nullglob dotglob
-    for path in "$DOTFILES_DIR"/* "$DOTFILES_DIR"/.config/* \
+    # CONFIG_PER_ENTRY のディレクトリは、それ自身ではなく中身が検査対象になる。
+    local config_paths=() sub
+    for path in "$DOTFILES_DIR"/.config/*; do
+        if in_config_per_entry "$(basename "$path")"; then
+            for sub in "$path"/*; do config_paths+=("$sub"); done
+        else
+            config_paths+=("$path")
+        fi
+    done
+    for path in "$DOTFILES_DIR"/* ${config_paths[@]+"${config_paths[@]}"} \
                 "$DOTFILES_DIR"/.claude/skills/* "$DOTFILES_DIR"/.claude/*; do
         name="$(basename "$path")"
         case "$path" in
+            "$DOTFILES_DIR"/.config/*/*) dest="$HOME/.config/${path#"$DOTFILES_DIR"/.config/}" ;;
             "$DOTFILES_DIR"/.config/*) dest="$HOME/.config/$name" ;;
             "$DOTFILES_DIR"/.claude/skills/*) dest="$HOME/.claude/skills/$name" ;;
             "$DOTFILES_DIR"/.claude/*)
@@ -264,10 +290,18 @@ for path in "$DOTFILES_DIR"/*; do
     link "$path" "$HOME/$name"
 done
 
-# 2) link .config entries individually (never replace all of ~/.config)
+# 2) link .config entries individually (never replace all of ~/.config).
+#    CONFIG_PER_ENTRY のディレクトリはさらに一段掘り下げて中身だけをリンクする。
 if [[ -d "$DOTFILES_DIR/.config" ]]; then
     for path in "$DOTFILES_DIR"/.config/*; do
-        link "$path" "$HOME/.config/$(basename "$path")"
+        name="$(basename "$path")"
+        if in_config_per_entry "$name"; then
+            for sub in "$path"/*; do
+                link "$sub" "$HOME/.config/$name/$(basename "$sub")"
+            done
+        else
+            link "$path" "$HOME/.config/$name"
+        fi
     done
 fi
 

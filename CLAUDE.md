@@ -41,6 +41,9 @@ pwsh -File install.ps1 -Doctor
   エントリを全部リンクする。新しい dotfile を足すと自動的に対象になる。
   `.config` と `.claude` はディレクトリごとではなくエントリ単位でリンクする
   (`~/.claude` には Claude Code 自身の state があるため)。
+  `.config` 配下でも同じ問題を抱えるディレクトリは `CONFIG_PER_ENTRY` に列挙すると
+  さらに一段掘り下げて中身だけをリンクする (`herdr` は config.toml の隣に API
+  ソケット・ログ・`session.json` が置かれる)。
 - **`install.ps1` (Windows) は許可リスト方式**。`$Links` (ordered hashtable) に
   書いたものだけを扱う。Windows で使う設定は WSL 側と重ならないので、
   `.config\{komorebi,PowerShell,nvim,starship,yazi,whkdrc}` と一部のトップレベル

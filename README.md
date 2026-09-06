@@ -20,6 +20,7 @@ pwsh -File install.ps1 -Doctor      # report link state, profile and missing too
 | --- | --- | --- |
 | `.profile`, `.bashrc`, `.zshrc`, `.vimrc`, ... | `~/<name>` | top level, linked wholesale |
 | `.config/*` | `~/.config/<name>` | per entry, never the whole `~/.config` |
+| `.config/herdr/*` | `~/.config/herdr/<name>` | per entry -- ソケット・ログ・`session.json` が同居するため |
 | `.claude/skills/*` | `~/.claude/skills/<name>` | per entry, coexists with other global skills |
 | `.claude/*` | `~/.claude/<name>` | per entry -- `~/.claude` also holds Claude Code's own state |
 | `scripts/`, `backup/`, `.vscode/`, `CLAUDE.md` | -- | not linked; see `IGNORE` in `install.sh` |

@@ -15,6 +15,11 @@
     profile.ps1 が ~\.config\PowerShell\*.ps1 を dot-source するため、
     ファイル単位で並べるより実態に合う。
 
+    herdr だけは例外でファイル単位。config.toml の置き場所が Windows では
+    %APPDATA%\herdr で、同じディレクトリに herdr 自身がログと session.json を
+    書くため、ディレクトリごとリンクすると実行時の生成物がリポジトリに入る
+    (install.sh 側の CONFIG_PER_ENTRY と同じ理由)。
+
     プロファイルは PowerShell 7+ / Windows PowerShell 5.1 の CurrentUserAllHosts に
     dot-source 1 行の stub を追記する (symlink は張らない)。本体は
     .config\PowerShell\profile.ps1 の 1 箇所。
@@ -54,6 +59,21 @@ $KomorebiHome = if ($Env:KOMOREBI_CONFIG_HOME -and -not $PSBoundParameters.Conta
     Join-Path $TargetRoot '.config\komorebi'
 }
 
+# herdr の config.toml の置き場所。Windows の既定は %APPDATA%\herdr\config.toml で、
+# ~\.config 配下ではない。HERDR_CONFIG_PATH があればそれが優先されるので、
+# 設定済みならそちらへリンクしないと herdr が読まない。
+# -TargetRoot を明示したときは、KOMOREBI_CONFIG_HOME と同じ理由で環境変数を見ず、
+# 実環境の %APPDATA% にも触らない。
+$HerdrConfig = if ($PSBoundParameters.ContainsKey('TargetRoot')) {
+    Join-Path $TargetRoot 'AppData\Roaming\herdr\config.toml'
+} elseif ($Env:HERDR_CONFIG_PATH) {
+    $Env:HERDR_CONFIG_PATH
+} elseif ($Env:APPDATA) {
+    Join-Path $Env:APPDATA 'herdr\config.toml'
+} else {
+    Join-Path $TargetRoot 'AppData\Roaming\herdr\config.toml'
+}
+
 # source (リポジトリ内) -> target (配置先) の対応表。必要に応じて編集する。
 $Links = [ordered]@{
     # ~\.config 配下 (Windows で使うものだけ。bash / zellij / lazygit は
@@ -64,6 +84,10 @@ $Links = [ordered]@{
     '.config\starship'   = Join-Path $TargetRoot '.config\starship'
     '.config\yazi'       = Join-Path $TargetRoot '.config\yazi'
     '.config\whkdrc'     = Join-Path $TargetRoot '.config\whkdrc'
+
+    # ~\.config 配下ではなく %APPDATA%\herdr へ。ディレクトリではなく
+    # config.toml だけをリンクする (上の $HerdrConfig を参照)。
+    '.config\herdr\config.toml' = $HerdrConfig
 
     # ~ 直下
     '.vimrc'             = Join-Path $TargetRoot '.vimrc'

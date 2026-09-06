@@ -48,7 +48,10 @@ pwsh -File install.ps1 -Doctor
   書いたものだけを扱う。Windows で使う設定は WSL 側と重ならないので、
   `.config\{komorebi,PowerShell,nvim,starship,yazi,whkdrc}` と一部のトップレベル
   ファイルに限定してある。komorebi と PowerShell は配下を相対参照するので
-  **ディレクトリ単位**でリンクする。
+  **ディレクトリ単位**でリンクする。herdr だけは `.config\herdr\config.toml` を
+  `%APPDATA%\herdr\config.toml` (または `HERDR_CONFIG_PATH`) へ**ファイル単位**で
+  リンクする — Windows では設定の置き場所が `~\.config` ではなく、そこに herdr 自身が
+  ログと `session.json` を書くため。
 - 既存の実体や別リンクは `<name>.bak` へ退避 (PowerShell 側は `.bak` が既にあれば
   `<name>.bk-<日時>`)。`*.bak` と `*.bk-*` は gitignore 済みで、リンク対象からも除外される。
 - `install.ps1` はホーム直下など広すぎるパスを target に取ることを `$Forbidden` で

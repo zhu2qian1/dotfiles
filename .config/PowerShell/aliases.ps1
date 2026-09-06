@@ -1,4 +1,4 @@
-# builtin exe aliases
+﻿# builtin exe aliases
 Set-Alias el explorer.exe
 
 # my functions

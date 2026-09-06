@@ -110,3 +110,7 @@ if (Get-Command "lazygit" -ErrorAction SilentlyContinue) {
     Set-Alias lg lazygit
 }
 
+if (Get-Command "psmux" -ErrorAction SilentlyContinue) {
+    Set-Alias t psmux
+}
+

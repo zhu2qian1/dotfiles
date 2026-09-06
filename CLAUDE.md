@@ -116,6 +116,9 @@ pwsh -File install.ps1 -Doctor
 
 - `.editorconfig`: LF・UTF-8・スペース 4・末尾空白除去 (Markdown は除く)。
   Windows 側のファイルでも CRLF にしない。
+- `.ps1` / `.psm1` / `.psd1` は **BOM 付き UTF-8**。Windows PowerShell 5.1 は BOM の
+  無い .ps1 を ANSI (日本語環境なら CP932) として読むので、日本語コメントが化けて
+  構文エラーになる。新しい PowerShell ファイルを足すときは BOM を落とさないこと。
 - `install.sh` は `set -euo pipefail`、`install.ps1` は `Set-StrictMode -Version Latest`
   と `$ErrorActionPreference = 'Stop'` で動く。
 - 両スクリプトのコメントは「なぜそう書いてあるか」を残す形で書かれている

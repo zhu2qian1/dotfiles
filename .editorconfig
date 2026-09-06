@@ -12,3 +12,8 @@ trim_trailing_whitespace = true
 [*.md]
 trim_trailing_whitespace = false
 
+# Windows PowerShell 5.1 は BOM の無い .ps1 を UTF-8 ではなく ANSI (日本語環境なら
+# CP932) として読むため、日本語コメントが化けて構文エラーになる。pwsh 7+ は BOM が
+# 無くても UTF-8 として読むが、5.1 でも動かせるよう BOM を付けておく。
+[*.{ps1,psm1,psd1}]
+charset = utf-8-bom

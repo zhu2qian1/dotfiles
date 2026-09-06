@@ -1,4 +1,4 @@
-# fzf
+﻿# fzf
 if (-not(Get-Command "fzf" -ErrorAction SilentlyContinue)) {
     return;
 }

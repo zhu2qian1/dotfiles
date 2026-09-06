@@ -1,4 +1,4 @@
-# Yazi-related
+﻿# Yazi-related
 function Set-YaziFileOneSetting() {
     # file.exe specify
     if (-not $IsWindows) {

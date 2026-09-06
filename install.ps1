@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     dotfiles symlink installer (Windows)
 

@@ -1,4 +1,4 @@
-# komorebi
+﻿# komorebi
 if ((-not (Get-Command "komorebic" -ErrorAction SilentlyContinue)) -or (-not(Get-Command "whkd" -ErrorAction SilentlyContinue))) {
     return;
 }

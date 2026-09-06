@@ -1,4 +1,4 @@
-# nvim
+﻿# nvim
 if (-not (Get-Command "nvim" -ErrorAction SilentlyContinue)) {
     return;
 }

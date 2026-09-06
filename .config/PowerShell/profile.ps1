@@ -1,4 +1,4 @@
-# vi:se et:
+﻿# vi:se et:
 . "$HOME\.config\PowerShell\prompt.ps1"
 . "$HOME\.config\PowerShell\aliases.ps1"
 

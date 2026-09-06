@@ -1,4 +1,4 @@
-if (-not (Get-Command starship -ErrorAction SilentlyContinue)) {
+﻿if (-not (Get-Command starship -ErrorAction SilentlyContinue)) {
     function Prompt() {
         Write-Host ""
         Write-Host -NoNewLine -ForegroundColor Blue "$env:username@$env:computername"

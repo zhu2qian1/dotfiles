@@ -29,8 +29,16 @@ end
 -- 端末で無効化されているため、osc52 プロバイダに丸ごと差し替えると貼り付けが
 -- 壊れる。接続元の端末側でも OSC 52 の書き込み許可が必要
 -- (WezTerm は既定で可、Windows Terminal は設定で無効化されている場合あり)。
+--
+-- tmux が無い SSH セッション (素の ssh、herdr のペインなど) では OSC 52 を
+-- 自分で書く。herdr は端末エミュレータとしてペインの OSC 52 を捕まえ、
+-- 外側の端末へ出し直すので、この一段だけで接続元 PC まで届く。
+-- 貼り付けは tmux のときと同じ理由で OSC 52 を読まず、無名レジスタを返す
+-- (:h clipboard-osc52 の方式)。ヤンクした中身はこれで貼れる。接続元 PC 側で
+-- コピーしたものは端末の貼り付け (Ctrl+Shift+V など) を使うことになる。
 if vim.fn.has('wsl') == 1 then
-    if (vim.env.SSH_TTY or vim.env.SSH_CONNECTION) and vim.env.TMUX then
+    local via_ssh = vim.env.SSH_TTY or vim.env.SSH_CONNECTION
+    if via_ssh and vim.env.TMUX then
         vim.g.clipboard = {
             name = 'tmux',
             copy = {
@@ -43,7 +51,17 @@ if vim.fn.has('wsl') == 1 then
             },
             cache_enabled = 0,
         }
-    elseif not (vim.env.SSH_TTY or vim.env.SSH_CONNECTION) and vim.fn.executable('win32yank.exe') == 1 then
+    elseif via_ssh then
+        local osc52 = require('vim.ui.clipboard.osc52')
+        local paste = function()
+            return { vim.fn.split(vim.fn.getreg(''), '\n'), vim.fn.getregtype('') }
+        end
+        vim.g.clipboard = {
+            name = 'osc52',
+            copy = { ['+'] = osc52.copy('+'), ['*'] = osc52.copy('*') },
+            paste = { ['+'] = paste, ['*'] = paste },
+        }
+    elseif vim.fn.executable('win32yank.exe') == 1 then
         vim.g.clipboard = 'win32yank'
     end
 end

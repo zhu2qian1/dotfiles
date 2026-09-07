@@ -13,11 +13,6 @@ if command -v fzf >/dev/null 2>&1; then
     fi
 fi
 
-# ---------------------------------------------------------------- zoxide
-if command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init bash)"
-fi
-
 # ------------------------------------------------------------------ asdf
 # asdf v0.16+ (the Go rewrite) dropped asdf.sh and just needs its shims on
 # PATH; older versions need the script sourced. Handle both.

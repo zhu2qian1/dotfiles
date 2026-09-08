@@ -82,6 +82,7 @@ $Links = [ordered]@{
     '.config\PowerShell' = Join-Path $TargetRoot '.config\PowerShell'
     '.config\nvim'       = Join-Path $TargetRoot '.config\nvim'
     '.config\starship'   = Join-Path $TargetRoot '.config\starship'
+    '.config\ghostty'    = Join-Path $TargetRoot '.config\ghostty'
     '.config\yazi'       = Join-Path $TargetRoot '.config\yazi'
     '.config\whkdrc'     = Join-Path $TargetRoot '.config\whkdrc'
 

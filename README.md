@@ -29,7 +29,7 @@ pwsh -File install.ps1 -Doctor      # report link state, profile and missing too
 `.config/bash/README.md` covers the shell config and its load order.
 
 On Windows, `install.ps1` links the entries actually used there --
-`.config/{komorebi,PowerShell,nvim,starship,yazi,whkdrc}` and the top-level
+`.config/{komorebi,PowerShell,nvim,starship,ghostty,yazi,whkdrc}` and the top-level
 `.vimrc`, `.gvimrc`, `.wezterm.lua`, `.psmux.conf` -- and appends a one-line stub
 to the CurrentUserAllHosts profile of both PowerShell 7+ and Windows PowerShell
 5.1, so the profile body stays in `.config/PowerShell/profile.ps1`.

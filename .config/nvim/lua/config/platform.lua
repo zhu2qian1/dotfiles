@@ -33,12 +33,18 @@ end
 -- tmux が無い SSH セッション (素の ssh、herdr のペインなど) では OSC 52 を
 -- 自分で書く。herdr は端末エミュレータとしてペインの OSC 52 を捕まえ、
 -- 外側の端末へ出し直すので、この一段だけで接続元 PC まで届く。
+-- herdr のペインは SSH_TTY を持たない (サーバプロセスが ssh セッションから
+-- 独立して常駐し、ペインはその子として起動されるため) ので HERDR_PANE_ID で
+-- 別途拾う。これを見ないと分岐を全部外れて自動検出の win32yank に落ち、
+-- ssh 越しでは OS error 5 や UtilAcceptVsock のエラーになる。
 -- 貼り付けは tmux のときと同じ理由で OSC 52 を読まず、無名レジスタを返す
 -- (:h clipboard-osc52 の方式)。ヤンクした中身はこれで貼れる。接続元 PC 側で
 -- コピーしたものは端末の貼り付け (Ctrl+Shift+V など) を使うことになる。
 if vim.fn.has('wsl') == 1 then
-    local via_ssh = vim.env.SSH_TTY or vim.env.SSH_CONNECTION
-    if via_ssh and vim.env.TMUX then
+    -- 端末が手元の Windows デスクトップに直結していない (= win32yank が
+    -- 使えない) 状況をまとめて remote とみなす。
+    local remote = vim.env.SSH_TTY or vim.env.SSH_CONNECTION or vim.env.HERDR_PANE_ID
+    if remote and vim.env.TMUX then
         vim.g.clipboard = {
             name = 'tmux',
             copy = {
@@ -51,7 +57,7 @@ if vim.fn.has('wsl') == 1 then
             },
             cache_enabled = 0,
         }
-    elseif via_ssh then
+    elseif remote then
         local osc52 = require('vim.ui.clipboard.osc52')
         local paste = function()
             return { vim.fn.split(vim.fn.getreg(''), '\n'), vim.fn.getregtype('') }

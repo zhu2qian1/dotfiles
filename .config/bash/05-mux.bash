@@ -19,8 +19,31 @@
 # 何も漏れないので問題ない。
 
 _mux_start_herdr() {
-    # herdr 自身が永続セッションへの attach / 作成を面倒みる。
+    # herdr 自身が永続セッションへの attach / 作成を面倒みる。ただしアタッチは
+    # 排他で、後から繋いだクライアントが先客から画面を奪う (先客は detach される
+    # だけで中身は無事だが、別マシンで作業中なら邪魔でしかない)。先客がいるなら
+    # herdr は諦めて tmux に回る。
+    if _mux_herdr_busy; then
+        command -v tmux >/dev/null 2>&1 && _mux_start_tmux
+        return
+    fi
     exec herdr
+}
+
+_mux_herdr_busy() {
+    # herdr はアタッチ状態を CLI で報告しない (`herdr status` も
+    # `herdr session list` も server の running/stopped までしか出さず、
+    # socket API のスキーマにも attach 系のフィールドは無い)。
+    # クライアント接続そのものは herdr-client.sock 上の established な unix
+    # 接続として数えられるので、そこを直接見る。API 用の herdr.sock は CLI が
+    # 一瞬繋いで切るだけなので常に 0 で、こちらを見ても意味が無い。
+    local dir sock
+    dir=${HERDR_CONFIG_PATH:+$(dirname "$HERDR_CONFIG_PATH")}
+    sock="${dir:-$HOME/.config/herdr}/herdr-client.sock"
+
+    # ss が無ければ判定できない。従来どおり herdr を起動する側に倒す。
+    [ -S "$sock" ] && command -v ss >/dev/null 2>&1 || return 1
+    ss -xH state established "src = $sock" 2>/dev/null | grep -q .
 }
 
 _mux_start_tmux() {
@@ -69,7 +92,7 @@ _mux_autostart() {
 }
 
 _mux_autostart
-unset -f _mux_autostart _mux_start_herdr _mux_start_tmux
+unset -f _mux_autostart _mux_start_herdr _mux_herdr_busy _mux_start_tmux
 
 # 自動起動の経路では上のガードで防げるが、tmux のペインから手で `herdr` と
 # 打つと同じ環境漏れが起きる。常駐サーバに拾われる前にここで剥がす

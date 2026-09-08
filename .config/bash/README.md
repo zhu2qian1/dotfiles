@@ -30,7 +30,7 @@ Only `[0-9]*.bash` is globbed, so `README.md` and `local.bash.example` are ignor
 
 | value | behaviour |
 | --- | --- |
-| `herdr` (default) | `exec herdr`; falls back to tmux if herdr is not installed |
+| `herdr` (default) | `exec herdr`; falls back to tmux if herdr is not installed, or if another client is already attached |
 | `tmux` | attach to a detached `main`, else the most recently used detached session |
 | `none` / `0` | start a plain shell |
 
@@ -41,6 +41,12 @@ herdr を既定にしてあるのは順番を固定するため。herdr server �
 逆向き (herdr のペインの中で `tmux attach`) は何も漏れないので問題ない。
 手で `herdr` と打った場合に備えて、同ファイルが `TMUX` を剥がすラッパ関数も
 定義している。
+
+herdr のアタッチは排他で、後から繋いだクライアントが先客から画面を奪う。
+先にアタッチしているクライアントがいる場合は herdr を起動せず tmux に回す。
+判定は `herdr-client.sock` への established な unix 接続の有無で行う
+(`herdr status` も `herdr session list` も server の running/stopped までしか
+報告せず、socket API にもアタッチ状態を返すものが無い)。
 
 ## Tab 補完
 

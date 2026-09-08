@@ -1,4 +1,5 @@
 ﻿# vi:se et:
+. "$HOME\.config\PowerShell\encoding.ps1"
 . "$HOME\.config\PowerShell\prompt.ps1"
 . "$HOME\.config\PowerShell\aliases.ps1"
 

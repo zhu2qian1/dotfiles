@@ -2,8 +2,13 @@
 #
 # Forgetting to start one means a terminal can never be closed without losing
 # whatever is running in it, so attach (or create) before anything else. This
-# file is loaded early on purpose: the outer shell exec's away, and doing so
-# before starship/fzf/asdf initialise saves that work.
+# file is loaded early on purpose: the loader blocks here until the multiplexer
+# exits, so an attached shell never pays for starship/fzf/asdf init.
+#
+# 多重化は exec せず子プロセスとして起動する。exec するとシェルが多重化に化けて
+# しまい、detach がそのままシェルの終了になる — ssh 越しなら接続まで切れる。
+# 子プロセスなら detach した時点で 10-shell.bash 以降が読まれ、素の対話シェルに
+# 戻ってくるだけで済む。
 #
 # DOTFILES_MUX で起動するものを選ぶ: herdr (既定) / tmux / none。
 # local.bash・host/<host>.bash に書くか、その場限りなら
@@ -27,7 +32,7 @@ _mux_start_herdr() {
         command -v tmux >/dev/null 2>&1 && _mux_start_tmux
         return
     fi
-    exec herdr
+    herdr
 }
 
 _mux_herdr_busy() {
@@ -59,18 +64,23 @@ _mux_start_tmux() {
         | awk '$1 == 0 { print $2, $3 }' | sort -rn | head -n1 | cut -d' ' -f2-)
 
     if [ -n "$target" ]; then
-        exec tmux attach-session -t "=$target"
+        tmux attach-session -t "=$target"
     elif printf '%s\n' "$sessions" | grep -q ' main$'; then
         # "main" exists but is attached elsewhere: take a fresh numbered one.
-        exec tmux new-session
+        tmux new-session
     else
-        exec tmux new-session -s main
+        tmux new-session -s main
     fi
 }
 
 _mux_autostart() {
     local mux="${DOTFILES_MUX:-herdr}"
     [ "$mux" != none ] && [ "$mux" != 0 ] || return
+
+    # detach 後は同じシェルに戻ってくる。そこで ~/.bashrc を読み直したときに
+    # 黙って引き戻されないよう、シェルごとに一度だけ試す (export しない)。
+    [ -z "${DOTFILES_MUX_STARTED:-}" ] || return
+    DOTFILES_MUX_STARTED=1
 
     # Already multiplexed, or inside something that does its own thing.
     # herdr は自前でペイン/タブを管理するので、その中で tmux を起動すると

@@ -25,12 +25,12 @@ Only `[0-9]*.bash` is globbed, so `README.md` and `local.bash.example` are ignor
 
 ## Multiplexer autostart
 
-`05-mux.bash` starts a multiplexer before anything else and `exec`s into it.
+`05-mux.bash` starts a multiplexer before anything else and blocks in it.
 `DOTFILES_MUX` selects which one:
 
 | value | behaviour |
 | --- | --- |
-| `herdr` (default) | `exec herdr`; falls back to tmux if herdr is not installed, or if another client is already attached |
+| `herdr` (default) | `herdr`; falls back to tmux if herdr is not installed, or if another client is already attached |
 | `tmux` | attach to a detached `main`, else the most recently used detached session |
 | `none` / `0` | start a plain shell |
 
@@ -47,6 +47,13 @@ herdr のアタッチは排他で、後から繋いだクライアントが先�
 判定は `herdr-client.sock` への established な unix 接続の有無で行う
 (`herdr status` も `herdr session list` も server の running/stopped までしか
 報告せず、socket API にもアタッチ状態を返すものが無い)。
+
+多重化は `exec` せず子プロセスとして起動する。`exec` すると detach がそのまま
+シェルの終了になり、ssh 越しなら接続まで切れてしまうため。detach した時点で
+`10-shell.bash` 以降が読まれ、素の対話シェルに戻る — つまりアタッチしている間は
+starship や fzf の init を素通りできる。戻ってきたシェルで `~/.bashrc` を
+読み直しても引き戻されないよう、`DOTFILES_MUX_STARTED` でシェルごとに一度だけ
+試すようにしてある。
 
 ## Tab 補完
 

@@ -13,6 +13,26 @@ if command -v fzf >/dev/null 2>&1; then
     fi
 fi
 
+# --------------------------------------------------- fzf tab completion
+# readline draws its candidate list as ordinary terminal output -- it never
+# uses the alternate screen -- so every <Tab> that is ambiguous leaves a wall
+# of candidates in the scrollback. fzf-tab-completion feeds bash's own
+# programmable completion into fzf instead, so the picker cleans up after
+# itself the way Ctrl-T does. Nothing is bound if the clone is absent:
+#   git clone --depth 1 https://github.com/lincheney/fzf-tab-completion \
+#       ~/.local/share/fzf-tab-completion
+# `bind -x` needs bash >= 4.4; older bashes just keep the stock completion.
+_fzf_tab_completion="${XDG_DATA_HOME:-$HOME/.local/share}/fzf-tab-completion/bash/fzf-bash-completion.sh"
+if [ -f "$_fzf_tab_completion" ] &&
+        ((BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 4))); then
+    . "$_fzf_tab_completion"
+    bind -x '"\t": fzf_bash_completion'
+    # vi-insert is a separate keymap; bind there too so `set editing-mode vi`
+    # in ~/.inputrc does not silently fall back to the stock completion.
+    bind -m vi-insert -x '"\t": fzf_bash_completion'
+fi
+unset _fzf_tab_completion
+
 # ------------------------------------------------------------------ asdf
 # asdf v0.16+ (the Go rewrite) dropped asdf.sh and just needs its shims on
 # PATH; older versions need the script sourced. Handle both.

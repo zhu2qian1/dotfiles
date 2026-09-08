@@ -11,7 +11,7 @@ See `~/.profile` for PATH and other variables non-interactive shells need.
 | 2 | `05-mux.bash` | attach to (or create) a herdr/tmux session and `exec` into it |
 | 3 | `10-shell.bash` | `shopt`, `set -o`, bash-completion |
 | 4 | `20-aliases.bash` | aliases and small functions |
-| 5 | `30-tools.bash` | fzf, asdf, tailscale, yazi, lesspipe |
+| 5 | `30-tools.bash` | fzf (Tab 補完の差し替え含む), asdf, tailscale, yazi, lesspipe |
 | 6 | `40-prompt.bash` | starship, with a plain PS1 fallback |
 | 7 | `50-zoxide.bash` | zoxide (starship より後に init する必要がある) |
 | 8 | `os/<os>.bash` | `linux` / `darwin` / `windows` |
@@ -41,3 +41,17 @@ herdr を既定にしてあるのは順番を固定するため。herdr server �
 逆向き (herdr のペインの中で `tmux attach`) は何も漏れないので問題ない。
 手で `herdr` と打った場合に備えて、同ファイルが `TMUX` を剥がすラッパ関数も
 定義している。
+
+## Tab 補完
+
+readline は候補一覧を代替スクリーンではなく端末へそのまま書くので、曖昧な `<Tab>`
+のたびにスクロールバックが候補で埋まる。`30-tools.bash` は
+[fzf-tab-completion](https://github.com/lincheney/fzf-tab-completion) を読み込んで
+`<Tab>` を fzf のピッカーに差し替え、`Ctrl-T` と同じように表示が残らないようにする。
+bash 本来の programmable completion (git のサブコマンドなど) はそのまま使われる。
+
+    git clone --depth 1 https://github.com/lincheney/fzf-tab-completion \
+        ~/.local/share/fzf-tab-completion
+
+clone が無ければ何も bind せず素の補完のままなので、入れていないマシンでも壊れない。
+これに合わせて `~/.inputrc` の `show-all-if-ambiguous` は無効にしてある。

@@ -8,4 +8,4 @@
 . "$HOME\.config\PowerShell\yazi.ps1"
 . "$HOME\.config\PowerShell\ssh.ps1"
 . "$HOME\.config\PowerShell\komorebi.ps1"
-
+. "$HOME\.config\PowerShell\ghostty.ps1"

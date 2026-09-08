@@ -1,0 +1,6 @@
+font-family = UDEV Gothic NFLG
+
+# ssh 先に xterm-ghostty の terminfo が無いと tmux が
+# "missing or unsuitable terminal" で落ちる。ssh-terminfo が接続時に
+# infocmp/tic で送り込み、失敗したら ssh-env が TERM を xterm-256color へ落とす。
+shell-integration-features = ssh-env,ssh-terminfo

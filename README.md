@@ -40,6 +40,33 @@ that. Creating symlinks needs developer mode or an elevated shell.
 `~/.profile` holds PATH and anything non-interactive shells need; `~/.bashrc` is
 only a loader.
 
+## ghostty
+
+`.config/ghostty/config.ghostty` は font 指定のほかに ssh 統合を有効にしている:
+
+```
+shell-integration-features = ssh-env,ssh-terminfo
+```
+
+ghostty は `TERM=xterm-ghostty` を送るが、この terminfo entry を配っているのは
+ghostty 本体のパッケージだけで、ghostty を入れていない接続先には存在しない
+(Ubuntu の `ncurses-term` にも入っていない)。entry が引けないと tmux が
+`missing or unsuitable terminal: xterm-ghostty` で即終了し、`05-mux.bash` の
+フォールバックが素通りして素のシェルになる。`ssh-terminfo` が接続時に
+`infocmp`/`tic` で entry を送り込み (接続先に `tic` が要る)、それが失敗したら
+`ssh-env` が `TERM` を `xterm-256color` へ落とす。両方入れるのが ghostty の
+推奨構成。
+
+統合を使えない経路のために、手で配る場合は接続先ごとに一度:
+
+```sh
+infocmp -x xterm-ghostty | ssh <host> 'mkdir -p ~/.terminfo && tic -x -o ~/.terminfo -'
+```
+
+`-o ~/.terminfo` を付けるのは、付けないと linuxbrew の `tic` が Cellar 配下の
+バージョン付きディレクトリへ書き込んでしまい、`brew upgrade ncurses` で消える上に
+システム側の ncurses からは引けないため。
+
 ## Claude Code statusline
 
 `.claude/statusline.sh` renders the Claude Code status line. It reads the session

@@ -45,10 +45,11 @@ esac
 # ホーム配下は ~ に短縮
 disp=${cwd/#$HOME/\~}
 
-# 色定義（path=シアン, worktree=マゼンタ, branch=グリーン）
+# 色定義（path=シアン, worktree=マゼンタ, branch=グリーン, 警告=イエロー）
 c_path=$'\033[36m'
 c_worktree=$'\033[35m'
 c_branch=$'\033[32m'
+c_warn=$'\033[33m'
 c_reset=$'\033[0m'
 
 disp="${c_path}${disp}${c_reset}"
@@ -81,6 +82,13 @@ line2=""
 [ -n "$rate_5h_resets_at" ]  && line2="$line2 (Resets at $(date -d "@$rate_5h_resets_at" +"%F %T"))"
 [ -n "$rate_7d_percentage" ] && line2="$line2, 7d: $rate_7d_percentage%" || line2="$line2, 7d: N/A"
 
+# 多重化の外で動いていたら警告する。シェル起動時の自動起動はやめたので、
+# 起動し忘れると端末を閉じた (ssh が切れた) 時点で作業ごと中断される。
+# statusline は claude の子プロセスなので、claude が起動された環境をそのまま
+# 見られる。fork せず環境変数だけで判定する。
 line3=""
+if [ -z "${TMUX:-}${STY:-}${ZELLIJ:-}${HERDR_ENV:-}" ]; then
+  line3="${c_warn}⚠ not in herdr/tmux: closing this terminal ends the session${c_reset}"
+fi
 
 printf '%s\n%s\n%s' "$line1" "$line2" "$line3"

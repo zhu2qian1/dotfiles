@@ -69,11 +69,13 @@ infocmp -x xterm-ghostty | ssh <host> 'mkdir -p ~/.terminfo && tic -x -o ~/.term
 ## Claude Code statusline
 
 `.claude/statusline.sh` renders the Claude Code status line. It reads the session
-JSON on stdin and prints two lines:
+JSON on stdin and prints two lines, plus a third when Claude Code is running
+outside a multiplexer:
 
 ```
 [Opus 5 (medium)]  ~/dotfiles  dotfiles  main
 5h: 12% (Resets at 2026-09-03 20:46:40), 7d: 30%
+⚠ not in herdr/tmux: closing this terminal ends the session
 ```
 
 | field | colour |
@@ -81,6 +83,11 @@ JSON on stdin and prints two lines:
 | path (`$HOME` shortened to `~`) | cyan |
 | git worktree, prefixed `⑂` when it is a linked worktree | magenta |
 | branch, or `(detached)` | green |
+| multiplexer warning | yellow |
+
+シェル起動時に多重化を自動で立ち上げるのはやめたので、起動し忘れに気付けるよう
+`TMUX` / `STY` / `ZELLIJ` / `HERDR_ENV` のどれも無いときに警告を出す。statusline
+は `claude` の子プロセスなので、`claude` を起動した環境をそのまま見て判定できる。
 
 Needs `jq` and `git`. Both are called exactly once; `date` is called only when
 the payload carries a reset timestamp, which keeps a render at roughly 11 ms.

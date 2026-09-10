@@ -20,8 +20,8 @@ pwsh -File install.ps1 -Doctor      # report link state, profile and missing too
 | --- | --- | --- |
 | `.profile`, `.bashrc`, `.zshrc`, `.vimrc`, ... | `~/<name>` | top level, linked wholesale |
 | `.config/*` | `~/.config/<name>` | per entry, never the whole `~/.config` |
-| `.config/herdr/*` | `~/.config/herdr/<name>` | per entry -- ソケット・ログ・`session.json` が同居するため |
-| `.config/herdr/config.toml` | `%APPDATA%\herdr\config.toml` | Windows のみ (`install.ps1`)。`HERDR_CONFIG_PATH` があればそちら |
+| `.config/herdr/*` | `~/.config/herdr/<name>` | per entry -- herdr keeps its socket, logs and `session.json` alongside |
+| `.config/herdr/config.toml` | `%APPDATA%\herdr\config.toml` | Windows only (`install.ps1`); `HERDR_CONFIG_PATH` wins if set |
 | `.claude/skills/*` | `~/.claude/skills/<name>` | per entry, coexists with other global skills |
 | `.claude/*` | `~/.claude/<name>` | per entry -- `~/.claude` also holds Claude Code's own state |
 | `scripts/`, `backup/`, `.vscode/`, `CLAUDE.md` | -- | not linked; see `IGNORE` in `install.sh` |
@@ -42,29 +42,31 @@ only a loader.
 
 ## ghostty
 
-`.config/ghostty/config.ghostty` は font 指定のほかに ssh 統合を有効にしている:
+Besides the font settings, `.config/ghostty/config.ghostty` enables the ssh
+integration:
 
 ```
 shell-integration-features = ssh-env,ssh-terminfo
 ```
 
-ghostty は `TERM=xterm-ghostty` を送るが、この terminfo entry を配っているのは
-ghostty 本体のパッケージだけで、ghostty を入れていない接続先には存在しない
-(Ubuntu の `ncurses-term` にも入っていない)。entry が引けないと tmux が
-`missing or unsuitable terminal: xterm-ghostty` で即終了する。`ssh-terminfo` が接続時に
-`infocmp`/`tic` で entry を送り込み (接続先に `tic` が要る)、それが失敗したら
-`ssh-env` が `TERM` を `xterm-256color` へ落とす。両方入れるのが ghostty の
-推奨構成。
+ghostty sends `TERM=xterm-ghostty`, but that terminfo entry ships only with the
+ghostty package itself, so hosts without ghostty installed do not have it (Ubuntu's
+`ncurses-term` does not include it either). When the entry cannot be found, tmux
+exits immediately with `missing or unsuitable terminal: xterm-ghostty`.
+`ssh-terminfo` pushes the entry to the remote host on connect via `infocmp`/`tic`
+(the remote needs `tic`), and if that fails, `ssh-env` falls back to
+`TERM=xterm-256color`. Enabling both is ghostty's recommended setup.
 
-統合を使えない経路のために、手で配る場合は接続先ごとに一度:
+For connections where the integration is unavailable, install the entry by hand,
+once per host:
 
 ```sh
 infocmp -x xterm-ghostty | ssh <host> 'mkdir -p ~/.terminfo && tic -x -o ~/.terminfo -'
 ```
 
-`-o ~/.terminfo` を付けるのは、付けないと linuxbrew の `tic` が Cellar 配下の
-バージョン付きディレクトリへ書き込んでしまい、`brew upgrade ncurses` で消える上に
-システム側の ncurses からは引けないため。
+`-o ~/.terminfo` matters: without it, linuxbrew's `tic` writes into a versioned
+directory under its Cellar, which `brew upgrade ncurses` wipes and the system
+ncurses never looks at.
 
 ## Claude Code statusline
 
@@ -85,9 +87,10 @@ outside a multiplexer:
 | branch, or `(detached)` | green |
 | multiplexer warning | yellow |
 
-シェル起動時に多重化を自動で立ち上げるのはやめたので、起動し忘れに気付けるよう
-`TMUX` / `STY` / `ZELLIJ` / `HERDR_ENV` のどれも無いときに警告を出す。statusline
-は `claude` の子プロセスなので、`claude` を起動した環境をそのまま見て判定できる。
+The shell no longer starts a multiplexer automatically, so the warning appears
+whenever none of `TMUX`, `STY`, `ZELLIJ` or `HERDR_ENV` is set, as a reminder to
+start one. The statusline runs as a child of `claude`, so it sees exactly the
+environment `claude` was launched from.
 
 Percentages (7d / 5h rate limits and context window usage) are rounded to two
 decimals, since the payload sometimes carries values like `7.0000001`. The 7d

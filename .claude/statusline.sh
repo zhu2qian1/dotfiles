@@ -16,6 +16,7 @@ input=$(cat)
   read -r rate_7d_percentage
   read -r rate_7d_resets_at
   read -r ctx_used_percentage
+  read -r cache_expires_at
 } <<<"$(jq -r '
   (.workspace.current_dir // .cwd // ""),
   (.model.display_name // .model.id // ""),
@@ -26,7 +27,8 @@ input=$(cat)
   (.rate_limits.five_hour.resets_at // ""),
   (.rate_limits.seven_day.used_percentage // ""),
   (.rate_limits.seven_day.resets_at // ""),
-  (.context_window.used_percentage // "")
+  (.context_window.used_percentage // ""),
+  (if .prompt_cache.warm then (.prompt_cache.expires_at // "") else "" end)
 ' <<<"$input")"
 
 # Windows 版 jq は CRLF で出力するため、末尾の CR を落とす
@@ -40,6 +42,7 @@ rate_7d_percentage=${rate_7d_percentage%$'\r'}
 rate_5h_resets_at=${rate_5h_resets_at%$'\r'}
 rate_7d_resets_at=${rate_7d_resets_at%$'\r'}
 ctx_used_percentage=${ctx_used_percentage%$'\r'}
+cache_expires_at=${cache_expires_at%$'\r'}
 
 cwd=$raw_cwd
 # Windows 形式（C:\... や ...\...）のときだけ cygpath を呼ぶ。Linux では fork しない
@@ -51,10 +54,11 @@ esac
 # ホーム配下は ~ に短縮
 disp=${cwd/#$HOME/\~}
 
-# 色定義（path=シアン, worktree=マゼンタ, branch=グリーン, 警告=イエロー）
+# 色定義（path=シアン, worktree=マゼンタ, branch=グリーン, キャッシュ=ブルー, 警告=イエロー）
 c_path=$'\033[36m'
 c_worktree=$'\033[35m'
 c_branch=$'\033[32m'
+c_cache=$'\033[34m'
 c_warn=$'\033[33m'
 c_reset=$'\033[0m'
 
@@ -103,9 +107,16 @@ line2=""
 # 起動し忘れると端末を閉じた (ssh が切れた) 時点で作業ごと中断される。
 # statusline は claude の子プロセスなので、claude が起動された環境をそのまま
 # 見られる。fork せず環境変数だけで判定する。
+#
+# プロンプトキャッシュの失効時刻はその前に置く。TTL は 5m か 1h なので日付は
+# 自明で、時刻だけ出す。warm でないときは expires_at が過去の時刻や null になり
+# 意味を持たないので出さない。statusline は expires_at の時点で再描画されるため、
+# 失効すれば refreshInterval 無しでも表示が消える。
 line3=""
+[ -n "$cache_expires_at" ] && line3="${c_cache}Cache expires at $(date -d "@$cache_expires_at" +"%T")${c_reset}"
 if [ -z "${TMUX:-}${STY:-}${ZELLIJ:-}${HERDR_ENV:-}" ]; then
-  line3="${c_warn}⚠ not in herdr/tmux: closing this terminal ends the session${c_reset}"
+  [ -n "$line3" ] && line3="$line3  "
+  line3="${line3}${c_warn}⚠ not in herdr/tmux: closing this terminal ends the session${c_reset}"
 fi
 
 printf '%s\n%s\n%s' "$line1" "$line2" "$line3"

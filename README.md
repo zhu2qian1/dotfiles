@@ -71,13 +71,13 @@ ncurses never looks at.
 ## Claude Code statusline
 
 `.claude/statusline.sh` renders the Claude Code status line. It reads the session
-JSON on stdin and prints two lines, plus a third when Claude Code is running
-outside a multiplexer:
+JSON on stdin and prints two lines, plus a third when the prompt cache is warm
+or Claude Code is running outside a multiplexer:
 
 ```
 [Opus 5 (medium)]  ~/dotfiles  dotfiles  main
 7d: 30.00% (Resets at 2026-09-07), 5h: 12.00% (Resets at 2026-09-03 20:46:40), ctx: 7.00%
-⚠ not in herdr/tmux: closing this terminal ends the session
+Cache expires at 21:12:05  ⚠ not in herdr/tmux: closing this terminal ends the session
 ```
 
 | field | colour |
@@ -85,6 +85,7 @@ outside a multiplexer:
 | path (`$HOME` shortened to `~`) | cyan |
 | git worktree, prefixed `⑂` when it is a linked worktree | magenta |
 | branch, or `(detached)` | green |
+| prompt cache expiry | blue |
 | multiplexer warning | yellow |
 
 The shell no longer starts a multiplexer automatically, so the warning appears
@@ -96,8 +97,14 @@ Percentages (7d / 5h rate limits and context window usage) are rounded to two
 decimals, since the payload sometimes carries values like `7.0000001`. The 7d
 reset shows only the date; the 5h reset keeps the time.
 
+The cache expiry comes from `prompt_cache.expires_at` (Claude Code v2.1.251 or
+later) and shows only the time, since the TTL is 5 minutes or 1 hour. It is
+shown only while `prompt_cache.warm` is true; Claude Code re-renders the status
+line at `expires_at`, so it disappears once the cache goes cold without needing
+`refreshInterval`.
+
 Needs `jq` and `git`. Both are called exactly once; `date` is called once per
-reset timestamp the payload carries (at most twice), which keeps a render at
+timestamp the payload carries (at most three times), which keeps a render at
 roughly 11 ms.
 `cygpath` is invoked only for Windows-shaped paths, so Linux never forks it.
 

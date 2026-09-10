@@ -51,8 +51,16 @@ if command -v tailscale >/dev/null 2>&1; then
 fi
 
 # ----------------------------------------------------------------- herdr
+# herdr server は常駐デーモンで、最初のクライアントの環境をそのまま抱え込み、
+# 以降そこから生える全ペインへ配る。tmux のペインから起動すると TMUX /
+# TMUX_PANE が漏れ、tmux が動いていないペインでも $TMUX を見て分岐するツール
+# (nvim のクリップボード判定など) が誤爆する — ヤンクが無関係な tmux
+# セッションのバッファへ飛ぶ。常駐サーバに拾われる前にここで剥がす
+# (env は関数ではなく PATH 上のバイナリを exec するので再帰しない)。
+# 逆向き (herdr のペインの中で tmux attach) は何も漏れないので問題ない。
 if command -v herdr >/dev/null 2>&1; then
     . <(herdr completion bash) 2>/dev/null
+    herdr() { env -u TMUX -u TMUX_PANE herdr "$@"; }
 fi
 
 # ------------------------------------------------------------------ yazi

@@ -14,6 +14,8 @@ input=$(cat)
   read -r rate_5h_percentage
   read -r rate_5h_resets_at
   read -r rate_7d_percentage
+  read -r rate_7d_resets_at
+  read -r ctx_used_percentage
 } <<<"$(jq -r '
   (.workspace.current_dir // .cwd // ""),
   (.model.display_name // .model.id // ""),
@@ -22,7 +24,9 @@ input=$(cat)
   (if .fast_mode then "fast" else "" end),
   (.rate_limits.five_hour.used_percentage // ""),
   (.rate_limits.five_hour.resets_at // ""),
-  (.rate_limits.seven_day.used_percentage // "")
+  (.rate_limits.seven_day.used_percentage // ""),
+  (.rate_limits.seven_day.resets_at // ""),
+  (.context_window.used_percentage // "")
 ' <<<"$input")"
 
 # Windows 版 jq は CRLF で出力するため、末尾の CR を落とす
@@ -34,6 +38,8 @@ fast=${fast%$'\r'}
 rate_5h_percentage=${rate_5h_percentage%$'\r'}
 rate_7d_percentage=${rate_7d_percentage%$'\r'}
 rate_5h_resets_at=${rate_5h_resets_at%$'\r'}
+rate_7d_resets_at=${rate_7d_resets_at%$'\r'}
+ctx_used_percentage=${ctx_used_percentage%$'\r'}
 
 cwd=$raw_cwd
 # Windows 形式（C:\... や ...\...）のときだけ cygpath を呼ぶ。Linux では fork しない
@@ -77,10 +83,21 @@ line1=$disp
 [ -n "$worktree" ] && line1="$line1  $worktree  $branch"
 [ -n "$info_model" ] && line1="[$info_model]  $line1"
 
+# API から渡る割合が 7.0000001 のような浮動小数点誤差を含むことがあるので
+# 表示前に小数点以下 2 桁へ丸める
+fmt_pct() { [ -n "$1" ] && printf '%.2f' "$1"; }
+
+rate_5h_percentage=$(fmt_pct "$rate_5h_percentage")
+rate_7d_percentage=$(fmt_pct "$rate_7d_percentage")
+ctx_used_percentage=$(fmt_pct "$ctx_used_percentage")
+
 line2=""
-[ -n "$rate_5h_percentage" ] && line2="5h: $rate_5h_percentage%" || line2="5h: N/A"
+[ -n "$rate_7d_percentage" ] && line2="7d: $rate_7d_percentage%" || line2="7d: N/A"
+# 7d は週単位なので時刻まで出すと冗長。行が長くなって折り返すので日付だけにする
+[ -n "$rate_7d_resets_at" ]  && line2="$line2 (Resets at $(date -d "@$rate_7d_resets_at" +"%F"))"
+[ -n "$rate_5h_percentage" ] && line2="$line2, 5h: $rate_5h_percentage%" || line2="$line2, 5h: N/A"
 [ -n "$rate_5h_resets_at" ]  && line2="$line2 (Resets at $(date -d "@$rate_5h_resets_at" +"%F %T"))"
-[ -n "$rate_7d_percentage" ] && line2="$line2, 7d: $rate_7d_percentage%" || line2="$line2, 7d: N/A"
+[ -n "$ctx_used_percentage" ] && line2="$line2, ctx: $ctx_used_percentage%"
 
 # 多重化の外で動いていたら警告する。シェル起動時の自動起動はやめたので、
 # 起動し忘れると端末を閉じた (ssh が切れた) 時点で作業ごと中断される。

@@ -74,7 +74,7 @@ outside a multiplexer:
 
 ```
 [Opus 5 (medium)]  ~/dotfiles  dotfiles  main
-5h: 12% (Resets at 2026-09-03 20:46:40), 7d: 30%
+7d: 30.00% (Resets at 2026-09-07), 5h: 12.00% (Resets at 2026-09-03 20:46:40), ctx: 7.00%
 ⚠ not in herdr/tmux: closing this terminal ends the session
 ```
 
@@ -89,8 +89,13 @@ outside a multiplexer:
 `TMUX` / `STY` / `ZELLIJ` / `HERDR_ENV` のどれも無いときに警告を出す。statusline
 は `claude` の子プロセスなので、`claude` を起動した環境をそのまま見て判定できる。
 
-Needs `jq` and `git`. Both are called exactly once; `date` is called only when
-the payload carries a reset timestamp, which keeps a render at roughly 11 ms.
+Percentages (7d / 5h rate limits and context window usage) are rounded to two
+decimals, since the payload sometimes carries values like `7.0000001`. The 7d
+reset shows only the date; the 5h reset keeps the time.
+
+Needs `jq` and `git`. Both are called exactly once; `date` is called once per
+reset timestamp the payload carries (at most twice), which keeps a render at
+roughly 11 ms.
 `cygpath` is invoked only for Windows-shaped paths, so Linux never forks it.
 
 Wiring it up is manual, because `~/.claude/settings.json` also holds credentials

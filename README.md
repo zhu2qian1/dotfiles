@@ -71,13 +71,14 @@ ncurses never looks at.
 ## Claude Code statusline
 
 `.claude/statusline.sh` renders the Claude Code status line. It reads the session
-JSON on stdin and prints two lines, plus a third when the prompt cache is warm
-or Claude Code is running outside a multiplexer:
+JSON on stdin and prints three lines: model and git, rate limits, and session
+state (prompt cache, context usage, and a warning when Claude Code is running
+outside a multiplexer):
 
 ```
 [Opus 5 (medium)]  ~/dotfiles  dotfiles  main
-7d: 30.00% (Resets at 2026-09-07), 5h: 12.00% (Resets at 2026-09-03 20:46:40), ctx: 7.00%
-Cache expires at 21:12:05  ⚠ not in herdr/tmux: closing this terminal ends the session
+7d: 30.00% (Resets at 2026-09-07), 5h: 12.00% (Resets at 2026-09-03 20:46:40)
+Cache expires at 21:12:05 (recache: 70.0k), ctx: 7.00%  ⚠ not in herdr/tmux: closing this terminal ends the session
 ```
 
 | field | colour |
@@ -85,7 +86,7 @@ Cache expires at 21:12:05  ⚠ not in herdr/tmux: closing this terminal ends the
 | path (`$HOME` shortened to `~`) | cyan |
 | git worktree, prefixed `⑂` when it is a linked worktree | magenta |
 | branch, or `(detached)` | green |
-| prompt cache expiry | blue |
+| prompt cache expiry / cold state, with re-cache size | blue |
 | multiplexer warning | yellow |
 
 The shell no longer starts a multiplexer automatically, so the warning appears
@@ -99,9 +100,13 @@ reset shows only the date; the 5h reset keeps the time.
 
 The cache expiry comes from `prompt_cache.expires_at` (Claude Code v2.1.251 or
 later) and shows only the time, since the TTL is 5 minutes or 1 hour. It is
-shown only while `prompt_cache.warm` is true; Claude Code re-renders the status
-line at `expires_at`, so it disappears once the cache goes cold without needing
-`refreshInterval`.
+shown only while `prompt_cache.warm` is true, and turns into `Cache cold` after
+that; Claude Code re-renders the status line at `expires_at`, so the switch
+happens without needing `refreshInterval`. `recache` is
+`prompt_cache.recache_tokens_if_cold`, the tokens the next request re-writes if
+the cache is cold by then (the last request's input plus cache reads and
+writes). It is omitted right after a compaction, when Claude Code reports it as
+`null`, and whenever the session has not observed prompt caching at all.
 
 Needs `jq` and `git`. Both are called exactly once; `date` is called once per
 timestamp the payload carries (at most three times), which keeps a render at

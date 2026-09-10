@@ -17,6 +17,7 @@ input=$(cat)
   read -r rate_7d_resets_at
   read -r ctx_used_percentage
   read -r cache_expires_at
+  read -r cache_recache_tokens
 } <<<"$(jq -r '
   (.workspace.current_dir // .cwd // ""),
   (.model.display_name // .model.id // ""),
@@ -28,7 +29,8 @@ input=$(cat)
   (.rate_limits.seven_day.used_percentage // ""),
   (.rate_limits.seven_day.resets_at // ""),
   (.context_window.used_percentage // ""),
-  (if .prompt_cache.warm then (.prompt_cache.expires_at // "") else "" end)
+  (if .prompt_cache.warm then (.prompt_cache.expires_at // "") else "" end),
+  (if .prompt_cache.caching_observed then (.prompt_cache.recache_tokens_if_cold // "") else "" end)
 ' <<<"$input")"
 
 # Windows 版 jq は CRLF で出力するため、末尾の CR を落とす
@@ -43,6 +45,7 @@ rate_5h_resets_at=${rate_5h_resets_at%$'\r'}
 rate_7d_resets_at=${rate_7d_resets_at%$'\r'}
 ctx_used_percentage=${ctx_used_percentage%$'\r'}
 cache_expires_at=${cache_expires_at%$'\r'}
+cache_recache_tokens=${cache_recache_tokens%$'\r'}
 
 cwd=$raw_cwd
 # Windows 形式（C:\... や ...\...）のときだけ cygpath を呼ぶ。Linux では fork しない
@@ -91,6 +94,17 @@ line1=$disp
 # 表示前に小数点以下 2 桁へ丸める
 fmt_pct() { [ -n "$1" ] && printf '%.2f' "$1"; }
 
+# トークン数は桁が大きく読みにくいので 123.4k / 1.23M に縮める。整数演算だけで済ませる
+fmt_tokens() {
+  if [ "$1" -ge 1000000 ]; then
+    printf '%d.%02dM' $(($1 / 1000000)) $(($1 % 1000000 / 10000))
+  elif [ "$1" -ge 1000 ]; then
+    printf '%d.%dk' $(($1 / 1000)) $(($1 % 1000 / 100))
+  else
+    printf '%d' "$1"
+  fi
+}
+
 rate_5h_percentage=$(fmt_pct "$rate_5h_percentage")
 rate_7d_percentage=$(fmt_pct "$rate_7d_percentage")
 ctx_used_percentage=$(fmt_pct "$ctx_used_percentage")
@@ -101,19 +115,35 @@ line2=""
 [ -n "$rate_7d_resets_at" ]  && line2="$line2 (Resets at $(date -d "@$rate_7d_resets_at" +"%F"))"
 [ -n "$rate_5h_percentage" ] && line2="$line2, 5h: $rate_5h_percentage%" || line2="$line2, 5h: N/A"
 [ -n "$rate_5h_resets_at" ]  && line2="$line2 (Resets at $(date -d "@$rate_5h_resets_at" +"%F %T"))"
-[ -n "$ctx_used_percentage" ] && line2="$line2, ctx: $ctx_used_percentage%"
+
+# 3 行目はセッションの状態: プロンプトキャッシュ → ctx → 多重化の警告。
+#
+# キャッシュの失効時刻は、TTL が 5m か 1h なので日付は自明で時刻だけ出す。
+# warm でないときは expires_at が過去の時刻や null になり意味を持たないので、
+# 代わりに cold と出す。statusline は expires_at の時点で再描画されるため、
+# refreshInterval 無しでも失効した時点で表示が切り替わる。
+#
+# recache は cold になった後の次のリクエストで書き直すトークン数。中身は直前の
+# リクエストの input + cache read + cache write で、ctx の分子とほぼ同じ値だが、
+# compact 直後は null になる (Claude Code 側で扱いを決めてくれる) のでこちらを使う。
+# caching_observed が false (キャッシュ無効) のときは cold と誤解させないよう出さない。
+[ "$cache_recache_tokens" = 0 ] && cache_recache_tokens=''
+cache=''
+if [ -n "$cache_expires_at" ]; then
+  cache="Cache expires at $(date -d "@$cache_expires_at" +"%T")"
+elif [ -n "$cache_recache_tokens" ]; then
+  cache="Cache cold"
+fi
+[ -n "$cache_recache_tokens" ] && cache="$cache (recache: $(fmt_tokens "$cache_recache_tokens"))"
+
+line3=""
+[ -n "$cache" ] && line3="${c_cache}${cache}${c_reset}"
+[ -n "$ctx_used_percentage" ] && line3="${line3:+$line3, }ctx: $ctx_used_percentage%"
 
 # 多重化の外で動いていたら警告する。シェル起動時の自動起動はやめたので、
 # 起動し忘れると端末を閉じた (ssh が切れた) 時点で作業ごと中断される。
 # statusline は claude の子プロセスなので、claude が起動された環境をそのまま
 # 見られる。fork せず環境変数だけで判定する。
-#
-# プロンプトキャッシュの失効時刻はその前に置く。TTL は 5m か 1h なので日付は
-# 自明で、時刻だけ出す。warm でないときは expires_at が過去の時刻や null になり
-# 意味を持たないので出さない。statusline は expires_at の時点で再描画されるため、
-# 失効すれば refreshInterval 無しでも表示が消える。
-line3=""
-[ -n "$cache_expires_at" ] && line3="${c_cache}Cache expires at $(date -d "@$cache_expires_at" +"%T")${c_reset}"
 if [ -z "${TMUX:-}${STY:-}${ZELLIJ:-}${HERDR_ENV:-}" ]; then
   [ -n "$line3" ] && line3="$line3  "
   line3="${line3}${c_warn}⚠ not in herdr/tmux: closing this terminal ends the session${c_reset}"

@@ -12,6 +12,7 @@
 	graph = log --graph --oneline
 	m = merge
 	pu = pull
+	puff = pull --ff
 	pum = pull --merge
 	st = status -s
 	sw = switch

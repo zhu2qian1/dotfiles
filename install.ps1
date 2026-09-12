@@ -311,7 +311,7 @@ function Invoke-Doctor {
     Write-Host ''
     Write-Host '== tools =='
     $required = @('git', 'pwsh')
-    $optional = @('nvim', 'komorebic', 'whkd', 'starship', 'yazi', 'fzf', 'zoxide', 'eza', 'bat', 'rg', 'fd', 'lazygit', 'delta')
+    $optional = @('nvim', 'komorebic', 'whkd', 'starship', 'yazi', 'fzf', 'zoxide', 'eza', 'bat', 'rg', 'fd', 'lazygit', 'delta', 'jq')
     foreach ($tool in $required) {
         $cmd = Get-Command $tool -ErrorAction SilentlyContinue
         if ($cmd) { Write-Host ('  ok       {0,-10} {1}' -f $tool, $cmd.Source) }

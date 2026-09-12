@@ -20,6 +20,9 @@
     書くため、ディレクトリごとリンクすると実行時の生成物がリポジトリに入る
     (install.sh 側の CONFIG_PER_ENTRY と同じ理由)。
 
+    .claude\statusline.sh もファイル単位。~\.claude には Claude Code 自身の
+    state があるため。
+
     プロファイルは PowerShell 7+ / Windows PowerShell 5.1 の CurrentUserAllHosts に
     dot-source 1 行の stub を追記する (symlink は張らない)。本体は
     .config\PowerShell\profile.ps1 の 1 箇所。
@@ -89,6 +92,11 @@ $Links = [ordered]@{
     # ~\.config 配下ではなく %APPDATA%\herdr へ。ディレクトリではなく
     # config.toml だけをリンクする (上の $HerdrConfig を参照)。
     '.config\herdr\config.toml' = $HerdrConfig
+
+    # ~\.claude 配下。Claude Code 自身の state (settings.json の認証情報など) が
+    # 同じディレクトリにあるので、ディレクトリではなくファイル単位でリンクする
+    # (install.sh が .claude をエントリ単位で扱うのと同じ理由)。
+    '.claude\statusline.sh' = Join-Path $TargetRoot '.claude\statusline.sh'
 
     # ~ 直下
     '.vimrc'             = Join-Path $TargetRoot '.vimrc'

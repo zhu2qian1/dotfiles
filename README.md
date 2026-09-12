@@ -30,7 +30,8 @@ pwsh -File install.ps1 -Doctor      # report link state, profile and missing too
 
 On Windows, `install.ps1` links the entries actually used there --
 `.config/{komorebi,PowerShell,nvim,starship,ghostty,yazi,whkdrc}` and the top-level
-`.vimrc`, `.gvimrc`, `.wezterm.lua`, `.psmux.conf` -- and appends a one-line stub
+`.vimrc`, `.gvimrc`, `.wezterm.lua`, `.psmux.conf`, plus `.claude/statusline.sh`
+as a single file -- and appends a one-line stub
 to the CurrentUserAllHosts profile of both PowerShell 7+ and Windows PowerShell
 5.1, so the profile body stays in `.config/PowerShell/profile.ps1`.
 `komorebi.json` resolves its bar and application configs through
@@ -115,7 +116,7 @@ roughly 11 ms.
 
 Wiring it up is manual, because `~/.claude/settings.json` also holds credentials
 and machine-local state and is therefore not tracked here. After running
-`install.sh`, add:
+`install.sh` or `install.ps1`, add:
 
 ```json
 "statusLine": { "type": "command", "command": "~/.claude/statusline.sh" }

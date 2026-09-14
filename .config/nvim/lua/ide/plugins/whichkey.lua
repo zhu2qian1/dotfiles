@@ -38,6 +38,7 @@ return {
                 { '<leader>c', group = 'code (LSP)' },
                 { '<leader>e', group = 'explorer' },
                 { '<leader>f', group = 'find (telescope)' },
+                { '<leader>h', group = 'git hunk (gitsigns)' },
                 { '<leader>M', group = 'man' },
                 { '<leader>t', group = 'toggle' },
                 { '<leader>;', group = '日時挿入' },

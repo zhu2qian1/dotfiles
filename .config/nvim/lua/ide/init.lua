@@ -28,7 +28,8 @@ require('lazy').setup({
     },
     -- lockfile も IDE プロファイル配下に隔離しておく
     lockfile = vim.fn.stdpath('config') .. '/lua/ide/lazy-lock.json',
-    install = { colorscheme = { 'desert' } },
+    -- 初回インストール中にも config/options.lua と同じ色を保つ (colors/ の静的ファイル)
+    install = { colorscheme = { 'tokyonight-night', 'desert' } },
     change_detection = { notify = false },
 })
 

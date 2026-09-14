@@ -1,6 +1,8 @@
 -- General settings
 -- vim.cmd.colorscheme('desert')
-vim.cmd.colorscheme('catppuccin')
+-- vim.cmd.colorscheme('catppuccin')
+-- colors/tokyonight-night.lua はプラグインから生成した単体ファイル (scripts/gen_tokyonight.lua)
+vim.cmd.colorscheme('tokyonight-night')
 
 vim.opt.signcolumn = "yes"
 -- vim.opt.winborder = "rounded"

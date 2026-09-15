@@ -94,7 +94,7 @@ if command -v fzf >/dev/null 2>&1; then
     fi
 
     # Pick a tmux session and attach, or switch if already inside tmux
-    ts() {
+    its() {
         local session
         session=$(tmux list-sessions -F '#{session_name}' 2>/dev/null \
             | fzf --prompt='tmux> ' --height=40% --reverse) || return

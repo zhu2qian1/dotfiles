@@ -58,14 +58,35 @@ in_ignore() {
 #   herdr: config.toml は持ち運べるが、同じディレクトリに API ソケット
 #          (herdr.sock / herdr-client.sock)、ログ、session.json が置かれる。
 #          ディレクトリごとリンクするとそれらが全部リポジトリに流れ込む。
+#   systemd/user: `systemctl --user enable` が *.target.wants/ に symlink を作り、
+#          snap なども自分のユニットをここで有効化する。ユニットファイルだけを
+#          リンクする。入れ子は親も列挙すること (systemd を掘らないと
+#          systemd/user まで届かない)。
 CONFIG_PER_ENTRY=(
     "herdr"
+    "systemd" "systemd/user"
 )
 
 in_config_per_entry() {
     local x="$1" i
     for i in "${CONFIG_PER_ENTRY[@]}"; do [[ "$x" == "$i" ]] && return 0; done
     return 1
+}
+
+# .config 配下のリンク単位を、.config からの相対パスで 1 行ずつ出す。
+# CONFIG_PER_ENTRY のディレクトリは自分自身ではなく中身を再帰的に展開する。
+# インストールと doctor で同じ走査を共有するためのもの。呼び出し側で
+# nullglob / dotglob を有効にしておくこと。
+config_entries() {
+    local dir="$DOTFILES_DIR/.config${1:+/$1}" path rel
+    for path in "$dir"/*; do
+        rel="${path#"$DOTFILES_DIR"/.config/}"
+        if in_config_per_entry "$rel"; then
+            config_entries "$rel"
+        else
+            printf '%s\n' "$rel"
+        fi
+    done
 }
 
 # link <src-abs> <dest-abs>
@@ -145,14 +166,10 @@ doctor() {
     local path name dest
     shopt -s nullglob dotglob
     # CONFIG_PER_ENTRY のディレクトリは、それ自身ではなく中身が検査対象になる。
-    local config_paths=() sub
-    for path in "$DOTFILES_DIR"/.config/*; do
-        if in_config_per_entry "$(basename "$path")"; then
-            for sub in "$path"/*; do config_paths+=("$sub"); done
-        else
-            config_paths+=("$path")
-        fi
-    done
+    local config_paths=() rel
+    while IFS= read -r rel; do
+        config_paths+=("$DOTFILES_DIR/.config/$rel")
+    done < <(config_entries)
     for path in "$DOTFILES_DIR"/* ${config_paths[@]+"${config_paths[@]}"} \
                 "$DOTFILES_DIR"/.claude/skills/* "$DOTFILES_DIR"/.claude/*; do
         name="$(basename "$path")"
@@ -317,18 +334,11 @@ for path in "$DOTFILES_DIR"/*; do
 done
 
 # 2) link .config entries individually (never replace all of ~/.config).
-#    CONFIG_PER_ENTRY のディレクトリはさらに一段掘り下げて中身だけをリンクする。
+#    CONFIG_PER_ENTRY のディレクトリは掘り下げて中身だけをリンクする。
 if [[ -d "$DOTFILES_DIR/.config" ]]; then
-    for path in "$DOTFILES_DIR"/.config/*; do
-        name="$(basename "$path")"
-        if in_config_per_entry "$name"; then
-            for sub in "$path"/*; do
-                link "$sub" "$HOME/.config/$name/$(basename "$sub")"
-            done
-        else
-            link "$path" "$HOME/.config/$name"
-        fi
-    done
+    while IFS= read -r rel; do
+        link "$DOTFILES_DIR/.config/$rel" "$HOME/.config/$rel"
+    done < <(config_entries)
 fi
 
 # 3) link .claude entries individually: ~/.claude also holds Claude Code's own

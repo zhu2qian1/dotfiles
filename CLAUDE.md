@@ -42,8 +42,11 @@ pwsh -File install.ps1 -Doctor
   `.config` と `.claude` はディレクトリごとではなくエントリ単位でリンクする
   (`~/.claude` には Claude Code 自身の state があるため)。
   `.config` 配下でも同じ問題を抱えるディレクトリは `CONFIG_PER_ENTRY` に列挙すると
-  さらに一段掘り下げて中身だけをリンクする (`herdr` は config.toml の隣に API
-  ソケット・ログ・`session.json` が置かれる)。
+  掘り下げて中身だけをリンクする (`herdr` は config.toml の隣に API
+  ソケット・ログ・`session.json` が置かれる。`systemd/user` は `systemctl --user
+  enable` や snap が symlink を作る)。`.config` からの相対パスで書き、入れ子にする
+  ときは親も列挙する (`"systemd" "systemd/user"`)。走査は `config_entries` に
+  集約してあり、インストールと doctor が共有する。
 - **`install.ps1` (Windows) は許可リスト方式**。`$Links` (ordered hashtable) に
   書いたものだけを扱う。Windows で使う設定は WSL 側と重ならないので、
   `.config\{komorebi,PowerShell,nvim,starship,yazi,whkdrc}` と一部のトップレベル

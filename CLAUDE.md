@@ -70,28 +70,9 @@ pwsh -File install.ps1 -Doctor
 - **`.bashrc`**: ローダーのみ。対話判定より前に `.profile` を拾う
   (`ssh host 'cmd'` は `.bashrc` を読むが `.profile` は読まないため)。
   二重読み込みは `DOTFILES_PROFILE_LOADED` / `DOTFILES_PROFILE_ATTEMPTED` で防ぐ。
-- 実体は `.config/bash/` に分割。読み込み順は `[0-9]*.bash` (番号順) →
-  `os/<os>.bash` → `host/<hostname>.bash` → `local.bash` (gitignore)。
-  後勝ち。ファイルを置くだけで有効になり、無ければ黙って飛ばす。
-  詳細は `.config/bash/README.md`。
+- 実体は `.config/bash/` に分割 (読み込み順と後勝ちの規則は `.config/bash/README.md`)。
 - `local.bash` / `env_local.bash` は machine-local な秘密情報用でコミットしない。
   雛形は `local.bash.example`。
-
-## Neovim
-
-`init.lua` は `NVIM_PROFILE` で切り替わる 2 プロファイル構成:
-
-- `lite` (既定): プラグイン無し。`lua/config/*` のみ読む。起動 1 秒未満。
-- `ide` (`NVIM_PROFILE=ide nvim`): `lua/ide/` 配下で lazy.nvim をブートストラップし
-  `lua/ide/plugins/*.lua` を spec として読む。lockfile も
-  `lua/ide/lazy-lock.json` に隔離してあり、これは gitignore 済み。
-  lite で起動した後に `:EnableIde` でも読める (既存バッファには `BufReadPre` /
-  `FileType` を再発火して遅延読み込みを拾わせる)。`lua/ide/` 側の spec は起動後に
-  setup されても動くように書くこと。
-
-`lua/config/*` は両プロファイル共通。プラグインに依存する設定を書かないこと。
-`lua/config/platform.lua` に Windows / WSL / SSH+tmux でのクリップボード分岐が
-まとまっており、なぜその実装なのかがコメントで詳述されている — 触る前に読むこと。
 
 ## Claude Code の設定
 
@@ -117,13 +98,9 @@ pwsh -File install.ps1 -Doctor
 
 ## 編集時の注意
 
-- `.editorconfig`: LF・UTF-8・スペース 4・末尾空白除去 (Markdown は除く)。
-  Windows 側のファイルでも CRLF にしない。
 - `.ps1` / `.psm1` / `.psd1` は **BOM 付き UTF-8**。Windows PowerShell 5.1 は BOM の
   無い .ps1 を ANSI (日本語環境なら CP932) として読むので、日本語コメントが化けて
   構文エラーになる。新しい PowerShell ファイルを足すときは BOM を落とさないこと。
-- `install.sh` は `set -euo pipefail`、`install.ps1` は `Set-StrictMode -Version Latest`
-  と `$ErrorActionPreference = 'Stop'` で動く。
 - 両スクリプトのコメントは「なぜそう書いてあるか」を残す形で書かれている
   (sudo の secure_path、`.profile` の stdout 制約、symlink の権限、パス正規化など)。
   同じ水準で書き足すこと。

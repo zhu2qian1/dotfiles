@@ -63,16 +63,24 @@ pwsh -File install.ps1 -Doctor
 
 ## シェル設定のレイヤ
 
-`~/.profile` と `~/.bashrc` の役割分担がこの構成の要点:
+`~/.profile` と `~/.bashrc` / `~/.zshrc` の役割分担がこの構成の要点:
 
 - **`.profile`**: PATH・EDITOR・locale など**非対話シェルにも必要なもの**だけ。
-  POSIX sh 互換を保つこと (dash で読まれる)。stdout に出力してはいけない。
+  POSIX sh 互換を保つこと (dash で読まれる)。zsh からは `emulate sh` 無しで
+  source されるので、zsh で意味が変わる書き方 (unquoted 展開の単語分割頼みなど) も
+  しない。stdout に出力してはいけない。
 - **`.bashrc`**: ローダーのみ。対話判定より前に `.profile` を拾う
   (`ssh host 'cmd'` は `.bashrc` を読むが `.profile` は読まないため)。
   二重読み込みは `DOTFILES_PROFILE_LOADED` / `DOTFILES_PROFILE_ATTEMPTED` で防ぐ。
-- 実体は `.config/bash/` に分割 (読み込み順と後勝ちの規則は `.config/bash/README.md`)。
-- `local.bash` / `env_local.bash` は machine-local な秘密情報用でコミットしない。
-  雛形は `local.bash.example`。
+- **zsh は `.profile` を自分では読まない**。`.zprofile` (ログイン)・`.zshenv`
+  (`ssh host 'cmd'`。bash に合わせて sshd 起動時だけ)・`.zshrc` (それ以外の対話) が
+  渡す。`.zshrc` も `.bashrc` と同じくローダーのみ。
+- 実体は `.config/shell/` に分割 (読み込み順は `.config/shell/README.md`)。
+  `*.sh` は bash と zsh の両方が、`*.bash` / `*.zsh` は各シェルだけが読み、同名なら
+  `.sh` が先。片方のシェル用ファイルにだけ足した設定はもう片方に効かないので、
+  共有できるものは `.sh` に書くこと。
+- `local.{sh,bash,zsh}` / `env_local.*` は machine-local な秘密情報用でコミットしない。
+  雛形は `local.sh.example`。
 
 ## Claude Code の設定
 

@@ -1,8 +1,5 @@
-# Prompt. starship when available, a minimal fallback otherwise.
-
-# Default starship config; local.bash loads later and can override it
-# (starship re-reads STARSHIP_CONFIG on every render, so a later change sticks).
-export STARSHIP_CONFIG="${STARSHIP_CONFIG:-$HOME/.config/starship/gruvbox-rainbow.toml}"
+# Prompt for bash. starship when available, a minimal fallback otherwise.
+# The default STARSHIP_CONFIG is set for both shells in 40-prompt.sh.
 
 if command -v starship >/dev/null 2>&1; then
     eval "$(starship init bash)"

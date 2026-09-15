@@ -5,9 +5,13 @@
 #   ssh host 'cmd' / cron / systemd user units / VSCode Remote / git's core.editor
 # Drawing that line is the whole reason this file exists.
 #
+# zsh never reads this file by itself: ~/.zprofile, ~/.zshenv and ~/.zshrc
+# source it natively (not under `emulate sh`), so it must stay valid zsh too --
+# no relying on unquoted expansions being word-split, for one.
+#
 # Constraint: never write to stdout (it breaks scp/sftp/rsync).
 
-# Guard against double loading (.bashrc may source us; see the pairing at the bottom).
+# Guard against double loading (.bashrc / .zshrc may source us; see the pairing at the bottom).
 [ -n "${DOTFILES_PROFILE_LOADED:-}" ] && return 0
 DOTFILES_PROFILE_LOADED=1
 

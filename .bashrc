@@ -1,6 +1,7 @@
 # ~/.bashrc: interactive bash.
 #
-# This file is just a loader. The actual settings live in ~/.config/bash/*.bash.
+# This file is just a loader. The actual settings live in ~/.config/shell/,
+# most of them shared with zsh (see its README.md for the load order).
 # Environment variables and PATH belong in ~/.profile, not here, because
 # non-interactive shells need them too.
 
@@ -23,29 +24,39 @@ case $- in
 esac
 
 # ------------------------------------------------------------------- Loader
-# Load order:
-#   1. [0-9]*.bash        numbered (00 history -> 10 shell -> 20 aliases
-#                         -> 30 tools -> 40 prompt -> 50 zoxide)
-#   2. os/<os>.bash       per-OS (linux / darwin / windows)
-#   3. host/<host>.bash   per-machine
-#   4. local.bash         machine-only secrets and overrides (not in git)
+# At each step the shared *.sh (read by zsh too) loads first, then the
+# bash-only *.bash of the same name:
+#   1. [0-9]*.{sh,bash}       numbered (00 history -> 10 shell -> 20 aliases
+#                             -> 30 tools -> 40 prompt -> 50 zoxide)
+#   2. os/<os>.{sh,bash}      per-OS (linux / darwin / windows)
+#   3. host/<host>.{sh,bash}  per-machine
+#   4. local.{sh,bash}        machine-only secrets and overrides (not in git)
 # Later files win. Adding a file is enough to enable it; a missing one is fine.
-_bash_conf="${XDG_CONFIG_HOME:-$HOME/.config}/bash"
+_shell_conf="${XDG_CONFIG_HOME:-$HOME/.config}/shell"
 
 case "$OSTYPE" in
-    linux*)         _bash_os=linux ;;
-    darwin*)        _bash_os=darwin ;;
-    msys*|cygwin*)  _bash_os=windows ;;
-    *)              _bash_os=other ;;
+    linux*)         _shell_os=linux ;;
+    darwin*)        _shell_os=darwin ;;
+    msys*|cygwin*)  _shell_os=windows ;;
+    *)              _shell_os=other ;;
 esac
 
-for _bash_f in \
-    "$_bash_conf"/[0-9]*.bash \
-    "$_bash_conf/os/$_bash_os.bash" \
-    "$_bash_conf/host/${HOSTNAME%%.*}.bash" \
-    "$_bash_conf/local.bash"
-do
-    [ -r "$_bash_f" ] && . "$_bash_f"
+# A glob that matches nothing stays literal, ends in neither suffix, and is skipped.
+for _shell_f in "$_shell_conf"/[0-9]*; do
+    case "$_shell_f" in
+        *.sh)   . "$_shell_f"
+                [ -r "${_shell_f%.sh}.bash" ] && . "${_shell_f%.sh}.bash" ;;
+        *.bash) [ -e "${_shell_f%.bash}.sh" ] || . "$_shell_f" ;;  # else done with its .sh
+    esac
 done
 
-unset _bash_conf _bash_os _bash_f
+for _shell_f in \
+    "$_shell_conf/os/$_shell_os" \
+    "$_shell_conf/host/${HOSTNAME%%.*}" \
+    "$_shell_conf/local"
+do
+    [ -r "$_shell_f.sh" ]   && . "$_shell_f.sh"
+    [ -r "$_shell_f.bash" ] && . "$_shell_f.bash"
+done
+
+unset _shell_conf _shell_os _shell_f

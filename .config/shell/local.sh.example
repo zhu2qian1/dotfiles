@@ -1,0 +1,11 @@
+# Copy to local.sh for machine-specific settings. Not tracked by git --
+# this is the place for secrets, tokens and per-machine overrides.
+#
+#   cp ~/.config/shell/local.sh.example ~/.config/shell/local.sh
+#
+# Read by both bash and zsh, so stick to what both understand. Anything
+# shell-specific goes in local.bash / local.zsh, which load right after it.
+# Loaded last, so anything here wins over the numbered files.
+
+# export STARSHIP_CONFIG=~/.config/starship/tokyo-night.toml
+# export SOME_API_TOKEN='...'

@@ -1,6 +1,11 @@
-# Aliases and small helper functions.
+# Aliases and small helper functions, shared by bash and zsh.
 
-alias sb='source ~/.bashrc'
+# Re-read the rc file of whichever shell this is
+if [ -n "${ZSH_VERSION:-}" ]; then
+    alias sb='source ~/.zshrc'
+else
+    alias sb='source ~/.bashrc'
+fi
 alias cl='clear'
 alias ip='ip --color=auto'
 alias portcheck='ss -tlpn'
@@ -46,7 +51,7 @@ if command -v nvim >/dev/null 2>&1; then
 fi
 
 alias scratchpad='$EDITOR "$(date +%F)-scratchpad.md"'
-alias envlocal='$EDITOR ~/.config/bash/local.bash'
+alias envlocal='$EDITOR ~/.config/shell/local.sh'
 
 # Activate a venv in the current directory, whichever name it uses.
 pyenv() {

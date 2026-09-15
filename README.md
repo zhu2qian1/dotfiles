@@ -18,7 +18,7 @@ pwsh -File install.ps1 -Doctor      # report link state, profile and missing too
 
 | path | linked to | notes |
 | --- | --- | --- |
-| `.profile`, `.bashrc`, `.zshrc`, `.vimrc`, ... | `~/<name>` | top level, linked wholesale |
+| `.profile`, `.bashrc`, `.zshrc`, `.zprofile`, `.zshenv`, `.vimrc`, ... | `~/<name>` | top level, linked wholesale |
 | `.config/*` | `~/.config/<name>` | per entry, never the whole `~/.config` |
 | `.config/herdr/*` | `~/.config/herdr/<name>` | per entry -- herdr keeps its socket, logs and `session.json` alongside |
 | `.config/herdr/config.toml` | `%APPDATA%\herdr\config.toml` | Windows only (`install.ps1`); `HERDR_CONFIG_PATH` wins if set |
@@ -26,7 +26,8 @@ pwsh -File install.ps1 -Doctor      # report link state, profile and missing too
 | `.claude/*` | `~/.claude/<name>` | per entry -- `~/.claude` also holds Claude Code's own state |
 | `scripts/`, `backup/`, `.vscode/`, `CLAUDE.md` | -- | not linked; see `IGNORE` in `install.sh` |
 
-`.config/bash/README.md` covers the shell config and its load order.
+`.config/shell/README.md` covers the shell config shared by bash and zsh, and
+its load order.
 
 On Windows, `install.ps1` links the entries actually used there --
 `.config/{komorebi,PowerShell,nvim,starship,ghostty,yazi,whkdrc}` and the top-level
@@ -38,8 +39,9 @@ to the CurrentUserAllHosts profile of both PowerShell 7+ and Windows PowerShell
 `KOMOREBI_CONFIG_HOME`, which must point at `~/.config/komorebi`; `-Doctor` checks
 that. Creating symlinks needs developer mode or an elevated shell.
 
-`~/.profile` holds PATH and anything non-interactive shells need; `~/.bashrc` is
-only a loader.
+`~/.profile` holds PATH and anything non-interactive shells need; `~/.bashrc` and
+`~/.zshrc` are only loaders. zsh never reads `~/.profile` by itself, so
+`~/.zprofile` (login shells) and `~/.zshenv` (`ssh host 'cmd'`) hand it over.
 
 ## ghostty
 
@@ -124,9 +126,14 @@ and machine-local state and is therefore not tracked here. After running
 
 ## Machine-local config
 
-`~/.config/bash/local.bash` holds secrets and per-machine overrides and is
-gitignored. Seed it from the example:
+`~/.config/shell/local.sh` holds secrets and per-machine overrides for both
+shells and is gitignored (`local.bash` / `local.zsh` for anything shell-specific).
+Seed it from the example:
 
 ```sh
-cp ~/.config/bash/local.bash.example ~/.config/bash/local.bash
+cp ~/.config/shell/local.sh.example ~/.config/shell/local.sh
 ```
+
+Machines set up before the move from `.config/bash` still have their
+`local.bash` in the old directory, where nothing reads it any more;
+`install.sh --doctor` flags that.

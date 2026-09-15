@@ -193,6 +193,18 @@ doctor() {
     else
         printf '  WARN     nvim not on PATH in a non-interactive shell\n'
     fi
+    # zsh never reads ~/.profile itself; .zprofile and .zshrc hand it over.
+    # Check that wiring the same way as bash's. </dev/null: an interactive zsh
+    # must not sit waiting on the terminal if something in the rc files prompts.
+    if command -v zsh >/dev/null 2>&1; then
+        for v in DOTFILES_PROFILE_LOADED DOTFILES_ZSHRC_LOADED; do
+            if zsh -lic "[[ -n \${$v:-} ]]" </dev/null >/dev/null 2>&1; then
+                printf '  ok       %s is set in a zsh login shell\n' "$v"
+            else
+                printf '  MISSING  %s is not set in zsh -- run install.sh\n' "$v"; rc=1
+            fi
+        done
+    fi
 
     # ~/.bash_profile and ~/.bash_login shadow ~/.profile: bash reads only the
     # first of the three it finds in a login shell. Neither is managed here, so
@@ -243,7 +255,7 @@ doctor() {
     echo "== tools =="
     # required: things the config assumes; optional: nice to have
     local required=(git bash)
-    local optional=(nvim starship fzf zoxide eza herdr tmux lazygit yazi bat batcat delta rg fd jq)
+    local optional=(zsh nvim starship fzf zoxide eza herdr tmux lazygit yazi bat batcat delta rg fd jq)
     local c
     for c in "${required[@]}"; do
         if command -v "$c" >/dev/null 2>&1; then
@@ -262,11 +274,25 @@ doctor() {
 
     echo
     echo "== machine-local config =="
-    if [[ -f "$HOME/.config/bash/local.bash" ]]; then
-        echo "  ok       ~/.config/bash/local.bash"
-    else
-        echo "  -        ~/.config/bash/local.bash not present"
-        echo "           cp ~/.config/bash/local.bash.example ~/.config/bash/local.bash"
+    local lf found_local=0
+    for lf in local.sh local.bash local.zsh; do
+        if [[ -f "$HOME/.config/shell/$lf" ]]; then
+            echo "  ok       ~/.config/shell/$lf"
+            found_local=1
+        fi
+    done
+    if (( ! found_local )); then
+        echo "  -        no ~/.config/shell/local.{sh,bash,zsh}"
+        echo "           cp ~/.config/shell/local.sh.example ~/.config/shell/local.sh"
+    fi
+    # Left over from when the shell config lived in .config/bash. git moves only
+    # tracked files, so an untracked local.bash stays behind there and nothing
+    # reads it any more -- the secrets in it silently stop being loaded.
+    if [[ -e "$DOTFILES_DIR/.config/bash" || -L "$HOME/.config/bash" ]]; then
+        echo "  WARN     leftover .config/bash from before the move to .config/shell"
+        echo "           move local.bash into ~/.config/shell/ (as local.sh if bash-neutral),"
+        echo "           then delete $DOTFILES_DIR/.config/bash and the ~/.config/bash link"
+        rc=1
     fi
 
     echo
@@ -323,5 +349,5 @@ nvim_sudo_link
 
 echo "done."
 echo
-echo "next: cp ~/.config/bash/local.bash.example ~/.config/bash/local.bash"
+echo "next: cp ~/.config/shell/local.sh.example ~/.config/shell/local.sh"
 echo "      bash install.sh --doctor"

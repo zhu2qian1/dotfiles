@@ -2,6 +2,12 @@ custom_profile.ps1
 .config/nvim/lua/ide/lazy-lock.json
 
 # machine-local shell config (secrets, per-machine overrides)
+.config/shell/local.sh
+.config/shell/local.bash
+.config/shell/local.zsh
+.config/shell/env_local.*
+# Pre-move paths. git leaves an untracked local.bash behind in .config/bash on
+# machines that pulled the move, so keep ignoring it until it has been moved.
 .config/bash/local.bash
 .config/bash/env_local.bash
 

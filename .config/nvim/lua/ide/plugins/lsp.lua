@@ -112,6 +112,19 @@ return {
                 vim.env.JDTLS_JVM_ARGS = vim.trim(jvm_args .. ' -javaagent:' .. lombok)
             end
 
+            -- Java: java-debug-adapter を jdtls の拡張バンドルとして登録する。これが
+            -- 入っていると LSP コマンド vscode.java.startDebugSession が使えるようになり、
+            -- nvim-dap から attach できる (dap.lua 側で使う)。Mason は
+            -- share/java-debug-adapter/ にバージョン無しの symlink を張るのでそれを見る。
+            -- 未インストールでも jdtls は普通に起動させたいので、jar が無ければ足さない。
+            local java_debug = vim.fn.stdpath('data')
+                .. '/mason/share/java-debug-adapter/com.microsoft.java.debug.plugin.jar'
+            if vim.uv.fs_stat(java_debug) then
+                vim.lsp.config('jdtls', {
+                    init_options = { bundles = { java_debug } },
+                })
+            end
+
             -- mason: サーバの自動インストール。mason-lspconfig が installed 分を
             -- 自動で vim.lsp.enable する (v2)
             require('mason-lspconfig').setup({

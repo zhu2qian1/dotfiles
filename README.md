@@ -22,6 +22,7 @@ pwsh -File install.ps1 -Doctor      # report link state, profile and missing too
 | `.config/*` | `~/.config/<name>` | per entry, never the whole `~/.config` |
 | `.config/herdr/*` | `~/.config/herdr/<name>` | per entry -- herdr keeps its socket, logs and `session.json` alongside |
 | `.config/herdr/config.toml` | `%APPDATA%\herdr\config.toml` | Windows only (`install.ps1`); `HERDR_CONFIG_PATH` wins if set |
+| `.config/systemd/user/*` | `~/.config/systemd/user/<name>` | per entry -- `systemctl --user enable` and snap write their own links there |
 | `.claude/skills/*` | `~/.claude/skills/<name>` | per entry, coexists with other global skills |
 | `.claude/*` | `~/.claude/<name>` | per entry -- `~/.claude` also holds Claude Code's own state |
 | `scripts/`, `backup/`, `.vscode/`, `CLAUDE.md` | -- | not linked; see `IGNORE` in `install.sh` |
@@ -42,6 +43,36 @@ that. Creating symlinks needs developer mode or an elevated shell.
 `~/.profile` holds PATH and anything non-interactive shells need; `~/.bashrc` and
 `~/.zshrc` are only loaders. zsh never reads `~/.profile` by itself, so
 `~/.zprofile` (login shells) and `~/.zshenv` (`ssh host 'cmd'`) hand it over.
+
+## Laptop lid
+
+Closing the lid suspends on battery, but on AC the machine stays up with only the
+built-in display turned off, so it can keep running as a clamshell CI box. That
+takes two pieces.
+
+logind decides whether to suspend. Its config lives under `/etc` and is not
+tracked here; `HandleLidSwitch=suspend` (the default) keeps applying on battery:
+
+```sh
+sudo mkdir -p /etc/systemd/logind.conf.d
+printf '[Login]\nHandleLidSwitchExternalPower=ignore\n' | sudo tee /etc/systemd/logind.conf.d/lid.conf
+sudo systemctl kill -s HUP systemd-logind
+```
+
+GNOME leaves the panel lit when the lid closes without a suspend, so
+`.config/systemd/user/lid-screen-off.service` watches UPower's `LidIsClosed` and
+switches mutter's `PowerSaveMode`. After `install.sh`:
+
+```sh
+systemctl --user daemon-reload
+systemctl --user enable --now lid-screen-off.service
+```
+
+Lid detection is up to the firmware. On a Dell Inspiron 14 5410 the BIOS
+"Lid Switch" option was disabled and the lid never read as closed, so check
+`cat /proc/acpi/button/lid/*/state` with the lid half shut first. Also note that
+the GDM login screen suspends after 20 idle minutes even on AC, which matters
+if the machine reboots unattended.
 
 ## ghostty
 

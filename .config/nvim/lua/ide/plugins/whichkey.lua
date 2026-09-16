@@ -36,6 +36,7 @@ return {
             spec = {
                 { '<leader>a', group = 'AI/Claude Code' },
                 { '<leader>c', group = 'code (LSP)' },
+                { '<leader>d', group = 'debug (dap)' },
                 { '<leader>e', group = 'explorer' },
                 { '<leader>f', group = 'find (telescope)' },
                 { '<leader>h', group = 'git hunk (gitsigns)' },

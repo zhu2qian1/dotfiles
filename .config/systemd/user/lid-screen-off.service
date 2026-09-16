@@ -1,0 +1,15 @@
+[Unit]
+Description=Turn the built-in display off while the lid is closed
+# mutter の DisplayConfig を叩くので、GNOME のグラフィカルセッションと寿命を揃える。
+# WSL などグラフィカルセッションの無い環境では enable しても起動しない。
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+ExecStart=%h/.config/systemd/user/lid-screen-off.sh
+# パイプラインの終了コードは while 側 (常に 0) になり on-failure では拾えない
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=graphical-session.target

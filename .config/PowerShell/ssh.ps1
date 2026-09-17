@@ -10,7 +10,8 @@ if (-not (Get-Command 'ssh' -ErrorAction SilentlyContinue)) {
 function Invoke-InteractiveSsh {
     [CmdletBinding()]
     param (
-        [string]$SshConfigFile = "$HOME\.ssh\config"
+        [string]$SshConfigFile = "$HOME\.ssh\config",
+        [switch]$NoOutput
     )
 
     if (-not (Get-Command 'fzf' -ErrorAction SilentlyContinue)) {
@@ -42,6 +43,9 @@ function Invoke-InteractiveSsh {
         return
     }
     Write-Verbose "Selected Host: $SelectedHost"
+    if (-not ($NoOutput)) {
+        Write-Host "Selected Host: $SelectedHost"
+    }
 
     ssh $SelectedHost
 }

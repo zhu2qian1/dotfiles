@@ -8,10 +8,25 @@
 # - lush
 # - fervor
 # - blaze
-palette = "mellow"
+palette = "fervor"
 
-format = "\\[$directory$git_branch$git_status\\]$character"
+format = """\\[$username$hostname$directory$git_branch$git_status\\]
+$character
+"""
 add_newline = false
+
+[hostname]
+disabled = false
+format = "[$hostname]($style) | "
+ssh_only = false
+style = "fg:guava"
+
+[username]
+disabled = false
+format = "[$user]($style)@"
+show_always = true
+style_root = "fg:guava"
+style_user = "fg:lychee"
 
 [directory]
 truncation_symbol = " "

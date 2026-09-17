@@ -6,6 +6,7 @@
 . "$HOME\.config\PowerShell\fzf.ps1"
 . "$HOME\.config\PowerShell\nvim.ps1"
 . "$HOME\.config\PowerShell\yazi.ps1"
+. "$HOME\.config\PowerShell\ripgrep.ps1"
 . "$HOME\.config\PowerShell\ssh.ps1"
 . "$HOME\.config\PowerShell\psmux.ps1"
 . "$HOME\.config\PowerShell\komorebi.ps1"

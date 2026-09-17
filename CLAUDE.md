@@ -49,7 +49,7 @@ pwsh -File install.ps1 -Doctor
   集約してあり、インストールと doctor が共有する。
 - **`install.ps1` (Windows) は許可リスト方式**。`$Links` (ordered hashtable) に
   書いたものだけを扱う。Windows で使う設定は WSL 側と重ならないので、
-  `.config\{komorebi,PowerShell,nvim,starship,yazi,whkdrc}` と一部のトップレベル
+  `.config\{komorebi,PowerShell,nvim,starship,ghostty,yazi,ripgrep,whkdrc}` と一部のトップレベル
   ファイルに限定してある。komorebi と PowerShell は配下を相対参照するので
   **ディレクトリ単位**でリンクする。herdr だけは `.config\herdr\config.toml` を
   `%APPDATA%\herdr\config.toml` (または `HERDR_CONFIG_PATH`) へ**ファイル単位**で

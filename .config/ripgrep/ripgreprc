@@ -1,0 +1,6 @@
+--colors=match:fg:yellow
+--colors=match:style:nobold
+--colors=match:style:underline
+--colors=path:style:bold
+--colors=path:fg:cyan
+--smart-case

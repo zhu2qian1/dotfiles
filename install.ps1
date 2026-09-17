@@ -87,6 +87,7 @@ $Links = [ordered]@{
     '.config\starship'   = Join-Path $TargetRoot '.config\starship'
     '.config\ghostty'    = Join-Path $TargetRoot '.config\ghostty'
     '.config\yazi'       = Join-Path $TargetRoot '.config\yazi'
+    '.config\ripgrep'    = Join-Path $TargetRoot '.config\ripgrep'
     '.config\whkdrc'     = Join-Path $TargetRoot '.config\whkdrc'
 
     # ~\.config 配下ではなく %APPDATA%\herdr へ。ディレクトリではなく

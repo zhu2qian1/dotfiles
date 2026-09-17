@@ -25,7 +25,7 @@ put anything shareable in `.sh`.
 | 1 | `00-history.{bash,zsh}` | history sizes, timestamps, flushing after each command |
 | 2 | `10-shell.{bash,zsh}` | shell options, completion system (bash-completion / compinit), zsh key bindings |
 | 3 | `20-aliases.sh` | aliases and small functions |
-| 4 | `30-tools.sh` | herdr wrapper, yazi, lesspipe, man |
+| 4 | `30-tools.sh` | herdr wrapper, yazi, lesspipe, man, ripgrep |
 |   | `30-tools.{bash,zsh}` | fzf (Tab 補完の差し替え含む), asdf, completions for tailscale / herdr |
 | 5 | `40-prompt.sh` | default `STARSHIP_CONFIG` |
 |   | `40-prompt.{bash,zsh}` | starship, with a plain prompt fallback |

@@ -1,5 +1,6 @@
-# Third-party tool integration shared by bash and zsh. Every block is guarded
-# so a machine that is missing the tool just skips it instead of erroring.
+# Third-party tool integration shared by bash and zsh. Blocks are guarded
+# (except ripgrep, see there) so a machine that is missing the tool just
+# skips it instead of erroring.
 # The shell-specific halves (fzf key bindings, completions) are in
 # 30-tools.bash / 30-tools.zsh, which load right after this file.
 
@@ -53,3 +54,9 @@ if command -v nvim >/dev/null 2>&1; then
     export MANPAGER='nvim +Man!'
     export MANWIDTH=999
 fi
+
+# --------------------------------------------------------------- ripgrep
+# Unguarded on purpose: asdf puts its shims on PATH in 30-tools.{bash,zsh},
+# which loads after this file, so `command -v rg` can miss an rg that is
+# installed. Pointing at a config nothing reads is harmless anyway.
+export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/ripgreprc"

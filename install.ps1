@@ -20,8 +20,9 @@
     書くため、ディレクトリごとリンクすると実行時の生成物がリポジトリに入る
     (install.sh 側の CONFIG_PER_ENTRY と同じ理由)。
 
-    .claude\statusline.sh もファイル単位。~\.claude には Claude Code 自身の
-    state があるため。
+    .claude\statusline.sh もファイル単位、.claude\skills\* はスキル単位。
+    ~\.claude には Claude Code 自身の state があり、~\.claude\skills にも
+    claude.ai から同期したスキル (synced\) が書き込まれるため。
 
     プロファイルは PowerShell 7+ / Windows PowerShell 5.1 の CurrentUserAllHosts に
     dot-source 1 行の stub を追記する (symlink は張らない)。本体は
@@ -104,6 +105,19 @@ $Links = [ordered]@{
     '.gvimrc'            = Join-Path $TargetRoot '.gvimrc'
     '.wezterm.lua'       = Join-Path $TargetRoot '.wezterm.lua'
     '.psmux.conf'        = Join-Path $TargetRoot '.psmux.conf'
+}
+
+# ~\.claude\skills もディレクトリごとではなくスキル単位でリンクする。Claude Code は
+# claude.ai から同期したスキルを ~\.claude\skills\synced\ に書き込むので、
+# skills ごとリンクすると同期物 (manifest.json など) がリポジトリに流れ込む。
+# SKILL.md を持つディレクトリだけを対象にし、リポジトリ側に紛れ込んだ
+# synced\ のような生成物をリンクし返さないようにする。
+$SkillsDir = Join-Path $DotfilesDir '.claude\skills'
+if (Test-Path -LiteralPath $SkillsDir) {
+    foreach ($skill in Get-ChildItem -LiteralPath $SkillsDir -Directory) {
+        if (-not (Test-Path -LiteralPath (Join-Path $skill.FullName 'SKILL.md'))) { continue }
+        $Links[".claude\skills\$($skill.Name)"] = Join-Path $TargetRoot ".claude\skills\$($skill.Name)"
+    }
 }
 
 # プロファイルは symlink ではなく dot-source 1 行の stub を置く。$PROFILE は

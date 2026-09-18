@@ -11,5 +11,9 @@ custom_profile.ps1
 .config/bash/local.bash
 .config/bash/env_local.bash
 
+# Claude Code writes skills synced from claude.ai here. Only reaches the repo
+# when ~/.claude/skills is linked as a whole directory, which it should not be.
+.claude/skills/synced/
+
 # install.sh / migration backups
 *.bak

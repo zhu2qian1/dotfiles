@@ -23,7 +23,7 @@ pwsh -File install.ps1 -Doctor      # report link state, profile and missing too
 | `.config/herdr/*` | `~/.config/herdr/<name>` | per entry -- herdr keeps its socket, logs and `session.json` alongside |
 | `.config/herdr/config.toml` | `%APPDATA%\herdr\config.toml` | Windows only (`install.ps1`); `HERDR_CONFIG_PATH` wins if set |
 | `.config/systemd/user/*` | `~/.config/systemd/user/<name>` | per entry -- `systemctl --user enable` and snap write their own links there |
-| `.claude/skills/*` | `~/.claude/skills/<name>` | per entry, coexists with other global skills |
+| `.claude/skills/*` | `~/.claude/skills/<name>` | per entry -- Claude Code syncs claude.ai skills into `~/.claude/skills/synced/` |
 | `.claude/*` | `~/.claude/<name>` | per entry -- `~/.claude` also holds Claude Code's own state |
 | `scripts/`, `backup/`, `.vscode/`, `CLAUDE.md` | -- | not linked; see `IGNORE` in `install.sh` |
 
@@ -33,7 +33,7 @@ its load order.
 On Windows, `install.ps1` links the entries actually used there --
 `.config/{komorebi,PowerShell,nvim,starship,ghostty,yazi,ripgrep,whkdrc}` and the top-level
 `.vimrc`, `.gvimrc`, `.wezterm.lua`, `.psmux.conf`, plus `.claude/statusline.sh`
-as a single file -- and appends a one-line stub
+as a single file and each `.claude/skills/*` that has a `SKILL.md` -- and appends a one-line stub
 to the CurrentUserAllHosts profile of both PowerShell 7+ and Windows PowerShell
 5.1, so the profile body stays in `.config/PowerShell/profile.ps1`.
 `komorebi.json` resolves its bar and application configs through

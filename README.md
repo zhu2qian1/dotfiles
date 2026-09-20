@@ -102,6 +102,23 @@ infocmp -x xterm-ghostty | ssh <host> 'mkdir -p ~/.terminfo && tic -x -o ~/.term
 directory under its Cellar, which `brew upgrade ncurses` wipes and the system
 ncurses never looks at.
 
+`ssh-terminfo` walks into the same trap, because it runs whatever `tic` comes
+first on the remote's `PATH`: on a host with linuxbrew the entry lands in the
+Cellar, where the system ncurses -- and therefore zsh -- never finds it. The
+fallback does not save it either, since ghostty decides by running `infocmp`,
+which finds the Cellar copy and reports success, so `ssh-env` keeps
+`TERM=xterm-ghostty` instead of falling back. ghostty also caches the host as
+done and never retries. The result is an unknown `TERM` inside zsh: no `el` and
+no `cub1`, so ZLE redraws the line by overprinting it from column 0 and the
+prompt's Nerd Font glyphs collapse into `?`, which looks like characters piling
+on top of each other. Check with `/usr/bin/infocmp xterm-ghostty` on the remote
+(the absolute path matters -- linuxbrew's `infocmp` answers from the Cellar),
+and repair it there without another round trip:
+
+```sh
+infocmp -x xterm-ghostty | tic -x -o ~/.terminfo -
+```
+
 ## Claude Code statusline
 
 `.claude/statusline.sh` renders the Claude Code status line. It reads the session

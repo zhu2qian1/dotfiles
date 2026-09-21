@@ -38,6 +38,13 @@
       "matching_strategy": "Equals"
     }
   ],
+  "manage_rules": [
+      {
+          "kind": "Exe",
+          "id": "claude.exe",
+      "matching_strategy": "Equals"
+      }
+  ],
   "monitors": [
     { // QHX3400-5&5768f80&0&UID20739
       "workspaces": [

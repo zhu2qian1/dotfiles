@@ -20,6 +20,12 @@
 	wt = worktree
 [init]
 	defaultBranch = main
+[interactive]
+	diffFilter = delta --color-only
+[diff]
+	algorithm = histogram
+	colorMoved = default
+	mnemonicPrefix = true
 [push]
 	autoSetUpRemote = true
 [include]

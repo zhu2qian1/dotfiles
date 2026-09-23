@@ -12,3 +12,6 @@
 --         vim.keymap.set('n', 'K',  vim.lsp.buf.hover, opts)
 --     end,
 -- })
+
+-- Error Prone / NullAway の結果を診断に出す (jdtls は javac プラグインを走らせないため)
+require('ide.errorprone').setup()

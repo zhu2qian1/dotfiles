@@ -112,6 +112,19 @@ return {
                 vim.env.JDTLS_JVM_ARGS = vim.trim(jvm_args .. ' -javaagent:' .. lombok)
             end
 
+            -- Java: build.gradle / pom.xml の変更を確認なしで取り込み直させる。既定の
+            -- 'interactive' では jdtls が「再同期するか」を VS Code 独自の
+            -- language/actionableNotification で尋ねるが、素の Neovim はこれを黙って
+            -- 捨てるので、依存を追加しても jdtls のクラスパスが古いまま
+            -- (「X cannot be resolved to a type」) になる。
+            vim.lsp.config('jdtls', {
+                settings = {
+                    java = {
+                        configuration = { updateBuildConfiguration = 'automatic' },
+                    },
+                },
+            })
+
             -- Java: java-debug-adapter を jdtls の拡張バンドルとして登録する。これが
             -- 入っていると LSP コマンド vscode.java.startDebugSession が使えるようになり、
             -- nvim-dap から attach できる (dap.lua 側で使う)。Mason は

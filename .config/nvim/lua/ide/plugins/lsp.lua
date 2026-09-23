@@ -24,7 +24,8 @@ return {
                 yamlls = {},  -- YAML  (yaml-language-server)
                 taplo = {},   -- TOML
                 lua_ls = {},  -- Lua
-                pyright = {}, -- Python
+                pyright = {}, -- Python (型チェック・補完)
+                ruff = {},    -- Python (lint / format。ruff 本体の `ruff server`)
                 jdtls = {},   -- Java
             }
 
@@ -137,6 +138,24 @@ return {
                     init_options = { bundles = { java_debug } },
                 })
             end
+
+            -- Python: ruff は lint / format だけを担当させる。hover は pyright と
+            -- 重複して K で 2 つ出るので切る。保存時の format は ruff に限定する —
+            -- filter が無いと pyright 等、同じバッファに付いた他のサーバにも
+            -- format 要求が飛ぶ。augroup をバッファ単位で clear しているのは、
+            -- :LspRestart で再 attach したときに autocmd が重複しないようにするため。
+            vim.lsp.config('ruff', {
+                on_attach = function(client, bufnr)
+                    client.server_capabilities.hoverProvider = false
+                    vim.api.nvim_create_autocmd('BufWritePre', {
+                        group = vim.api.nvim_create_augroup('ruff_format_' .. bufnr, { clear = true }),
+                        buffer = bufnr,
+                        callback = function()
+                            vim.lsp.buf.format({ bufnr = bufnr, name = 'ruff' })
+                        end,
+                    })
+                end,
+            })
 
             -- mason: サーバの自動インストール。mason-lspconfig が installed 分を
             -- 自動で vim.lsp.enable する (v2)

@@ -93,16 +93,41 @@ if command -v fzf >/dev/null 2>&1; then
         }
     fi
 
-    # Pick a tmux session and attach, or switch if already inside tmux
+    # Pick a tmux session and attach, or switch if already inside tmux.
+    # With no server / no sessions there is nothing to pick, so start "main"
+    # instead of showing an empty fzf list the user has to cancel out of.
+    #
+    # Enter picks an existing session; ctrl-n creates one named after the
+    # query. Creating on Enter-when-nothing-matches would not work: fzf's
+    # fuzzy match makes "work" (or even "wrk") select an existing "work-api",
+    # so a name that is a subsequence of another could never be created.
+    # Targets use "=name" for the same reason -- tmux -t also prefix-matches.
     its() {
-        local session
-        session=$(tmux list-sessions -F '#{session_name}' 2>/dev/null \
-            | fzf --prompt='tmux> ' --height=40% --reverse) || return
-        [ -z "$session" ] && return
+        local sessions out name
+        sessions=$(tmux list-sessions -F '#{session_name}' 2>/dev/null)
+        if [ -z "$sessions" ]; then
+            tmux new-session -s main
+            return
+        fi
+        out=$(printf '%s\n' "$sessions" | fzf --prompt='tmux> ' --height=40% --reverse \
+            --header='enter: attach / ctrl-n: new session' \
+            --bind 'ctrl-n:print-query') || return
+        # Trim surrounding whitespace so a blank query counts as empty
+        name=${out#"${out%%[![:space:]]*}"}
+        name=${name%"${name##*[![:space:]]}"}
+        [ -z "$name" ] && return
+        # tmux accepts these in new-session -s, but -t then parses them as
+        # the window / pane separators, so the session could never be targeted
+        case $name in
+            *[.:]*) echo "its: session name must not contain '.' or ':'" >&2; return 1 ;;
+        esac
+        if ! tmux has-session -t "=$name" 2>/dev/null; then
+            tmux new-session -d -s "$name" || return
+        fi
         if [ -n "$TMUX" ]; then
-            tmux switch-client -t "$session"
+            tmux switch-client -t "=$name"
         else
-            tmux attach-session -t "$session"
+            tmux attach-session -t "=$name"
         fi
     }
 fi

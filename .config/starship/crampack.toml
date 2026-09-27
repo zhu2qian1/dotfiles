@@ -8,7 +8,8 @@
 # - lush
 # - fervor
 # - blaze
-palette = "fervor"
+# - pastel (user-added)
+palette = "pastel"
 
 format = """$username$hostname$directory$git_branch$git_status
 $character
@@ -19,39 +20,39 @@ add_newline = true
 disabled = false
 format = "[ $user]($style)"
 show_always = true
-style_root = "bg:spark fg:crust"
-style_user = "bg:spark fg:crust"
+style_root = "bg:surge fg:crust"
+style_user = "bg:surge fg:crust"
 
 [hostname]
 disabled = false
-format = "[@$hostname ]($style)[\ue0b8](bg:frost fg:spark)"
+format = "[@$hostname ]($style)[\ue0b8](bg:frost fg:surge)"
 ssh_only = false
-style = "bg:spark fg:crust"
+style = "bg:surge fg:crust"
 
 [directory]
 truncation_symbol = "  "
 truncation_length = 2
 truncate_to_repo = true
 style = "bg:frost fg:crust"
-format = "[$path ]($style)[\ue0b8](bg:crust fg:frost)"
+format = "[$path ]($style)[\ue0b8](bg:spark fg:frost)"
 
 [git_branch]
-symbol = ""
-style = "fg:spark"
-format = " [[$symbol $branch](fg:spark)]($style)"
+symbol = "  "
+style = "bg:spark fg:crust"
+format = "[$symbol $branch ]($style)[\ue0b8](bg:crust fg:spark)"
 
 [git_status]
 format = "$all_status$ahead_behind"
-conflicted = " | [ $count](fg:nova)"
-ahead = " | [ $count](fg:nova)"
-behind = " | [ $count](fg:nova)"
-diverged = " | [ $ahead_count  $behind_count](fg:nova)"
-untracked = " | [󰞋 $count](fg:nova)"
-stashed = " | [󰒲 $count](fg:nova)"
-modified = " | [󰏫 $count](fg:nova)"
-staged = " | [󰱒 $count](fg:nova)"
-renamed = " | [󰁕 $count](fg:nova)"
-deleted = " | [󰍵 $count](fg:nova)"
+conflicted = " [ $count](fg:nova)"
+ahead = " [ $count](fg:nova)"
+behind = " [ $count](fg:nova)"
+diverged = " [ $ahead_count  $behind_count](fg:nova)"
+untracked = " [󰞋 $count](fg:nova)"
+stashed = " [󰒲 $count](fg:nova)"
+modified = " [󰏫 $count](fg:nova)"
+staged = " [󰱒 $count](fg:nova)"
+renamed = " [󰁕 $count](fg:nova)"
+deleted = " [󰍵 $count](fg:nova)"
 
 [character]
 disabled = false
@@ -180,4 +181,34 @@ surf1   = "#9a9a9a"
 surf0   = "#8a8a8a"
 base    = "#0d0d0d"
 mantle  = "#050505"
+crust   = "#000000"
+
+[palettes.pastel]
+# Accent Colors
+lychee  = "#fce8ef"
+guava   = "#f7c4ba"
+fizz    = "#f7baed"
+nebula  = "#e0abf6"
+ember   = "#f28c8c"
+cinder  = "#e49a9a"
+torch   = "#f4bd9c"
+spark   = "#f6e0ab"
+lime    = "#abf6b6"
+surge   = "#9cf4d3"
+pulse   = "#baedf7"
+frost   = "#9cd3f4"
+nova    = "#abb6f6"
+iris    = "#c0abf6"
+# Base Colors
+text    = "#ffffff"
+sub1    = "#eeeeee"
+sub0    = "#dddddd"
+ov2     = "#cccccc"
+ov1     = "#bbbbbb"
+ov0     = "#aaaaaa"
+surf2   = "#999999"
+surf1   = "#888888"
+surf0   = "#777777"
+base    = "#222222"
+mantle  = "#111111"
 crust   = "#000000"

@@ -24,7 +24,7 @@ style_user = "bg:spark fg:crust"
 
 [hostname]
 disabled = false
-format = "[@$hostname ]($style)[\ue0ba](fg:frost bg:spark)"
+format = "[@$hostname ]($style)[\ue0b8](bg:frost fg:spark)"
 ssh_only = false
 style = "bg:spark fg:crust"
 
@@ -33,7 +33,7 @@ truncation_symbol = "  "
 truncation_length = 2
 truncate_to_repo = true
 style = "bg:frost fg:crust"
-format = "[$path ]($style)[\ue0ba](bg:frost fg:crust)"
+format = "[$path ]($style)[\ue0b8](bg:crust fg:frost)"
 
 [git_branch]
 symbol = ""

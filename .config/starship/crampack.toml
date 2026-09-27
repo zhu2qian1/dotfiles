@@ -10,35 +10,35 @@
 # - blaze
 palette = "fervor"
 
-format = """\\[$username$hostname$directory$git_branch$git_status\\]
+format = """$username$hostname$directory$git_branch$git_status
 $character
 """
 add_newline = true
 
-[hostname]
-disabled = false
-format = "[$hostname]($style) | "
-ssh_only = false
-style = "fg:guava"
-
 [username]
 disabled = false
-format = "[$user]($style)@"
+format = "[ $user]($style)"
 show_always = true
-style_root = "fg:guava"
-style_user = "fg:lychee"
+style_root = "bg:spark fg:crust"
+style_user = "bg:spark fg:crust"
+
+[hostname]
+disabled = false
+format = "[@$hostname ]($style)[\ue0ba](fg:frost bg:spark)"
+ssh_only = false
+style = "bg:spark fg:crust"
 
 [directory]
-truncation_symbol = " "
+truncation_symbol = "  "
 truncation_length = 2
 truncate_to_repo = true
-style = "fg:frost"
-format = "[$path]($style)"
+style = "bg:frost fg:crust"
+format = "[$path ]($style)[\ue0ba](bg:frost fg:crust)"
 
 [git_branch]
 symbol = ""
 style = "fg:spark"
-format = " | [[$symbol $branch](fg:spark)]($style)"
+format = " [[$symbol $branch](fg:spark)]($style)"
 
 [git_status]
 format = "$all_status$ahead_behind"

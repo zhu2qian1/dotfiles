@@ -155,6 +155,9 @@ if command -v ssh >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
             ' "$config" | fzf --prompt='ssh> ' --height=40% --reverse) || return
 
         [ -z "$target" ] && return
+        # fzf clears its own lines on exit, so leave the chosen host in the
+        # scrollback; otherwise nothing shows which host the session was on.
+        echo "Selected Host: $target"
         ssh "$target"
     }
 fi

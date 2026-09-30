@@ -11,5 +11,4 @@
 . "$HOME\.config\PowerShell\onepassword.ps1"
 . "$HOME\.config\PowerShell\psmux.ps1"
 . "$HOME\.config\PowerShell\komorebi.ps1"
-. "$HOME\.config\PowerShell\ghostty.ps1"
 . "$HOME\.config\PowerShell\wezterm.ps1"

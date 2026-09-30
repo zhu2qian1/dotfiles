@@ -1,0 +1,3 @@
+font-family = UDEV Gothic NFLG
+theme = Monokai Pro
+command = direct:"pwsh.exe"

@@ -1,3 +1,11 @@
+# Appearance
+theme = Zenbones Dark
 font-family = UDEV Gothic NFLG
-theme = Monokai Pro
+font-size = 14
+window-pading-x = 4
+window-pading-y = 4
+
+# Behaviour
 command = direct:"pwsh.exe"
+window-inherit-working-directory = false
+working-directory = home

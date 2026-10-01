@@ -83,8 +83,8 @@ function Set-EnvironmentVariable {
 # eza
 if (Get-Command "eza" -ErrorAction SilentlyContinue) {
     function ll   { eza --long       --icons=auto --header --classify=auto --time-style relative              $Args }
-    function lla  { eza --long --all --icons=auto --header --classify=auto --time-style relative              $Args }
     function lli  { eza --long       --icons=auto --header --classify=auto --time-style relative --git-ignore $Args }
+    function lla  { eza --long --all --icons=auto --header --classify=auto --time-style relative              $Args }
     function llai { eza --long --all --icons=auto --header --classify=auto --time-style relative --git-ignore $Args }
 }
 

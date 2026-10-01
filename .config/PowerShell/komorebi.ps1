@@ -26,6 +26,24 @@ function Restart-Komorebi-My {
     Stop-Komorebi-My
     Start-Komorebi-My $DoRefresh
 }
+# komorebi と bar は動かしたまま whkd だけを止める / 起こす。
+# `komorebic stop --whkd` は komorebi ごと落とすので、ゲーム中などホットキーだけ
+# 一時的に切りたいときに使う。
+function Start-Whkd {
+    Param ([Switch] $DoShowWindow)
+    # 二重起動すると同じホットキーの登録が衝突するので、動いていれば何もしない
+    if (Get-Process -Name whkd -ErrorAction SilentlyContinue) {
+        return
+    }
+    if ($DoShowWindow) {
+        Start-Process whkd
+    } else {
+        Start-Process whkd -WindowStyle Hidden
+    }
+}
+function Stop-Whkd {
+    Get-Process -Name whkd -ErrorAction SilentlyContinue | Stop-Process -Force
+}
 function Rename-KomorebiFocusedWorkspace([String] $NewWorkspaceName) {
     if ($NewWorkspaceName -eq "") {
         return

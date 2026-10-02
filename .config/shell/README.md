@@ -30,10 +30,11 @@ put anything shareable in `.sh`.
 | 5 | `40-prompt.sh` | default `STARSHIP_CONFIG` |
 |   | `40-prompt.{bash,zsh}` | starship, with a plain prompt fallback |
 | 6 | `50-zoxide.{bash,zsh}` | zoxide (has to init after starship) |
-| 7 | `90-plugins.zsh` | zsh-autosuggestions, zsh-syntax-highlighting, zsh-history-substring-search |
-| 8 | `os/<os>.{sh,…}` | `linux` / `darwin` / `windows` (`os/linux.sh`: ssh-agent, WSL, alert) |
-| 9 | `host/<hostname>.{sh,…}` | one machine only |
-| 10 | `local.{sh,…}` | secrets and overrides, **not tracked** |
+| 7 | `60-terminal.zsh` | terminal title (cwd at the prompt, the command line while it runs) and OSC 7 |
+| 8 | `90-plugins.zsh` | zsh-autosuggestions, zsh-syntax-highlighting, zsh-history-substring-search |
+| 9 | `os/<os>.{sh,…}` | `linux` / `darwin` / `windows` (`os/linux.sh`: ssh-agent, WSL, alert) |
+| 10 | `host/<hostname>.{sh,…}` | one machine only |
+| 11 | `local.{sh,…}` | secrets and overrides, **not tracked** |
 
 Later files win. Adding a numbered file is enough to enable it, and a missing
 file is skipped silently -- so a machine without a given tool still starts clean.
@@ -45,11 +46,24 @@ Only names starting with a digit are globbed, so `README.md` and
 
 `90-plugins.zsh` loads each plugin from the first place it is found
 (`/usr/share/zsh/plugins/<name>/` on Arch/Manjaro, `/usr/share/<name>/` on
-Debian/Ubuntu, `$HOMEBREW_PREFIX/share/<name>/`) and skips any that are absent.
+Debian/Ubuntu, `$HOMEBREW_PREFIX/share/<name>/`, then
+`~/.local/share/zsh/plugins/<name>/`) and skips any that are absent.
+`install-extra-tools.sh` at the repo root clones into the last of those, so a
+machine without the packages (Ubuntu has no zsh-history-substring-search) gets
+them without sudo. The same script clones zsh-completions, which
+`10-shell.zsh` puts on `fpath` before `compinit`.
 It is numbered last because zsh-syntax-highlighting has to load after every
 other widget, and zsh-history-substring-search after it. When the latter is
 present, Up/Down search for what has been typed anywhere in the line instead of
 only at its start.
+
+## From Manjaro's stock config
+
+Manjaro's `~/.zshrc` sources `/usr/share/zsh/manjaro-zsh-config`, which this
+config replaces. The parts worth keeping live on here: its shell options and
+completion styles in `10-shell.zsh` (`rcexpandparam` excepted -- it changes array
+expansion inside other people's functions), its history options in
+`00-history.zsh`, and its terminal title / OSC 7 hooks in `60-terminal.zsh`.
 
 ## Multiplexer
 
@@ -74,8 +88,7 @@ bash's own programmable completion (git subcommands and the like) keeps working.
 The same clone ships the zsh version, so `30-tools.zsh` puts zsh's `<Tab>` on
 the same picker.
 
-    git clone --depth 1 https://github.com/lincheney/fzf-tab-completion \
-        ~/.local/share/fzf-tab-completion
+    bash ~/dotfiles/install-extra-tools.sh   # clones it into ~/.local/share/fzf-tab-completion
 
 Without the clone nothing is bound and plain completion stays, so a machine that
 does not have it still works. To match, `show-all-if-ambiguous` in `~/.inputrc`

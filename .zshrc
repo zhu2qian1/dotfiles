@@ -21,7 +21,8 @@ fi
 # Same order as ~/.bashrc. At each step the shared *.sh loads first, then the
 # zsh-only *.zsh of the same name:
 #   1. [0-9]*.{sh,zsh}      numbered (00 history -> 10 shell -> 20 aliases
-#                           -> 30 tools -> 40 prompt -> 50 zoxide -> 90 plugins)
+#                           -> 30 tools -> 40 prompt -> 50 zoxide -> 60 terminal
+#                           -> 90 plugins)
 #   2. os/<os>.{sh,zsh}     per-OS (linux / darwin / windows)
 #   3. host/<host>.{sh,zsh} per-machine
 #   4. local.{sh,zsh}       machine-only secrets and overrides (not in git)

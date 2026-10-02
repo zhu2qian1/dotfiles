@@ -12,11 +12,14 @@
 #   Arch / Manjaro   /usr/share/zsh/plugins/<name>/<name>.zsh
 #   Debian / Ubuntu  /usr/share/<name>/<name>.zsh
 #   Homebrew         $HOMEBREW_PREFIX/share/<name>/<name>.zsh
+#   anywhere else    ~/.local/share/zsh/plugins/<name>/<name>.zsh, cloned by
+#                    install-extra-tools.sh. Last, so the OS package wins.
 for _zsh_plugin in zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search; do
     for _zsh_plugin_dir in \
         /usr/share/zsh/plugins/$_zsh_plugin \
         /usr/share/$_zsh_plugin \
-        ${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/share/$_zsh_plugin}
+        ${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/share/$_zsh_plugin} \
+        ${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins/$_zsh_plugin
     do
         if [[ -r $_zsh_plugin_dir/$_zsh_plugin.zsh ]]; then
             . "$_zsh_plugin_dir/$_zsh_plugin.zsh"

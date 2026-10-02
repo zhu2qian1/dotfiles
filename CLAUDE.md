@@ -60,6 +60,10 @@ pwsh -File install.ps1 -Doctor
 - `install.ps1` はホーム直下など広すぎるパスを target に取ることを `$Forbidden` で
   拒否する。ディレクトリごとリンクするため、誤った `KOMOREBI_CONFIG_HOME` で
   ホームごと退避する事故を防ぐ目的。
+- `install-extra-tools.sh` はリンクではなく、シェル設定が「あれば使う」アドオン
+  (fzf-tab-completion と zsh プラグイン類) を `~/.local/share` へ git clone する。
+  OS パッケージがあるものはスキップする。探索パスは `90-plugins.zsh` /
+  `10-shell.zsh` / `30-tools.*` と対応しているので、片方を変えたらもう片方も直す。
 - PowerShell プロファイルだけは symlink ではなく **dot-source 1 行の stub** を
   PowerShell 7+ / Windows PowerShell 5.1 の CurrentUserAllHosts プロファイルに追記する。
   本体は `.config\PowerShell\profile.ps1` の 1 箇所に集約する。

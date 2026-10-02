@@ -20,9 +20,8 @@ fi
 # uses the alternate screen -- so every <Tab> that is ambiguous leaves a wall
 # of candidates in the scrollback. fzf-tab-completion feeds bash's own
 # programmable completion into fzf instead, so the picker cleans up after
-# itself the way Ctrl-T does. Nothing is bound if the clone is absent:
-#   git clone --depth 1 https://github.com/lincheney/fzf-tab-completion \
-#       ~/.local/share/fzf-tab-completion
+# itself the way Ctrl-T does. Nothing is bound if the clone is absent;
+# install-extra-tools.sh clones it into ~/.local/share/fzf-tab-completion.
 # `bind -x` needs bash >= 4.4; older bashes just keep the stock completion.
 _fzf_tab_completion="${XDG_DATA_HOME:-$HOME/.local/share}/fzf-tab-completion/bash/fzf-bash-completion.sh"
 if [ -f "$_fzf_tab_completion" ] &&

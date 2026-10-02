@@ -8,6 +8,7 @@ aside to `<name>.bak`.
 bash install.sh             # install (Linux / WSL)
 bash install.sh --dry-run   # show what would happen, change nothing
 bash install.sh --doctor    # report link state, shell wiring and missing tools
+bash install-extra-tools.sh # clone shell add-ons (zsh plugins, fzf Tab completion)
 
 pwsh -File install.ps1              # install (Windows)
 pwsh -File install.ps1 -DryRun      # show what would happen, change nothing
@@ -25,10 +26,17 @@ pwsh -File install.ps1 -Doctor      # report link state, profile and missing too
 | `.config/systemd/user/*` | `~/.config/systemd/user/<name>` | per entry -- `systemctl --user enable` and snap write their own links there |
 | `.claude/skills/*` | `~/.claude/skills/<name>` | per entry -- Claude Code syncs claude.ai skills into `~/.claude/skills/synced/` |
 | `.claude/*` | `~/.claude/<name>` | per entry -- `~/.claude` also holds Claude Code's own state |
-| `scripts/`, `backup/`, `.vscode/`, `CLAUDE.md` | -- | not linked; see `IGNORE` in `install.sh` |
+| `scripts/`, `backup/`, `.vscode/`, `CLAUDE.md`, `install-extra-tools.sh` | -- | not linked; see `IGNORE` in `install.sh` |
 
 `.config/shell/README.md` covers the shell config shared by bash and zsh, and
 its load order.
+
+`install-extra-tools.sh` clones the shell add-ons that the config uses when
+present but no distro packages everywhere -- fzf-tab-completion and the zsh
+plugins (zsh-autosuggestions, zsh-syntax-highlighting,
+zsh-history-substring-search, zsh-completions) -- into `~/.local/share`. It
+needs only git, skips a zsh plugin the OS package already provides, and
+`--update` fast-forwards existing clones. `--dry-run` shows what it would do.
 
 On Windows, `install.ps1` links the entries actually used there --
 `.config/{komorebi,PowerShell,nvim,starship,ghostty,yazi,ripgrep,whkdrc}` and the top-level

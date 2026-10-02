@@ -9,23 +9,58 @@
 # - fervor
 # - blaze
 # - pastel (user-added)
-palette = "pastel"
+palette = "lush"
 
-format = """$username$hostname$directory${custom.directory_end}$git_branch$git_status
+format = """$os\
+$username\
+$hostname\
+[ ](bg:surge)[](bg:frost fg:surge)[ ](bg:frost)\
+$directory\
+[](bg:spark fg:frost)\
+$git_branch\
+[](fg:spark)\
+$git_status
 $character
 """
 add_newline = true
 
+[os]
+disabled = false
+format = "[$symbol ]($style)"
+style = "bg:surge fg:crust"
+
+[os.symbols]
+Windows = ""
+Ubuntu = "󰕈"
+SUSE = ""
+Raspbian = "󰐿"
+Mint = "󰣭"
+Macos = "󰀵"
+Manjaro = ""
+Linux = "󰌽"
+Gentoo = "󰣨"
+Fedora = "󰣛"
+Alpine = ""
+Amazon = ""
+Android = ""
+AOSC = ""
+Arch = "󰣇"
+Artix = "󰣇"
+CentOS = ""
+Debian = "󰣚"
+Redhat = "󱄛"
+RedHatEnterprise = "󱄛"
+
 [username]
 disabled = false
-format = "[ $user]($style)"
+format = "[$user]($style)"
 show_always = true
 style_root = "bg:surge fg:crust"
 style_user = "bg:surge fg:crust"
 
 [hostname]
 disabled = false
-format = "[@$hostname ]($style)[\ue0b8](bg:frost fg:surge)"
+format = "[@$hostname]($style)"
 ssh_only = false
 style = "bg:surge fg:crust"
 
@@ -34,23 +69,12 @@ truncation_symbol = "  "
 truncation_length = 2
 truncate_to_repo = true
 style = "bg:frost fg:crust"
-# 末尾の区切りは次に来るもので背景が変わるので、ここでは出さない。
-# git 内なら git_branch が、git 外なら custom.directory_end が閉じる。
-# (repo_root_format での出し分けは、truncation でリポジトリ名が表示範囲から
-# 外れるサブディレクトリでは使われないため不可)
 format = "[$path ]($style)"
 
 [git_branch]
 symbol = "  "
 style = "bg:spark fg:crust"
-format = "[\ue0b8](bg:spark fg:frost)[$symbol $branch ]($style)[\ue0b8](fg:spark)"
-
-# git 外でだけ directory の区切りを端末の背景へ抜く。
-# git_branch と同じく .git の有無で判定する。
-[custom.directory_end]
-when = "! git rev-parse --git-dir >/dev/null 2>&1"
-shell = ["sh"]
-format = "[\ue0b8](fg:frost)"
+format = "[$symbol $branch ]($style)"
 
 [git_status]
 format = "$all_status$ahead_behind"

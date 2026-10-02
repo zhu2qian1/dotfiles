@@ -65,7 +65,7 @@ ssh_only = false
 style = "bg:surge fg:crust"
 
 [directory]
-truncation_symbol = "  "
+truncation_symbol = " "
 truncation_length = 2
 truncate_to_repo = true
 style = "bg:frost fg:crust"

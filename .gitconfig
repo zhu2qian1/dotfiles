@@ -32,6 +32,7 @@
 	path = ~/.gitconfig.local
 [core]
 	quotepath = false
+	editor = nvim
 [delta]
 	side-by-side = true
 	features = unobtrusive-line-numbers decorations

@@ -1,9 +1,7 @@
 # Appearance
-theme = Zenbones Dark
+theme = Electron Highlighter
 font-family = UDEV Gothic NFLG
-font-size = 14
-window-pading-x = 4
-window-pading-y = 4
+font-size = 12
 
 # Behaviour
 command = direct:"pwsh.exe"

@@ -7,6 +7,15 @@ Set-Alias t psmux
 
 # Pick a psmux session with fzf, then attach to it, or switch to it when
 # already inside psmux (psmux sets $env:TMUX just like tmux does).
+# With no server / no sessions there is nothing to pick, so start "main"
+# instead of showing an empty fzf list the user has to cancel out of.
+#
+# Enter picks an existing session; ctrl-n creates one named after the
+# query. Creating on Enter-when-nothing-matches would not work: fzf's
+# fuzzy match makes "work" (or even "wrk") select an existing "work-api",
+# so a name that is a subsequence of another could never be created.
+# Targets use "=name" for the same reason -- -t also prefix-matches.
+# Bash/zsh 版 `its` (.config/shell/20-aliases.sh) と挙動を揃えてある。
 function Invoke-PsmuxSessionPicker {
     [CmdletBinding()]
     param ()
@@ -42,21 +51,43 @@ function Invoke-PsmuxSessionPicker {
     # tmux はサーバが無いと "no server running" で exit 1 になるが、psmux は
     # exit 0 で何も出力しない。終了コードではなく一覧が空かどうかで判定する。
     if (-not $Sessions) {
-        Write-Verbose 'No psmux session found. Aborting.'
+        Write-Verbose 'No psmux session found. Starting "main".'
+        psmux new-session -s main
         return
     }
 
-    $SelectedSession = $Sessions | fzf --prompt='psmux> ' --height=40% --reverse
-    if (-not $SelectedSession) {
+    $Selected = $Sessions | fzf --prompt='psmux> ' --height=40% --reverse `
+        --header='enter: attach / ctrl-n: new session' `
+        --bind 'ctrl-n:print-query'
+    # 空白だけのクエリで ctrl-n を押した場合も「何も選ばなかった」扱いにする
+    $Name = "$Selected".Trim()
+    if (-not $Name) {
         Write-Verbose 'No session selected (escaped or none matched?). Aborting.'
         return
     }
-    Write-Verbose "Selected session: $SelectedSession"
+    Write-Verbose "Selected session: $Name"
+
+    # new-session -s はこれらを受け付けるが、-t ではウィンドウ / ペインの区切り
+    # として解釈されるため、作ったセッションを二度と指定できなくなる
+    if ($Name -match '[.:]') {
+        Write-Error "session name must not contain '.' or ':'. Aborting."
+        return
+    }
+
+    psmux has-session -t "=$Name" 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        psmux new-session -d -s $Name
+        if ($LASTEXITCODE -ne 0) {
+            return
+        }
+    }
 
     if ($env:TMUX) {
-        psmux switch-client -t $SelectedSession
+        psmux switch-client -t "=$Name"
     } else {
-        psmux attach-session -t $SelectedSession
+        psmux attach-session -t "=$Name"
     }
 }
-Set-Alias ts Invoke-PsmuxSessionPicker
+# Linux 側は既存の ts コマンドと衝突するため its に改名した。Windows でも
+# 名前を揃えて its に統一する。
+Set-Alias its Invoke-PsmuxSessionPicker

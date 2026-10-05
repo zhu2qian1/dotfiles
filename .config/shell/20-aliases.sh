@@ -80,7 +80,7 @@ if command -v fzf >/dev/null 2>&1; then
         alias gfs='git branch --list | fzf | sed s/\*// | xargs git switch'
 
         # Pick a worktree and cd into it (shows branch name + path)
-        gwt() {
+        igwt() {
             local dir
             dir=$(git worktree list --porcelain | awk '
                     /^worktree /  { p = substr($0, 10) }
@@ -88,7 +88,8 @@ if command -v fzf >/dev/null 2>&1; then
                     /^detached$/  { b = "(detached)" }
                     /^$/          { if (p != "") printf "%-24s\t%s\n", b, p; p = ""; b = "" }
                     END           { if (p != "") printf "%-24s\t%s\n", b, p }
-                ' | fzf --delimiter='\t' --nth=1 | cut -f2)
+                ' | fzf --prompt='worktree> ' --height=40% --reverse \
+                    --delimiter='\t' --nth=1 | cut -f2)
             [ -n "$dir" ] && builtin cd -- "$dir"
         }
     fi

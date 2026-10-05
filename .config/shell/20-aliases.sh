@@ -82,6 +82,9 @@ if command -v fzf >/dev/null 2>&1; then
         # Pick a worktree and cd into it (shows branch name + path)
         igwt() {
             local dir
+            # Outside a repo git worktree fails, but the pipeline would still
+            # open an empty fzf; bail out with git's own error instead
+            git rev-parse --git-dir >/dev/null || return
             dir=$(git worktree list --porcelain | awk '
                     /^worktree /  { p = substr($0, 10) }
                     /^branch /    { b = substr($0, 8); sub(/^refs\/heads\//, "", b) }

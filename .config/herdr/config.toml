@@ -121,6 +121,11 @@ navigate_pane_right = "l"     # right arrow always focuses the pane to the right
 # type = "popup" opens a session-modal terminal without changing the tab layout.
 # Popup width and height accept terminal cells or percentages such as "80%".
 # On Windows, command strings run through cmd.exe /d /c.
+[[keys.command]]
+key = "prefix+shift+1"
+type = "shell"
+command  = "herdr pane move $HERDR_ACTIVE_PANE_ID --new-tab --focus"
+
 # [[keys.command]]
 # key = "prefix+alt+g"
 # type = "popup"

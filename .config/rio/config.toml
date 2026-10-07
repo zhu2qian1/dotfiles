@@ -1,0 +1,9 @@
+[editor]
+program = "nvim"
+
+[fonts]
+size = 15
+family = "UDEV Gothic NFLG"
+
+[windows]
+shell = { program = "pwsh", args = ["-NoLogo"] }

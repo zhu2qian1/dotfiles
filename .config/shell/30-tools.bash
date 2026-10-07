@@ -46,6 +46,17 @@ elif command -v asdf >/dev/null 2>&1; then
     . <(asdf completion bash) 2>/dev/null
 fi
 
+# ------------------------------------------------------------------ mise
+# The shims from ~/.profile cover non-interactive shells; here activate hooks
+# PROMPT_COMMAND and cd so PATH and env follow mise.toml as you move around.
+# Loaded before starship on purpose: starship stashes the existing
+# PROMPT_COMMAND and runs it from starship_precmd, so the hook still updates
+# PATH before the prompt is drawn and the version modules show what mise picked.
+if command -v mise >/dev/null 2>&1; then
+    eval "$(mise activate bash)"
+    . <(mise completion bash) 2>/dev/null
+fi
+
 # ------------------------------------------------------------- tailscale
 if command -v tailscale >/dev/null 2>&1; then
     . <(tailscale completion bash) 2>/dev/null

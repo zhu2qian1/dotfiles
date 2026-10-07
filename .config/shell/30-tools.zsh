@@ -45,6 +45,15 @@ if [ -n "${_asdf_completions:-}" ] && [ -f "$_asdf_completions/_asdf" ]; then
 fi
 unset _asdf_completions
 
+# ------------------------------------------------------------------ mise
+# As in 30-tools.bash: the shims from ~/.profile cover non-interactive shells,
+# activate adds precmd / chpwd hooks for interactive ones. The generated
+# completion calls compdef itself when sourced.
+if command -v mise >/dev/null 2>&1; then
+    eval "$(mise activate zsh)"
+    . <(mise completion zsh) 2>/dev/null
+fi
+
 # ------------------------------------------------------------- tailscale
 # The generated script calls compdef itself, so sourcing it is enough.
 if command -v tailscale >/dev/null 2>&1; then

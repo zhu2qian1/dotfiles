@@ -26,7 +26,7 @@ put anything shareable in `.sh`.
 | 2 | `10-shell.{bash,zsh}` | shell options, completion system (bash-completion / compinit), zsh key bindings |
 | 3 | `20-aliases.sh` | aliases and small functions |
 | 4 | `30-tools.sh` | herdr wrapper, yazi, lesspipe, man, ripgrep |
-|   | `30-tools.{bash,zsh}` | fzf (including the Tab completion replacement), asdf, completions for tailscale / herdr |
+|   | `30-tools.{bash,zsh}` | fzf (including the Tab completion replacement), asdf, mise, completions for tailscale / herdr |
 | 5 | `40-prompt.sh` | default `STARSHIP_CONFIG` |
 |   | `40-prompt.{bash,zsh}` | starship, with a plain prompt fallback |
 | 6 | `50-zoxide.{bash,zsh}` | zoxide (has to init after starship) |

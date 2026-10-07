@@ -64,6 +64,14 @@ if [ -n "${BASH_VERSION:-}${ZSH_VERSION:-}" ] && [ -s "$SDKMAN_DIR/bin/sdkman-in
     . "$SDKMAN_DIR/bin/sdkman-init.sh"
 fi
 
+# mise shims. `mise activate` in 30-tools.{bash,zsh} only reaches interactive
+# shells (it hooks the prompt), so `ssh host 'node -v'`, cron and editors
+# spawning tools would otherwise miss mise-managed versions. The shims resolve
+# the version per directory on every call; in interactive shells activate's
+# hook puts the real install dirs in front of them. Same as `mise activate --shims`,
+# minus running mise (and depending on it being on PATH yet) at every login.
+path_prepend "${MISE_DATA_DIR:-$XDG_DATA_HOME/mise}/shims"
+
 # -------------------------------------------------------------- User PATH
 # Later prepends win. User-owned directories take precedence.
 path_prepend "$HOME/bin"

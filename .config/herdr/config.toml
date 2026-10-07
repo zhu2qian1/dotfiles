@@ -126,6 +126,13 @@ key = "prefix+shift+1"
 type = "shell"
 command  = "herdr pane move $HERDR_ACTIVE_PANE_ID --new-tab --focus"
 
+[[keys.command]]
+key = "prefix+shift+g"
+type = "popup"
+command = "$HOME/dotfiles/scripts/herdr/move-pane-to-tab.sh"
+width = "60%"
+height = "40%"
+
 # [[keys.command]]
 # key = "prefix+alt+g"
 # type = "popup"

@@ -84,6 +84,7 @@ $Links = [ordered]@{
     # WSL 側で使うので install.sh が扱う)
     '.config\komorebi'   = $KomorebiHome
     '.config\PowerShell' = Join-Path $TargetRoot '.config\PowerShell'
+    '.config\lazygit'    = Join-Path $TargetRoot '.config\lazygit'
     '.config\nvim'       = Join-Path $TargetRoot '.config\nvim'
     '.config\starship'   = Join-Path $TargetRoot '.config\starship'
     '.config\noctty'     = Join-Path $TargetRoot '.config\noctty'

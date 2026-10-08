@@ -60,3 +60,7 @@ working-directory = "$HOME"
 # launcher's cwd (C:\Program Files\noctty from the shortcuts), so use one process per launch.
 single-instance = false
 window-inherit-working-directory = false
+
+# JIS: Ctrl+Shift+; (= Ctrl++) / Ctrl+; で拡大
+keybind = ctrl+shift++=increase_font_size:1
+keybind = ctrl+;=increase_font_size:1

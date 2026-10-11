@@ -273,7 +273,7 @@ doctor() {
     echo "== tools =="
     # required: things the config assumes; optional: nice to have
     local required=(git bash)
-    local optional=(zsh nvim starship fzf zoxide eza herdr tmux lazygit yazi bat batcat delta rg fd jq)
+    local optional=(zsh nvim tree-sitter starship fzf zoxide eza herdr tmux lazygit yazi bat batcat delta rg fd jq)
     local c
     for c in "${required[@]}"; do
         if command -v "$c" >/dev/null 2>&1; then

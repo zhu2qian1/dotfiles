@@ -13,3 +13,9 @@
 `lua/config/*` は両プロファイル共通。プラグインに依存する設定を書かないこと。
 `lua/config/platform.lua` に Windows / WSL / SSH+tmux でのクリップボード分岐が
 まとまっており、なぜその実装なのかがコメントで詳述されている — 触る前に読むこと。
+
+`lua/ide/plugins/treesitter.lua` は nvim-treesitter の main ブランチ (旧 master の
+module 設定は無い)。パーサのビルドに tree-sitter CLI 0.26.1+ と C コンパイラが要り、
+Linux / WSL ではリポジトリ直下の `install-extra-tools.sh` が CLI を入れる。CLI が無い
+環境では `install()` を呼ばずに警告 1 行で済ませている (呼ぶと起動のたびに言語数だけ
+エラーが出る)。経緯と手順は README の "Neovim tree-sitter" 節。

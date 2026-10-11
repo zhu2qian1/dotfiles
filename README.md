@@ -8,7 +8,7 @@ aside to `<name>.bak`.
 bash install.sh             # install (Linux / WSL)
 bash install.sh --dry-run   # show what would happen, change nothing
 bash install.sh --doctor    # report link state, shell wiring and missing tools
-bash install-extra-tools.sh # clone shell add-ons (zsh plugins, fzf Tab completion)
+bash install-extra-tools.sh # shell add-ons (zsh plugins, fzf Tab completion) + tree-sitter CLI
 
 pwsh -File install.ps1              # install (Windows)
 pwsh -File install.ps1 -DryRun      # show what would happen, change nothing
@@ -37,6 +37,8 @@ plugins (zsh-autosuggestions, zsh-syntax-highlighting,
 zsh-history-substring-search, zsh-completions) -- into `~/.local/share`. It
 needs only git, skips a zsh plugin the OS package already provides, and
 `--update` fast-forwards existing clones. `--dry-run` shows what it would do.
+It also installs the tree-sitter CLI for Neovim; see
+[Neovim tree-sitter](#neovim-tree-sitter).
 
 On Windows, `install.ps1` links the entries actually used there --
 `.config/{komorebi,PowerShell,nvim,starship,ghostty,yazi,ripgrep,whkdrc}` and the top-level
@@ -51,6 +53,46 @@ that. Creating symlinks needs developer mode or an elevated shell.
 `~/.profile` holds PATH and anything non-interactive shells need; `~/.bashrc` and
 `~/.zshrc` are only loaders. zsh never reads `~/.profile` by itself, so
 `~/.zprofile` (login shells) and `~/.zshenv` (`ssh host 'cmd'`) hand it over.
+
+## Neovim tree-sitter
+
+The IDE profile (`NVIM_PROFILE=ide nvim`) uses nvim-treesitter's `main` branch
+for syntax highlighting in languages Neovim ships no parser for
+(`lua/ide/plugins/treesitter.lua`). Svelte is the reason it exists: Neovim has
+no `svelte` syntax file at all, so without the parser a `.svelte` buffer gets
+only the language server's semantic tokens -- identifiers are coloured, but
+keywords, strings, comments and types inside `<script lang="ts">` are not.
+
+nvim-treesitter builds each parser locally, which needs
+
+- the **tree-sitter CLI, 0.26.1 or later** -- distro packages are usually far
+  older (Ubuntu 24.04 ships 0.20), and nvim-treesitter does not support the npm
+  package;
+- a **C compiler** (`cc`, `gcc` or `clang`; on Ubuntu `sudo apt install build-essential`);
+- `curl` and `tar`.
+
+On Linux / WSL, `install-extra-tools.sh` takes care of the CLI:
+
+```sh
+bash install-extra-tools.sh             # install tree-sitter if missing or too old
+bash install-extra-tools.sh --update    # also refresh a copy it downloaded itself
+```
+
+With Homebrew on `PATH` it runs `brew install tree-sitter-cli`, so `brew upgrade`
+keeps it current. Otherwise it downloads the prebuilt binary from the latest
+GitHub release to `~/.local/bin/tree-sitter`, which `~/.profile` puts ahead of
+`/usr/bin` and so shadows an outdated distro package. It warns when no C
+compiler is found. `install.sh --doctor` lists `tree-sitter` among the tools.
+
+On Windows there is no installer step: put `tree-sitter.exe` on `PATH`
+(`tree-sitter-windows-x64.gz` from the
+[releases](https://github.com/tree-sitter/tree-sitter/releases), decompressed)
+along with a C compiler. `install.ps1 -Doctor` lists it as well.
+
+Once the CLI is in place, the next Neovim start builds the missing parsers in
+the background; reopen the buffer to see the highlighting. Without it Neovim
+starts normally and prints one warning naming the parsers it could not build.
+`:checkhealth nvim-treesitter` reports the CLI version and each parser.
 
 ## Laptop lid
 

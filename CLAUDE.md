@@ -64,6 +64,10 @@ pwsh -File install.ps1 -Doctor
   (fzf-tab-completion と zsh プラグイン類) を `~/.local/share` へ git clone する。
   OS パッケージがあるものはスキップする。探索パスは `90-plugins.zsh` /
   `10-shell.zsh` / `30-tools.*` と対応しているので、片方を変えたらもう片方も直す。
+  加えて nvim-treesitter (IDE プロファイル) がパーサのビルドに使う tree-sitter CLI
+  を入れる。既存のものはバージョン (`TREE_SITTER_MIN`) で判定し、brew があれば
+  `brew install tree-sitter-cli`、無ければ GitHub release のバイナリを
+  `~/.local/bin` へ置く。最低バージョンは nvim-treesitter main の README に合わせる。
 - PowerShell プロファイルだけは symlink ではなく **dot-source 1 行の stub** を
   PowerShell 7+ / Windows PowerShell 5.1 の CurrentUserAllHosts プロファイルに追記する。
   本体は `.config\PowerShell\profile.ps1` の 1 箇所に集約する。

@@ -41,7 +41,22 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 # One loop covers macOS (Apple Silicon / Intel) and Linuxbrew.
 for _brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
     if [ -x "$_brew" ]; then
+        # shellenv prepends to PATH and INFOPATH unconditionally, and the load
+        # guard above is not exported, so every nested shell (exec zsh, tmux,
+        # :terminal) used to add another copy. Keep the HOMEBREW_* exports from
+        # it but rebuild the two path lists through the idempotent helpers.
+        _path="$PATH"
+        _infopath="${INFOPATH:-}"
         eval "$("$_brew" shellenv)"
+        PATH="$_path"
+        path_prepend "$HOMEBREW_PREFIX/sbin"
+        path_prepend "$HOMEBREW_PREFIX/bin"
+        case ":$_infopath:" in
+            *":$HOMEBREW_PREFIX/share/info:"*) INFOPATH="$_infopath" ;;
+            *) INFOPATH="$HOMEBREW_PREFIX/share/info:$_infopath" ;;
+        esac
+        export INFOPATH
+        unset _path _infopath
         break
     fi
 done

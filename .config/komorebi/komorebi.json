@@ -41,50 +41,20 @@
   "monitors": [
     { // QHX3400-5&5768f80&0&UID20739
       "workspaces": [
-        {
-          "name": " 1 ",
-           "layout": "BSP"
-        },
-        {
-          "name": " 2 ",
-          "layout": "BSP"
-        },
-        {
-          "name": " 3 ",
-          "layout": "BSP"
-        },
-        {
-          "name": " 4 ",
-          "layout": "BSP"
-        },
-        {
-          "name": " 5 ",
-          "layout": "BSP"
-        },
-        {
-          "name": " 6 ",
-          "layout": "BSP"
-        },
-        {
-          "name": " 7 ",
-          "layout": "BSP"
-        },
-        {
-          "name": " 8 ",
-          "layout": "BSP"
-        }
+        { "name": " 1 ", "layout": "BSP" },
+        { "name": " 2 ", "layout": "BSP" },
+        { "name": " 3 ", "layout": "BSP" },
+        { "name": " 4 ", "layout": "BSP" },
+        { "name": " 5 ", "layout": "BSP" },
+        { "name": " 6 ", "layout": "BSP" },
+        { "name": " 7 ", "layout": "BSP" },
+        { "name": " 8 ", "layout": "BSP" }
       ]
     },
     { // DEL41F3-5&5768f80&0&UID20737
         "workspaces": [
-            {
-                "name": " Main ",
-                "layout": "BSP"
-            },
-            {
-                "name": " Sub ",
-                "layout": "BSP"
-            }
+            { "name": " Main ", "layout": "BSP" },
+            { "name": " Sub " , "layout": "BSP" }
         ]
     }
   ],

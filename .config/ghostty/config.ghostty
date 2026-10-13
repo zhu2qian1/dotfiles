@@ -4,3 +4,9 @@ font-family = UDEV Gothic NFLG
 # "missing or unsuitable terminal" で落ちる。ssh-terminfo が接続時に
 # infocmp/tic で送り込み、失敗したら ssh-env が TERM を xterm-256color へ落とす。
 shell-integration-features = ssh-env,ssh-terminfo
+
+# JIS では + が Shift+; なので押下は ctrl+shift++ として届き、既定の ctrl++ に
+# 一致しない (Shift で出た文字を Shift 抜きのバインドと照合しないため。
+# ghostty discussion #7243 / 未マージの PR #13053)。Shift 無しの ctrl+; でも拡大できるようにする。
+keybind = ctrl+shift++=increase_font_size:1
+keybind = ctrl+;=increase_font_size:1

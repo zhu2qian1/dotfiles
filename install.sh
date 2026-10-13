@@ -33,7 +33,7 @@ esac
 IGNORE=(
     ".git" ".gitignore" "README.md"
     "CLAUDE.md"                         # このリポジトリ向けの指示。~/CLAUDE.md に
-                                        # 置くと $HOME 配下の全プロジェクトに効く
+    "AGENTS.md"                         # 置くと $HOME 配下の全プロジェクトに効く
     "install.sh" "install.ps1"
     "install-extra-tools.sh"            # clones shell add-ons; run by hand
     ".editorconfig"

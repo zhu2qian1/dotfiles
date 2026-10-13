@@ -126,8 +126,13 @@ if the machine reboots unattended.
 
 ## ghostty
 
-Besides the font settings, `.config/ghostty/config.ghostty` enables the ssh
-integration:
+Besides the font settings, `.config/ghostty/config.ghostty` adds font-size
+bindings for JIS keyboards. There `+` is Shift+`;`, so the press arrives as
+`ctrl+shift++` and misses the default `ctrl++`: ghostty does not match a shifted
+character against an unshifted binding ([discussion #7243](https://github.com/ghostty-org/ghostty/discussions/7243)).
+`ctrl+shift++` and `ctrl+;` are bound to `increase_font_size` explicitly.
+
+It also enables the ssh integration:
 
 ```
 shell-integration-features = ssh-env,ssh-terminfo

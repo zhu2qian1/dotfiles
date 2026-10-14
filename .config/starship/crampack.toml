@@ -14,11 +14,8 @@ palette = "lush"
 format = """$os\
 $username\
 $hostname\
-[ ](bg:surge)[](bg:frost fg:surge)[ ](bg:frost)\
 $directory\
-[](bg:spark fg:frost)\
 $git_branch\
-[](fg:spark)\
 $git_status
 $character
 """
@@ -60,7 +57,7 @@ style_user = "bg:surge fg:crust"
 
 [hostname]
 disabled = false
-format = "[@$hostname]($style)"
+format = "[@$hostname ]($style)"
 ssh_only = false
 style = "bg:surge fg:crust"
 
@@ -69,7 +66,7 @@ truncation_symbol = " "
 truncation_length = 2
 truncate_to_repo = true
 style = "bg:frost fg:crust"
-format = "[$path ]($style)"
+format = "[ $path ]($style)"
 
 [git_branch]
 symbol = "  "

@@ -59,7 +59,17 @@ return {
                 callback = function(ev)
                     -- 初回起動時はビルドが終わるまでパーサが無いので失敗し得る。
                     -- その場合は従来のハイライトのまま開き、次にバッファを開いたときに効く。
-                    pcall(vim.treesitter.start, ev.buf)
+                    if not pcall(vim.treesitter.start, ev.buf) then
+                        return
+                    end
+                    -- 構文木から fold を作り、カーソルを置いた要素 (HTML ならタグ) を zc で
+                    -- 閉じられるようにする。foldmethod は window-local なので、[0][0]
+                    -- (このウィンドウでこのバッファを表示している間) に限って設定し、
+                    -- 同じウィンドウで別の filetype を開いたときに expr が残らないようにする。
+                    -- foldlevel を上げておかないと、開いた直後に全部閉じた状態になる。
+                    vim.wo[0][0].foldmethod = 'expr'
+                    vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+                    vim.wo[0][0].foldlevel = 99
                 end,
             })
         end,

@@ -62,9 +62,9 @@ ssh_only = false
 style = "bg:surge fg:crust"
 
 [directory]
-truncation_symbol = " "
-truncation_length = 2
-truncate_to_repo = true
+truncation_symbol = ".../"
+truncation_length = 3
+truncate_to_repo = false
 style = "bg:frost fg:crust"
 format = "[ $path ]($style)"
 

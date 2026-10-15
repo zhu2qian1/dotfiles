@@ -30,10 +30,11 @@ alias   l='ls -CF'
 
 # eza replaces the ls aliases when present. The `i` variants ignore .gitignore.
 if command -v eza >/dev/null 2>&1; then
-    alias   ll='eza -l  --icons=auto -F=auto --header --time-style long-iso --git-ignore'
-    alias  lli='eza -l  --icons=auto -F=auto --header --time-style long-iso'
-    alias  lla='eza -la --icons=auto -F=auto --header --time-style long-iso --git-ignore'
-    alias llai='eza -la --icons=auto -F=auto --header --time-style long-iso'
+    alias    l='eza --time-style long-iso --icons -F'
+    alias   ll='eza --time-style long-iso --icons -F -l'
+    alias  lli='eza --time-style long-iso --icons -F -l    --git-ignore'
+    alias  lla='eza --time-style long-iso --icons -F -l -a'
+    alias llai='eza --time-style long-iso --icons -F -l -a --git-ignore'
 fi
 
 command -v git     >/dev/null 2>&1 && alias  g='git'

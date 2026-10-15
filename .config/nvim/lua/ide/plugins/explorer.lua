@@ -27,6 +27,12 @@ return {
             end,
             view = {
                 side = 'left',
+                -- 表示中の最長行に合わせて幅を自動調整する。
+                width = {
+                    min = 30,
+                    max = -1,
+                    padding = 1,
+                },
             },
             actions = {
                 open_file = {

@@ -17,3 +17,6 @@ custom_profile.ps1
 
 # install.sh / migration backups
 *.bak
+
+# starship local config
+.config/starship/local.*.toml

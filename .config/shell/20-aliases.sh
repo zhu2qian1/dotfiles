@@ -74,6 +74,10 @@ gitignore() {
     curl -L "gitignore.io/api/$1"
 }
 
+zebra() {
+  awk -v c="${1:-235}" '{ if (NR % 2 == 0) printf "\033[48;5;%dm%s\033[K\033[0m\n", c, $0; else print $0 }'
+}
+
 # ------------------------------------------------------------- fzf pickers
 if command -v fzf >/dev/null 2>&1; then
     if command -v git >/dev/null 2>&1; then

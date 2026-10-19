@@ -39,6 +39,7 @@ return {
                 { '<leader>d', group = 'debug (dap)' },
                 { '<leader>e', group = 'explorer' },
                 { '<leader>f', group = 'find (telescope)' },
+                { '<leader>g', group = 'git (lazygit)' },
                 { '<leader>h', group = 'git hunk (gitsigns)' },
                 { '<leader>M', group = 'man' },
                 { '<leader>t', group = 'toggle' },

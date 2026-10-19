@@ -1,7 +1,9 @@
 -- ============================================
--- Git : gitsigns.nvim
+-- Git : gitsigns.nvim / snacks.nvim (lazygit)
 -- https://github.com/lewis6991/gitsigns.nvim
 -- サインカラムに追加/変更/削除行を表示し、hunk 単位の移動・stage・reset・blame を行う。
+-- https://github.com/folke/snacks.nvim/blob/main/docs/lazygit.md
+-- lazygit をフローティングで開く。要: `lazygit` (PATH 上)。
 -- ============================================
 
 return {
@@ -52,6 +54,21 @@ return {
                 -- ih : hunk をテキストオブジェクトとして選択 (vih / dih など)
                 map({ 'o', 'x' }, 'ih', gs.select_hunk, 'select hunk')
             end,
+        },
+    },
+    {
+        -- snacks.nvim は claude.lua でも claudecode.nvim の依存として読んでいる。
+        -- lazy.nvim は同名の spec をマージするので、opts はここに足すだけで両方に効く。
+        -- lazygit モジュールは setup が VimEnter 後 (keys で遅延読み込み / :EnableIde) でも動く。
+        'folke/snacks.nvim',
+        keys = {
+            { '<leader>gg', function() Snacks.lazygit() end,          desc = 'lazygit' },
+            { '<leader>gf', function() Snacks.lazygit.log_file() end, desc = 'lazygit: current file log' },
+        },
+        opts = {
+            -- configure (既定 true) で今のカラースキームを lazygit のテーマに流し込み、
+            -- lazygit の e (edit) をこの Neovim インスタンスで開くように設定する。
+            lazygit = {},
         },
     },
 }

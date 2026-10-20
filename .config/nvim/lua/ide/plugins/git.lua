@@ -68,7 +68,18 @@ return {
         opts = {
             -- configure (既定 true) で今のカラースキームを lazygit のテーマに流し込み、
             -- lazygit の e (edit) をこの Neovim インスタンスで開くように設定する。
-            lazygit = {},
+            lazygit = {
+                config = {
+                    gui = {
+                        -- snacks は既定で nerdFontsVersion = "3" (アイコン表示) にするが、
+                        -- config/options.lua の setcellwidths で Nerd Font アイコンを幅 2 に
+                        -- しているため、Neovim の :terminal 上ではアイコンが 2 セルを占める。
+                        -- lazygit 側 (go-runewidth) は 1 セルとして描くので行が 1 セルずつ
+                        -- 右へずれ、Commits / Stash 欄に描き残しが出る。アイコンを切って揃える。
+                        nerdFontsVersion = '',
+                    },
+                },
+            },
         },
     },
 }

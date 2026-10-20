@@ -1,7 +1,9 @@
 -- ============================================
--- File explorer : nvim-tree.lua
+-- File explorer : nvim-tree.lua / yazi.nvim
 -- [GitHub](https://github.com/nvim-tree/nvim-tree.lua)
--- 左ペインにディレクトリツリーを表示する。
+-- [GitHub](https://github.com/mikavilpas/yazi.nvim)
+-- nvim-tree は左ペインに常駐するツリー、yazi はフローティングで開いて選んだら
+-- 閉じるファイラー。用途が違うので併用し、<leader>et / <leader>ey で使い分ける。
 -- ============================================
 
 return {
@@ -44,6 +46,30 @@ return {
             },
             filters = {
                 dotfiles = false,
+            },
+        },
+    },
+    {
+        -- 要: `yazi` CLI (PATH 上)。設定は ~/.config/yazi をそのまま読む。
+        -- yazi.toml の opener (edit = nvim %s) は yazi.nvim が --chooser-file で
+        -- 「開く」を横取りするので効かず、nvim が入れ子で起動することは無い。
+        'mikavilpas/yazi.nvim',
+        version = '*',
+        dependencies = {
+            { 'nvim-lua/plenary.nvim', lazy = true },
+        },
+        cmd = { 'Yazi' },
+        keys = {
+            { '<leader>ey', '<cmd>Yazi<cr>', desc = 'yazi: open at current file' },
+            { '<leader>eY', '<cmd>Yazi cwd<cr>', desc = 'yazi: open at cwd' },
+        },
+        opts = {
+            -- nvim . は従来どおり netrw に任せる (lite プロファイルと挙動を揃える)。
+            open_for_directories = false,
+            keymaps = {
+                -- 既定の <C-t> は新しいタブページで開く。nvim-tree 側と同じ理由
+                -- (tabline はバッファ切り替えに使っている) でタブページは作らない。
+                open_file_in_tab = false,
             },
         },
     },

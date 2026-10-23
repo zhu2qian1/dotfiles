@@ -42,6 +42,7 @@ IGNORE=(
     ".vscode"                           # would collide with ~/.vscode
     "backup"                            # backup directory
     "scripts"                           # helper scripts
+    "whkdrc"                            # Windows HotKey Demon
     # ---- Windows side / manual ----
     "komorebi.json" "komorebi.bar.json" "applications.json"
     "profile.ps1" "profile_rust.ps1" "custom_profile.ps1"

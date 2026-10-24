@@ -18,10 +18,6 @@ return {
                 -- 空白を落として 2 セルに収める。
                 signs = { '󰫎' },
 
-                -- 上下に virtual border を描画するようにする
-                border = true,
-                border_virtual = true,
-
                 -- 見出しのアイコンを無効化する
                 icons = {},
             },

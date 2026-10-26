@@ -20,6 +20,35 @@
 -- Neovim 同梱のパーサ (lua / markdown / vimdoc など) は本体が既に扱っているので書かない。
 local langs = { 'svelte', 'typescript', 'tsx', 'javascript', 'html', 'css' }
 
+-- パーサのビルドに要る道具が揃っているか。揃っていなければ理由を返す。
+-- executable('tree-sitter') だけでは足りない: npm 版は install スクリプトが本体の
+-- tree-sitter.exe を落とし損ねても shim (tree-sitter.cmd) だけは残るので 1 を返す。
+-- なので実際に --version を実行して確かめる (呼ぶのは未インストール分があるときだけ)。
+local function missing_build_tool()
+    local ok, res = pcall(function()
+        return vim.system({ 'tree-sitter', '--version' }, { text = true }):wait(5000)
+    end)
+    if not ok or res.code ~= 0 then
+        return 'tree-sitter CLI が動かない'
+    end
+    -- tree-sitter build は $CC があればそれを、無ければ Windows では cl.exe
+    -- (PATH に無くても Visual Studio の場所を自分で探す)、他では cc を使う。
+    local cc = vim.env.CC
+    if cc and cc ~= '' then
+        if vim.fn.executable(vim.split(cc, ' ', { trimempty = true })[1]) == 1 then
+            return nil
+        end
+    elseif vim.fn.has('win32') == 1 then
+        local vswhere = vim.fs.joinpath(vim.env['ProgramFiles(x86)'] or '', 'Microsoft Visual Studio/Installer/vswhere.exe')
+        if vim.fn.executable('cl') == 1 or vim.uv.fs_stat(vswhere) then
+            return nil
+        end
+    elseif vim.fn.executable('cc') == 1 then
+        return nil
+    end
+    return 'C コンパイラが無い'
+end
+
 return {
     {
         'nvim-treesitter/nvim-treesitter',
@@ -28,20 +57,21 @@ return {
         lazy = false,
         build = ':TSUpdate',
         config = function()
-            -- 未インストール分だけを非同期で取得・ビルドする。CLI が無いまま install() を
-            -- 呼ぶと、起動のたびに全言語分のソースを落としてから ENOENT のエラーを
-            -- 言語の数だけ出すので、その場合は 1 行の案内に留める。
+            -- 未インストール分だけを非同期で取得・ビルドする。CLI やコンパイラが無いまま
+            -- install() を呼ぶと、起動のたびに全言語分のソースを落としてからビルドの
+            -- エラーを言語の数だけ出すので、その場合は 1 行の案内に留める。
             local ts = require('nvim-treesitter')
             local installed = ts.get_installed('parsers')
             local missing = vim.tbl_filter(function(lang)
                 return not vim.list_contains(installed, lang)
             end, langs)
             if #missing > 0 then
-                if vim.fn.executable('tree-sitter') == 1 then
+                local reason = missing_build_tool()
+                if not reason then
                     ts.install(missing)
                 else
                     vim.notify(
-                        'tree-sitter CLI が無いのでパーサを入れられない: ' .. table.concat(missing, ', ')
+                        reason .. 'のでパーサを入れられない: ' .. table.concat(missing, ', ')
                             .. '\n(Linux / WSL なら dotfiles で `bash install-extra-tools.sh`)',
                         vim.log.levels.WARN
                     )

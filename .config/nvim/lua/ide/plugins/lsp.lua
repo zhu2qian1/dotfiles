@@ -1,6 +1,6 @@
 -- ============================================
 -- LSP : nvim-lspconfig + mason (+ mason-lspconfig)
--- 対象: TypeScript / JSON / YAML / TOML / Lua / Python / Java
+-- 対象: TypeScript / JSON / YAML / TOML / Lua / Python / Java + Emmet (HTML / CSS / JSX 等)
 -- Neovim 0.12 の vim.lsp.config / vim.lsp.enable を使用。
 -- ============================================
 
@@ -27,6 +27,11 @@ return {
                 pyright = {}, -- Python (型チェック・補完)
                 ruff = {},    -- Python (lint / format。ruff 本体の `ruff server`)
                 jdtls = {},   -- Java
+                -- Emmet 略記 (div.foo#bar など) の展開を補完候補として出す。専用プラグイン
+                -- (emmet-vim 等) と違い blink.cmp のメニューに乗るので、<CR> で確定するだけで
+                -- 展開できる。対象 filetype は lspconfig の既定 (html / css / jsx / tsx /
+                -- svelte / vue など)。JSX では class ではなく className で出る。
+                emmet_language_server = {},
             }
 
             -- 全サーバ共通: blink.cmp の補完 capabilities を付与

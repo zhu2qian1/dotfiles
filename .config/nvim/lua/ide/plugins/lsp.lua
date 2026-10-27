@@ -1,6 +1,6 @@
 -- ============================================
 -- LSP : nvim-lspconfig + mason (+ mason-lspconfig)
--- 対象: TypeScript / JSON / YAML / TOML / Lua / Python / Java + Emmet (HTML / CSS / JSX 等)
+-- 対象: TypeScript / JSON / YAML / TOML / Lua / Python / Java / Go + Emmet (HTML / CSS / JSX 等)
 -- Neovim 0.12 の vim.lsp.config / vim.lsp.enable を使用。
 -- ============================================
 
@@ -27,6 +27,7 @@ return {
                 pyright = {}, -- Python (型チェック・補完)
                 ruff = {},    -- Python (lint / format。ruff 本体の `ruff server`)
                 jdtls = {},   -- Java
+                gopls = {},   -- Go (補完・診断・format・import 整理まで gopls 1 本で賄う)
                 -- Emmet 略記 (div.foo#bar など) の展開を補完候補として出す。専用プラグイン
                 -- (emmet-vim 等) と違い blink.cmp のメニューに乗るので、<CR> で確定するだけで
                 -- 展開できる。対象 filetype は lspconfig の既定 (html / css / jsx / tsx /
@@ -157,6 +158,39 @@ return {
                         buffer = bufnr,
                         callback = function()
                             vim.lsp.buf.format({ bufnr = bufnr, name = 'ruff' })
+                        end,
+                    })
+                end,
+            })
+
+            -- Go: staticcheck を診断に混ぜ、未使用引数なども拾わせる。usePlaceholders は
+            -- 関数補完の確定時に引数をスニペットとして埋める (blink.cmp が展開する)。
+            -- 保存時は goimports 相当 (source.organizeImports) → gofmt の順に掛ける。
+            -- organizeImports は format では動かず code action としてしか出てこないので、
+            -- 同期で要求して返ってきた編集を当てる。BufWritePre の中なので非同期だと
+            -- 書き込みに間に合わない。augroup の扱いは下の ruff と同じ理由。
+            vim.lsp.config('gopls', {
+                settings = {
+                    gopls = {
+                        staticcheck = true,
+                        usePlaceholders = true,
+                        analyses = { unusedparams = true, unusedwrite = true, nilness = true },
+                    },
+                },
+                on_attach = function(client, bufnr)
+                    vim.api.nvim_create_autocmd('BufWritePre', {
+                        group = vim.api.nvim_create_augroup('gopls_format_' .. bufnr, { clear = true }),
+                        buffer = bufnr,
+                        callback = function()
+                            local params = vim.lsp.util.make_range_params(0, client.offset_encoding)
+                            params.context = { only = { 'source.organizeImports' }, diagnostics = {} }
+                            local res = client:request_sync('textDocument/codeAction', params, 1000, bufnr)
+                            for _, action in ipairs(res and res.result or {}) do
+                                if action.edit then
+                                    vim.lsp.util.apply_workspace_edit(action.edit, client.offset_encoding)
+                                end
+                            end
+                            vim.lsp.buf.format({ bufnr = bufnr, name = 'gopls' })
                         end,
                     })
                 end,

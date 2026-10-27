@@ -1,7 +1,7 @@
 -- ============================================
 -- Debug : nvim-dap (+ nvim-dap-ui)
 -- https://github.com/mfussenegger/nvim-dap
--- 対象: Java (jdtls + java-debug-adapter への attach)
+-- 対象: Java (jdtls + java-debug-adapter への attach) / Go (delve で launch)
 --
 -- Java のデバッグは JDWP で attach するのが基本なので、実行中の JVM 側を
 --   ./gradlew bootRun --debug-jvm        (Gradle 既定: server=y,suspend=y,address=*:5005)
@@ -11,6 +11,11 @@
 -- jdtls の拡張バンドルとして動き、LSP コマンド vscode.java.startDebugSession を
 -- 投げると DAP サーバを立てて port を返す。バンドルの登録は lsp.lua の jdtls
 -- (init_options.bundles) 側にある。
+--
+-- Go は Java と逆に nvim から delve (`dlv dap`) を起動して launch する。
+-- dlv 自体がビルドから実行まで面倒を見るので、事前に端末で起動しておく必要は無い。
+-- dlv は `:MasonInstall delve` か `go install github.com/go-delve/delve/cmd/dlv@latest`
+-- で入れる (mason-lspconfig の ensure_installed は LSP しか扱わないので自動では入らない)。
 -- ============================================
 
 return {
@@ -94,6 +99,45 @@ return {
                     port = function()
                         return tonumber(vim.fn.input('debug port: ', '5005'))
                     end,
+                },
+            }
+
+            -- adapter: `dlv dap` を空きポートで起動してそこへ繋ぐ。${port} は nvim-dap が
+            -- 空きポートに置き換える。PATH に dlv が無いと nvim-dap は「接続できない」と
+            -- しか言わないので、先に分かる形で止める (mason の bin は mason の読み込み時に
+            -- PATH へ足されるので、Mason で入れた dlv もここで見える)。
+            dap.adapters.delve = function(callback)
+                if vim.fn.executable('dlv') ~= 1 then
+                    vim.notify('dap: dlv が無い (:MasonInstall delve)', vim.log.levels.ERROR)
+                    return
+                end
+                callback({
+                    type = 'server',
+                    port = '${port}',
+                    executable = { command = 'dlv', args = { 'dap', '-l', '127.0.0.1:${port}' } },
+                })
+            end
+
+            -- program はパッケージのディレクトリを渡す (ファイル単体だと同じパッケージの
+            -- 他ファイルが入らずビルドに失敗する)。cmd/ 配下に main が複数ある構成向けに、
+            -- 入力させる版も置く。相対パスは nvim の cwd (= dlv の cwd) 基準。
+            dap.configurations.go = {
+                { type = 'delve', request = 'launch', name = 'Debug package (このファイルのディレクトリ)', program = '${fileDirname}' },
+                {
+                    type = 'delve',
+                    request = 'launch',
+                    name = 'Debug package (パスと引数を入力)',
+                    program = function() return vim.fn.input('package: ', './cmd/', 'dir') end,
+                    args = function() return vim.split(vim.fn.input('args: '), ' ', { trimempty = true }) end,
+                },
+                { type = 'delve', request = 'launch', mode = 'test', name = 'Debug test (このパッケージ)', program = '${fileDirname}' },
+                {
+                    type = 'delve',
+                    request = 'launch',
+                    mode = 'test',
+                    name = 'Debug test (名前を入力)',
+                    program = '${fileDirname}',
+                    args = function() return { '-test.run', vim.fn.input('test regexp: ', '^Test') } end,
                 },
             }
 

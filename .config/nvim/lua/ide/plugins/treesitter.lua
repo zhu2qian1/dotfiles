@@ -9,6 +9,9 @@
 -- svelte パーサは <script lang="ts"> / {式} / <style> を typescript / javascript /
 -- css に injection するので、それらのパーサも揃えておく必要がある。
 --
+-- Go は Vim 同梱の正規表現 syntax でも色は付くが、型・関数呼び出し・フィールドの
+-- 区別が付かないので treesitter に寄せる。go.mod / go.work / go.sum も専用パーサがある。
+--
 -- main ブランチはパーサを手元でビルドするため tree-sitter CLI (0.26.1+) と
 -- C コンパイラが要る。Linux / WSL では `bash install-extra-tools.sh` が CLI を入れる
 -- (README の "Neovim tree-sitter" 節)。npm 版は nvim-treesitter が非対応。旧 master ブランチの
@@ -18,7 +21,7 @@
 
 -- ここに書いた言語のパーサを入れ、その filetype では treesitter でハイライトする。
 -- Neovim 同梱のパーサ (lua / markdown / vimdoc など) は本体が既に扱っているので書かない。
-local langs = { 'svelte', 'typescript', 'tsx', 'javascript', 'html', 'css' }
+local langs = { 'svelte', 'typescript', 'tsx', 'javascript', 'html', 'css', 'go', 'gomod', 'gowork', 'gosum' }
 
 -- パーサのビルドに要る道具が揃っているか。揃っていなければ理由を返す。
 -- executable('tree-sitter') だけでは足りない: npm 版は install スクリプトが本体の

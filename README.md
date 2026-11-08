@@ -26,7 +26,7 @@ pwsh -File install.ps1 -Doctor      # report link state, profile and missing too
 | `.config/systemd/user/*` | `~/.config/systemd/user/<name>` | per entry -- `systemctl --user enable` and snap write their own links there |
 | `.claude/skills/*` | `~/.claude/skills/<name>` | per entry -- Claude Code syncs claude.ai skills into `~/.claude/skills/synced/` |
 | `.claude/*` | `~/.claude/<name>` | per entry -- `~/.claude` also holds Claude Code's own state |
-| `scripts/`, `backup/`, `.vscode/`, `CLAUDE.md`, `install-extra-tools.sh` | -- | not linked; see `IGNORE` in `install.sh` |
+| `scripts/`, `doc/`, `backup/`, `.vscode/`, `CLAUDE.md`, `install-extra-tools.sh` | -- | not linked; see `IGNORE` in `install.sh` |
 
 `.config/shell/README.md` covers the shell config shared by bash and zsh, and
 its load order.
@@ -88,6 +88,11 @@ On Windows there is no installer step: put `tree-sitter.exe` on `PATH`
 (`tree-sitter-windows-x64.gz` from the
 [releases](https://github.com/tree-sitter/tree-sitter/releases), decompressed)
 along with a C compiler. `install.ps1 -Doctor` lists it as well.
+[doc/nvim-treesitter-windows.md](doc/nvim-treesitter-windows.md) walks through
+the CLI, MSVC Build Tools or `$env:CC`, and the usual failures.
+`scripts\nvim\check-windows-env.ps1` checks everything the Neovim config needs
+on Windows (versions, compiler, built parsers, mason runtimes) without changing
+anything, and exits 1 if a required piece is missing.
 
 Once the CLI is in place, the next Neovim start builds the missing parsers in
 the background; reopen the buffer to see the highlighting. Without it Neovim
